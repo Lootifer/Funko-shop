@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings | Lootifer Admin</title>
+    <link rel="stylesheet" href="../Assets/Css/main.css" />
+    <link rel="stylesheet" href="assets/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-shell">
+      <div id="adminSidebar"></div>
+      <main class="admin-main">
+        <div id="adminTopbar"></div>
+
+        <section class="admin-section">
+          <div id="productForm"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module">
+      import { createAdminSidebar, createAdminTopbar, createFormCard } from './components/layout.js';
+      document.getElementById('adminSidebar').innerHTML = createAdminSidebar('settings');
+      document.getElementById('adminTopbar').innerHTML = createAdminTopbar('Settings');
+      document.getElementById('productForm').innerHTML = createFormCard(
+        'Store Preferences',
+        `
+          <label>
+            Store Name
+            <input value="Lootifer Collectibles" />
+          </label>
+          <label>
+            Fresh Drop Mode
+            <select>
+              <option>Enabled</option>
+              <option>Paused</option>
+            </select>
+          </label>
+          <label>
+            Welcome Message
+            <textarea rows="4">Premium collector experience, ready for the next phase.</textarea>
+          </label>
+          <label>
+            Default Currency
+            <input value="USD" />
+          </label>
+        `
+      );
+    </script>
+  </body>
+</html>

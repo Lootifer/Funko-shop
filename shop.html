@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop | Lootifer Collectibles</title>
+    <meta
+      name="description"
+      content="Browse premium collectibles, limited editions, and exclusive Funko Pops in the Lootifer shop."
+    />
+    <link rel="stylesheet" href="Assets/Css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="headerRoot"></div>
+
+    <main class="product-page reveal">
+      <section class="section-heading">
+        <p class="eyebrow">Collector catalog</p>
+        <h1>Search the full vault.</h1>
+        <p class="hero-text">Discover premium collectibles, exclusives, and scarce edition pieces.</p>
+      </section>
+
+      <section class="shop-layout">
+        <div id="filtersRoot"></div>
+
+        <div class="shop-main">
+          <div class="shop-toolbar">
+            <div>
+              <p class="shop-count" id="shopCount">Loading collectibles…</p>
+              <p class="shop-active-filters" id="shopActiveFilters">Active filters: none</p>
+            </div>
+            <select id="shopSort">
+              <option value="newest">Newest</option>
+              <option value="price-asc">Price Low to High</option>
+              <option value="price-desc">Price High to Low</option>
+              <option value="alpha">Alphabetical</option>
+            </select>
+          </div>
+
+          <div class="card-grid" id="shopGrid"></div>
+
+          <div class="pagination" id="shopPagination"></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="footerRoot"></div>
+
+    <script type="module" src="Assets/Js/shop.js"></script>
+  </body>
+</html>

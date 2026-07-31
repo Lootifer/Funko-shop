@@ -17,24 +17,7 @@
     />
   </head>
   <body>
-    <header class="topbar">
-      <a class="brand" href="#home" aria-label="Lootifer home">
-        <span class="brand-mark">L</span>
-        <span>
-          <strong>Lootifer</strong>
-          <small>Collectibles</small>
-        </span>
-      </a>
-
-      <nav class="nav-links" aria-label="Primary navigation">
-        <a href="#featured">Shop</a>
-        <a href="#universes">Explore Universes</a>
-        <a href="#why">Why Lootifer</a>
-        <a href="#footer">Contact</a>
-      </nav>
-
-      <a class="nav-cta" href="#featured">Shop now</a>
-    </header>
+    <div id="headerRoot"></div>
 
     <main id="home">
       <section class="hero reveal">
@@ -73,19 +56,76 @@
         </div>
       </section>
 
-      <section class="search-shell reveal">
-        <div class="search-bar">
-          <span class="search-icon">⌕</span>
-          <input
-            id="searchInput"
-            type="text"
-            placeholder="Search figures, universes, or limited drops"
-            aria-label="Search collectibles"
-          />
-          <button type="button">Search</button>
+      <section class="section reveal">
+        <div class="new-this-week-card">
+          <div class="new-this-week-header">
+            <div>
+              <p class="eyebrow">New this week</p>
+              <h2>Fresh drops landed in the vault.</h2>
+            </div>
+            <a class="button secondary" href="shop.html">Browse drops</a>
+          </div>
+
+          <div class="new-this-week-grid">
+            <div class="new-this-week-pill">🦇 12 New Batman Pops</div>
+            <div class="new-this-week-pill">⭐ 4 New Chase Editions</div>
+            <div class="new-this-week-pill">🎁 2 Exclusives Added Today</div>
+            <div class="new-this-week-pill">📦 8 Items Almost Sold Out</div>
+          </div>
         </div>
-        <p id="searchStatus">Search across premium figures, pins, and display pieces.</p>
       </section>
+
+      <section class="section reveal">
+        <div class="section-heading">
+          <p class="eyebrow">🔥 Holy Grails</p>
+          <h2>Collector favorites, all in one spotlight.</h2>
+        </div>
+
+        <div class="holy-grails-grid">
+          <a class="holy-grail-card" href="shop.html">
+            <span class="holy-grail-label">Most Wanted</span>
+            <strong>Hunt the hottest drops.</strong>
+          </a>
+          <a class="holy-grail-card" href="shop.html">
+            <span class="holy-grail-label">Most Rare</span>
+            <strong>Scarce editions and hidden gems.</strong>
+          </a>
+          <a class="holy-grail-card" href="shop.html">
+            <span class="holy-grail-label">Newest Arrivals</span>
+            <strong>Fresh pieces from the latest wave.</strong>
+          </a>
+          <a class="holy-grail-card" href="shop.html">
+            <span class="holy-grail-label">Ending Soon</span>
+            <strong>Last chance before they vanish.</strong>
+          </a>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="notify-me-card">
+          <div>
+            <p class="eyebrow">Notify Me</p>
+            <h2>Be first when a grail returns.</h2>
+            <p class="hero-text">Get alerts for restocks, exclusives, and limited drop windows before they vanish again.</p>
+          </div>
+          <form class="notify-me-form" id="notifyMeForm">
+            <input id="notifyEmail" type="email" placeholder="Enter your email" required />
+            <button class="button primary" type="submit">Notify Me</button>
+          </form>
+          <p class="club-message" id="notifyMessage">No spam — just collector-first updates.</p>
+        </div>
+      </section>
+
+      <section id="universes" class="section reveal">
+        <div class="section-heading">
+          <p class="eyebrow">Explore Universes</p>
+          <h2>Find your next obsession.</h2>
+        </div>
+
+        <div class="universe-grid" id="universeGrid"></div>
+      </section>
+
+      <div id="searchRoot"></div>
 
       <section class="stats-section reveal" aria-label="Collector stats">
         <div class="stat-card">
@@ -112,111 +152,93 @@
           <h2>Collector favorites, handpicked.</h2>
         </div>
 
-        <div class="card-grid" id="productGrid">
-          <article class="collectible-card" data-name="midnight viper figure">
-            <img
-              src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80"
-              alt="Midnight Viper Figure"
-            />
-            <div class="card-body">
-              <p class="card-meta">Limited • New</p>
-              <h3>Midnight Viper Figure</h3>
-              <p>Chrome finish, numbered release, display-ready packaging.</p>
-              <div class="card-footer">
-                <span>$249</span>
-                <a href="#">Reserve</a>
-              </div>
-            </div>
-          </article>
+        <div class="filter-panel">
+          <div class="filter-group">
+            <h3>Category</h3>
+            <select id="categoryFilter"></select>
+          </div>
 
-          <article class="collectible-card" data-name="aurora guardian pin">
-            <img
-              src="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=800&q=80"
-              alt="Aurora Guardian Pin"
-            />
-            <div class="card-body">
-              <p class="card-meta">Exclusive • Glow</p>
-              <h3>Aurora Guardian Pin</h3>
-              <p>Collector edition enamel pin with satin finish and velvet case.</p>
-              <div class="card-footer">
-                <span>$89</span>
-                <a href="#">Reserve</a>
-              </div>
-            </div>
-          </article>
+          <div class="filter-group">
+            <h3>Universe</h3>
+            <div id="universeFilterGroup"></div>
+          </div>
 
-          <article class="collectible-card" data-name="ember knight statue">
-            <img
-              src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"
-              alt="Ember Knight Statue"
-            />
-            <div class="card-body">
-              <p class="card-meta">Signature • Prestige</p>
-              <h3>Ember Knight Statue</h3>
-              <p>Hand-finished sculpt with soft matte texture and sculptural base.</p>
-              <div class="card-footer">
-                <span>$329</span>
-                <a href="#">Reserve</a>
-              </div>
+          <div class="filter-group">
+            <h3>Edition</h3>
+            <div id="editionFilterGroup"></div>
+          </div>
+
+          <div class="filter-group price-group">
+            <h3>Prijs</h3>
+            <input id="priceRange" type="range" min="0" max="300" step="10" value="300" />
+            <div class="price-range-values">
+              <span>$0</span>
+              <span id="priceRangeValue">Up to $300</span>
             </div>
-          </article>
+          </div>
         </div>
+
+        <div class="section-actions">
+          <button class="button secondary" id="viewAllButton" type="button">View all</button>
+        </div>
+
+        <div class="card-grid" id="productGrid"></div>
       </section>
 
-      <section id="universes" class="section reveal">
-        <div class="section-heading">
-          <p class="eyebrow">Explore Universes</p>
-          <h2>Find your next obsession.</h2>
+      <div class="modal-backdrop" id="productModal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+          <button class="modal-close" id="modalClose" type="button" aria-label="Close product details">×</button>
+          <div class="modal-content">
+            <img id="modalImage" src="" alt="" />
+            <div class="modal-info">
+              <p class="card-meta" id="modalBadge">Featured</p>
+              <h3 id="modalTitle">Product</h3>
+              <p id="modalDescription"></p>
+              <div class="modal-meta-grid">
+                <div>
+                  <span class="modal-label">Franchise</span>
+                  <strong id="modalFranchise"></strong>
+                </div>
+                <div>
+                  <span class="modal-label">Edition</span>
+                  <strong id="modalEdition"></strong>
+                </div>
+                <div>
+                  <span class="modal-label">Condition</span>
+                  <strong id="modalCondition"></strong>
+                </div>
+                <div>
+                  <span class="modal-label">Stock</span>
+                  <strong id="modalStock"></strong>
+                </div>
+              </div>
+              <div class="modal-actions">
+                <span class="modal-price" id="modalPrice"></span>
+                <a class="button primary" href="#featured">Reserve now</a>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="universe-grid">
-          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80')">
-            <div class="universe-card-content">
-              <h3>DC</h3>
-              <p>128 collectibles</p>
-              <a href="#featured">Explore →</a>
-            </div>
-          </article>
-
-          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=900&q=80')">
-            <div class="universe-card-content">
-              <h3>Marvel</h3>
-              <p>214 collectibles</p>
-              <a href="#featured">Explore →</a>
-            </div>
-          </article>
-
-          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=900&q=80')">
-            <div class="universe-card-content">
-              <h3>Star Wars</h3>
-              <p>186 collectibles</p>
-              <a href="#featured">Explore →</a>
-            </div>
-          </article>
-
-          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80')">
-            <div class="universe-card-content">
-              <h3>Harry Potter</h3>
-              <p>95 collectibles</p>
-              <a href="#featured">Explore →</a>
-            </div>
-          </article>
-
-          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80')">
-            <div class="universe-card-content">
-              <h3>Pokémon</h3>
-              <p>167 collectibles</p>
-              <a href="#featured">Explore →</a>
-            </div>
-          </article>
-
-          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1531259683007-016a7b628fc3?auto=format&fit=crop&w=900&q=80')">
-            <div class="universe-card-content">
-              <h3>Anime</h3>
-              <p>143 collectibles</p>
-              <a href="#featured">Explore →</a>
-            </div>
-          </article>
+      <section class="section reveal">
+        <div class="club-card">
+          <div class="club-copy">
+            <p class="eyebrow">Collector Club</p>
+            <h2>Join the Collector Club</h2>
+            <p>Get insider access to rare drops, back-in-stock alerts, and exclusive Funko Pops before they hit the general catalog.</p>
+            <ul class="hero-highlights club-list">
+              <li>🎁 Win exclusive Funko Pops</li>
+              <li>🔥 Early access</li>
+              <li>📦 Back in stock alerts</li>
+              <li>❤️ Save your wishlist</li>
+            </ul>
+            <form class="club-form" id="clubForm">
+              <input id="clubEmail" type="email" placeholder="Enter your email" required />
+              <button class="button primary" type="submit">Join Free</button>
+            </form>
+            <p class="club-message" id="clubMessage">Get early access and back-in-stock alerts.</p>
+          </div>
         </div>
       </section>
 
@@ -243,20 +265,9 @@
       </section>
     </main>
 
-    <footer id="footer" class="footer reveal">
-      <div>
-        <p class="eyebrow">Lootifer Collectibles</p>
-        <h3>Own the extraordinary.</h3>
-        <p>Premium pieces, modern presentation, and a community built for collectors.</p>
-      </div>
-      <div class="footer-links">
-        <a href="#featured">Shop</a>
-        <a href="#universes">Universes</a>
-        <a href="#why">About</a>
-      </div>
-    </footer>
+    <div id="footerRoot"></div>
 
-    <script src="Assets/Js/script.js"></script>
+    <script type="module" src="Assets/Js/script.js"></script>
   </body>
 </html>
 

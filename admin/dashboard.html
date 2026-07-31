@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Lootifer</title>
+    <link rel="stylesheet" href="../Assets/Css/main.css" />
+    <link rel="stylesheet" href="assets/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-shell">
+      <div id="adminSidebar"></div>
+      <main class="admin-main">
+        <div id="adminTopbar"></div>
+
+        <section class="admin-grid">
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">Total Products</p>
+            <h3>120</h3>
+            <p class="admin-detail">Across premium drops</p>
+          </article>
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">Total Universes</p>
+            <h3>12</h3>
+            <p class="admin-detail">Curated collector worlds</p>
+          </article>
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">Low Stock</p>
+            <h3>8</h3>
+            <p class="admin-detail">Needs attention soon</p>
+          </article>
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">New Products</p>
+            <h3>6</h3>
+            <p class="admin-detail">Added this week</p>
+          </article>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Collector Club Members</h3>
+            <p class="admin-detail">Placeholder widget for future CRM and signup insights.</p>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Recent Activity</h3>
+            <table class="admin-table">
+              <thead>
+                <tr><th>Item</th><th>Status</th><th>Updated</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Midnight Viper</td><td>Live</td><td>2h ago</td></tr>
+                <tr><td>Aurora Guardian</td><td>Restock queued</td><td>5h ago</td></tr>
+                <tr><td>Snow Queen</td><td>Featured</td><td>Yesterday</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module">
+      import { createAdminSidebar, createAdminTopbar } from './components/layout.js';
+      document.getElementById('adminSidebar').innerHTML = createAdminSidebar('dashboard');
+      document.getElementById('adminTopbar').innerHTML = createAdminTopbar('Dashboard');
+    </script>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product | Lootifer Collectibles</title>
+    <link rel="stylesheet" href="Assets/Css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="headerRoot"></div>
+
+    <main class="product-page">
+      <section class="product-shell">
+        <div class="product-gallery-block">
+          <div class="product-gallery-main" id="productGalleryMain"></div>
+          <div class="product-gallery-thumbs" id="productGalleryThumbs"></div>
+        </div>
+        <div class="product-details">
+          <p class="eyebrow" id="productBadge">Collector Edition</p>
+          <h1 id="productTitle">Loading product…</h1>
+          <p class="product-meta" id="productMeta"></p>
+          <div class="product-info-grid">
+            <div><span class="info-label">Number</span><strong id="productNumber"></strong></div>
+            <div><span class="info-label">Universe</span><strong id="productUniverse"></strong></div>
+            <div><span class="info-label">Edition</span><strong id="productEdition"></strong></div>
+            <div><span class="info-label">Condition</span><strong id="productCondition"></strong></div>
+          </div>
+          <div class="product-price-row">
+            <span class="product-price" id="productPrice">$0</span>
+            <span class="product-stock" id="productStock">0 in stock</span>
+          </div>
+          <p class="collector-score" id="collectorScore"></p>
+          <p id="productDescription"></p>
+
+          <div class="product-actions">
+            <a class="button primary" href="shop.html">Get Yours</a>
+            <button class="button secondary" type="button" id="wishlistButton">Wishlist</button>
+          </div>
+
+          <div class="collector-details">
+            <h3>Collector details</h3>
+            <ul>
+              <li>✓ Mint Condition</li>
+              <li>✓ Protector Included</li>
+              <li>✓ Ships within 1 business day</li>
+            </ul>
+          </div>
+
+          <div class="collector-info">
+            <h3>Collector info</h3>
+            <div class="collector-chips" id="collectorInfo"></div>
+          </div>
+
+          <div class="spec-list">
+            <h3>Specifications</h3>
+            <ul id="productSpecs"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading">
+          <p class="eyebrow">Related products</p>
+          <h2>Discover more collector favorites.</h2>
+        </div>
+        <div class="card-grid" id="relatedProducts"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">You may also like</p>
+          <h2>Robin, Joker, and Harley Quinn for your next display.</h2>
+        </div>
+        <div class="card-grid" id="recommendedProducts"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Recently viewed</p>
+          <h2>Picked up from your collector journey.</h2>
+        </div>
+        <div class="card-grid" id="recentProducts"></div>
+      </section>
+    </main>
+
+    <div id="footerRoot"></div>
+
+    <script type="module" src="Assets/Js/product-page.js"></script>
+  </body>
+</html>
