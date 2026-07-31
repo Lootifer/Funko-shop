@@ -1,0 +1,123 @@
+:root {
+  --bg: #060606;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-strong: rgba(255, 255, 255, 0.1);
+  --text: #f7f2e8;
+  --muted: #b7b0a5;
+  --accent: #d4af37;
+  --accent-soft: rgba(212, 175, 55, 0.2);
+  --border: rgba(255, 255, 255, 0.14);
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.16), transparent 30%),
+    linear-gradient(135deg, #030303 0%, #111111 45%, #191919 100%);
+  min-height: 100vh;
+}
+
+img {
+  display: block;
+  width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+main {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 2.4rem 1.2rem 4.8rem;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 3rem;
+  align-items: center;
+  padding: 3rem 0 4.2rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.hero-copy {
+  animation: fadeSlideIn 850ms ease both;
+}
+
+.hero h1 {
+  font-size: clamp(2.35rem, 4.2vw, 3.9rem);
+  line-height: 1.06;
+  margin: 0 0 1rem;
+  letter-spacing: -0.025em;
+  max-width: 620px;
+}
+
+.hero-text {
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 560px;
+  margin: 0 0 1.4rem;
+  font-size: 1.02rem;
+}
+
+.hero-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.hero-highlights li {
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.section {
+  padding: 1.2rem 0 0.8rem;
+}
+
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 1.2rem;
+    gap: 2rem;
+  }
+}

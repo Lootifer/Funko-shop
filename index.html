@@ -1,1 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lootifer Collectibles</title>
+    <meta
+      name="description"
+      content="Lootifer Collectibles offers premium, limited-edition figures and collectible drops with a luxurious, modern experience."
+    />
+    <link rel="stylesheet" href="Assets/Css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="Lootifer home">
+        <span class="brand-mark">L</span>
+        <span>
+          <strong>Lootifer</strong>
+          <small>Collectibles</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#featured">Shop</a>
+        <a href="#universes">Explore Universes</a>
+        <a href="#why">Why Lootifer</a>
+        <a href="#footer">Contact</a>
+      </nav>
+
+      <a class="nav-cta" href="#featured">Shop now</a>
+    </header>
+
+    <main id="home">
+      <section class="hero reveal">
+        <div class="hero-copy">
+          <p class="eyebrow">Curated drops • Limited edition</p>
+          <h1>Every collection tells a story.</h1>
+          <p class="hero-text">
+            Discover rare Funko Pops, exclusives, grails and collector pieces.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button primary" href="#featured">Explore Collection</a>
+            <a class="button secondary" href="#featured">Get Yours →</a>
+          </div>
+
+          <ul class="hero-highlights">
+            <li>Verified authenticity</li>
+            <li>Exclusive drops</li>
+            <li>Fast premium delivery</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual" aria-label="Cinematic Funko Pops placeholder">
+          <div class="hero-visual-glow"></div>
+          <div class="hero-visual-card">
+            <div class="hero-visual-top">Collector Vault</div>
+            <div class="hero-figure">
+              <div class="figure-head"></div>
+              <div class="figure-body"></div>
+            </div>
+            <div class="hero-visual-caption">
+              <p>Limited release</p>
+              <strong>Funko Pop Series</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="search-shell reveal">
+        <div class="search-bar">
+          <span class="search-icon">⌕</span>
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search figures, universes, or limited drops"
+            aria-label="Search collectibles"
+          />
+          <button type="button">Search</button>
+        </div>
+        <p id="searchStatus">Search across premium figures, pins, and display pieces.</p>
+      </section>
+
+      <section class="stats-section reveal" aria-label="Collector stats">
+        <div class="stat-card">
+          <span>✔</span>
+          <p>126 Collectibles Online</p>
+        </div>
+        <div class="stat-card">
+          <span>✔</span>
+          <p>New Drops Every Week</p>
+        </div>
+        <div class="stat-card">
+          <span>✔</span>
+          <p>Carefully Packed</p>
+        </div>
+        <div class="stat-card">
+          <span>✔</span>
+          <p>Collector Approved</p>
+        </div>
+      </section>
+
+      <section id="featured" class="section reveal">
+        <div class="section-heading">
+          <p class="eyebrow">Featured Collectibles</p>
+          <h2>Collector favorites, handpicked.</h2>
+        </div>
+
+        <div class="card-grid" id="productGrid">
+          <article class="collectible-card" data-name="midnight viper figure">
+            <img
+              src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80"
+              alt="Midnight Viper Figure"
+            />
+            <div class="card-body">
+              <p class="card-meta">Limited • New</p>
+              <h3>Midnight Viper Figure</h3>
+              <p>Chrome finish, numbered release, display-ready packaging.</p>
+              <div class="card-footer">
+                <span>$249</span>
+                <a href="#">Reserve</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="collectible-card" data-name="aurora guardian pin">
+            <img
+              src="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=800&q=80"
+              alt="Aurora Guardian Pin"
+            />
+            <div class="card-body">
+              <p class="card-meta">Exclusive • Glow</p>
+              <h3>Aurora Guardian Pin</h3>
+              <p>Collector edition enamel pin with satin finish and velvet case.</p>
+              <div class="card-footer">
+                <span>$89</span>
+                <a href="#">Reserve</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="collectible-card" data-name="ember knight statue">
+            <img
+              src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"
+              alt="Ember Knight Statue"
+            />
+            <div class="card-body">
+              <p class="card-meta">Signature • Prestige</p>
+              <h3>Ember Knight Statue</h3>
+              <p>Hand-finished sculpt with soft matte texture and sculptural base.</p>
+              <div class="card-footer">
+                <span>$329</span>
+                <a href="#">Reserve</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="universes" class="section reveal">
+        <div class="section-heading">
+          <p class="eyebrow">Explore Universes</p>
+          <h2>Find your next obsession.</h2>
+        </div>
+
+        <div class="universe-grid">
+          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80')">
+            <div class="universe-card-content">
+              <h3>DC</h3>
+              <p>128 collectibles</p>
+              <a href="#featured">Explore →</a>
+            </div>
+          </article>
+
+          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=900&q=80')">
+            <div class="universe-card-content">
+              <h3>Marvel</h3>
+              <p>214 collectibles</p>
+              <a href="#featured">Explore →</a>
+            </div>
+          </article>
+
+          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=900&q=80')">
+            <div class="universe-card-content">
+              <h3>Star Wars</h3>
+              <p>186 collectibles</p>
+              <a href="#featured">Explore →</a>
+            </div>
+          </article>
+
+          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80')">
+            <div class="universe-card-content">
+              <h3>Harry Potter</h3>
+              <p>95 collectibles</p>
+              <a href="#featured">Explore →</a>
+            </div>
+          </article>
+
+          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80')">
+            <div class="universe-card-content">
+              <h3>Pokémon</h3>
+              <p>167 collectibles</p>
+              <a href="#featured">Explore →</a>
+            </div>
+          </article>
+
+          <article class="universe-card" style="--card-bg: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(15,15,15,0.75)), url('https://images.unsplash.com/photo-1531259683007-016a7b628fc3?auto=format&fit=crop&w=900&q=80')">
+            <div class="universe-card-content">
+              <h3>Anime</h3>
+              <p>143 collectibles</p>
+              <a href="#featured">Explore →</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="why" class="section why-section reveal">
+        <div class="section-heading">
+          <p class="eyebrow">Why Lootifer</p>
+          <h2>Luxury service for serious collectors.</h2>
+        </div>
+
+        <div class="why-grid">
+          <div class="why-item">
+            <h3>Authenticity guaranteed</h3>
+            <p>Every item is verified and presented with provenance-ready detail.</p>
+          </div>
+          <div class="why-item">
+            <h3>Elevated curation</h3>
+            <p>We spotlight pieces with story, design, and long-term appeal.</p>
+          </div>
+          <div class="why-item">
+            <h3>Collector-first experience</h3>
+            <p>From discovery to delivery, every interaction feels premium and seamless.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="footer" class="footer reveal">
+      <div>
+        <p class="eyebrow">Lootifer Collectibles</p>
+        <h3>Own the extraordinary.</h3>
+        <p>Premium pieces, modern presentation, and a community built for collectors.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#featured">Shop</a>
+        <a href="#universes">Universes</a>
+        <a href="#why">About</a>
+      </div>
+    </footer>
+
+    <script src="Assets/Js/script.js"></script>
+  </body>
+</html>
 
