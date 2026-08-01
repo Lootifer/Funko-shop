@@ -338,6 +338,17 @@
   font-size: 0.95rem;
 }
 
+#shopGrid .collectible-card.reveal,
+#shopGrid .collectible-card {
+  opacity: 1;
+  transform: none;
+}
+
+#shopGrid .collectible-card.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
 .why-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

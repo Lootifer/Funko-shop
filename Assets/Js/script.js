@@ -4,6 +4,7 @@ import { createFooter } from "../../Components/Footer.js";
 import { createSearchBar } from "../../Components/SearchBar.js";
 import { createUniverseCard } from "../../Components/UniverseCard.js";
 import { createShoppingUi, bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
+import { createInstantSearch } from "../../Components/Experience/instant-search.js";
 import { shoppingState } from "../../Components/Experience/shopping-state.js";
 
 const headerRoot = document.getElementById("headerRoot");
@@ -16,24 +17,58 @@ const searchSuggestions = ["Batman", "593", "Marvel", "Pokémon"];
 if (searchRoot) searchRoot.innerHTML = createSearchBar("Search figures, universes, or limited drops", searchSuggestions);
 
 const universeGrid = document.getElementById("universeGrid");
-if (universeGrid) {
-  const universeItems = [
-    { title: "DC", description: "128 collectibles", image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80" },
-    { title: "Marvel", description: "214 collectibles", image: "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=900&q=80" },
-    { title: "Star Wars", description: "186 collectibles", image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=900&q=80" },
-    { title: "Harry Potter", description: "95 collectibles", image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80" },
-    { title: "Pokémon", description: "167 collectibles", image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80" },
-    { title: "Anime", description: "143 collectibles", image: "https://images.unsplash.com/photo-1531259683007-016a7b628fc3?auto=format&fit=crop&w=900&q=80" },
-  ];
+const universeImageByName = {
+  Batman: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80",
+  DC: "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=900&q=80",
+  Marvel: "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=900&q=80",
+  "Star Wars": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=900&q=80",
+  "Pokémon": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80",
+  "Harry Potter": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80",
+  Disney: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80",
+  "Dragon Ball": "https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&w=900&q=80",
+  Naruto: "https://images.unsplash.com/photo-1612036782180-6f0822045d07?auto=format&fit=crop&w=900&q=80",
+  "One Piece": "https://images.unsplash.com/photo-1608889476561-6242cfdbf622?auto=format&fit=crop&w=900&q=80",
+};
+
+const UNIVERSE_ORDER = [
+  "Batman",
+  "DC",
+  "Marvel",
+  "Star Wars",
+  "Pokémon",
+  "Harry Potter",
+  "Disney",
+  "Dragon Ball",
+  "Naruto",
+  "One Piece",
+];
+
+const renderUniverseCards = (products = []) => {
+  if (!universeGrid) return;
+
+  const counts = products.reduce((accumulator, product) => {
+    const key = product.universe || "Other";
+    accumulator[key] = (accumulator[key] || 0) + 1;
+    return accumulator;
+  }, {});
+
+  const universeItems = UNIVERSE_ORDER.filter((name) => counts[name]).map((name) => ({
+    title: name,
+    description: `${counts[name]} collectible${counts[name] === 1 ? "" : "s"}`,
+    image: universeImageByName[name] || universeImageByName.DC,
+  }));
+
   universeGrid.innerHTML = universeItems.map((item) => createUniverseCard(item.title, item.description, item.image)).join("");
-}
+};
 
 const shoppingRoot = document.createElement("div");
 document.body.appendChild(shoppingRoot);
 createShoppingUi({ root: shoppingRoot });
 
 const searchInput = document.getElementById("searchInput");
+const searchButton = document.getElementById("searchButton");
 const searchStatus = document.getElementById("searchStatus");
+const instantSearchResults = document.getElementById("instantSearchResults");
 const clubForm = document.getElementById("clubForm");
 const clubEmail = document.getElementById("clubEmail");
 const clubMessage = document.getElementById("clubMessage");
@@ -98,6 +133,13 @@ const engine = new ProductEngine({
 
 engine.initialize();
 
+const instantSearch = createInstantSearch({
+  input: searchInput,
+  resultsContainer: instantSearchResults,
+  products: [],
+  searchButton,
+});
+
 const bindProductCardActions = (root) => {
   root?.querySelectorAll("[data-action]").forEach((trigger) => {
     const product = {
@@ -119,8 +161,11 @@ const bindProductCardActions = (root) => {
 bindProductCardActions(productGrid);
 
 engine.loadProducts("Data/products.json").then(() => {
+  instantSearch.updateProducts(engine.products);
+  renderUniverseCards(engine.products);
   bindProductCardActions(productGrid);
 }).catch(() => {
+  renderUniverseCards([]);
   if (productGrid) {
     productGrid.innerHTML = '<p class="card-empty">Product catalog is unavailable right now.</p>';
   }

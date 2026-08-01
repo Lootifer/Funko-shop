@@ -4,9 +4,23 @@ export const PREMIUM_PLACEHOLDER_IMAGE = "Assets/Images/Products/premium-placeho
 
 const IMAGE_SEQUENCE = ["front.webp", "back.webp", "left.webp", "right.webp", "box.webp"];
 
+const AVAILABLE_LOCAL_IMAGES = new Set([
+  "Assets/Images/Products/funko/batman-593/front.webp",
+  "Assets/Images/Products/funko/batman-593/back.webp",
+  "Assets/Images/Products/funko/batman-593/left.webp",
+  "Assets/Images/Products/funko/batman-593/right.webp",
+  "Assets/Images/Products/funko/batman-593/box.webp",
+]);
+
 const slugify = (value = "") => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 const unique = (items = []) => [...new Set(items.filter(Boolean).map((item) => String(item).trim()).filter(Boolean))];
+
+const normalizeNumber = (value = "") => String(value).replace(/^#\s*/, "").trim();
+
+const isRemoteUrl = (value = "") => /^https?:\/\//i.test(String(value));
+
+const isKnownLocalImage = (value = "") => AVAILABLE_LOCAL_IMAGES.has(String(value));
 
 const toImageArray = (value) => {
   if (Array.isArray(value)) return unique(value);
@@ -34,7 +48,8 @@ const getCategoryFolder = (product = {}) => {
 };
 
 const getBaseSlug = (product = {}) => {
-  const candidate = product.slug || product.name || (product.id ? `product-${product.id}` : "product-item");
+  const canonicalFromNameNumber = slugify(`${product.name || ""} ${normalizeNumber(product.number || "")}`);
+  const candidate = canonicalFromNameNumber || product.slug || product.name || (product.id ? `product-${product.id}` : "product-item");
   return slugify(candidate);
 };
 
@@ -72,26 +87,42 @@ export const resolveProductMedia = (product = {}) => {
     product.rightSide,
   ]);
 
-  const resolvedImages = explicitImages.length ? explicitImages : mapped.images;
+  const explicitRemoteImages = explicitImages.filter(isRemoteUrl);
+  const explicitKnownLocalImages = explicitImages.filter(isKnownLocalImage);
+  const mappedKnownLocalImages = mapped.images.filter(isKnownLocalImage);
+
+  const resolvedImages = explicitRemoteImages.length
+    ? explicitRemoteImages
+    : (explicitKnownLocalImages.length ? explicitKnownLocalImages : mappedKnownLocalImages);
   const safeImages = resolvedImages.length ? resolvedImages : [PREMIUM_PLACEHOLDER_IMAGE];
-  const thumbnail = product.thumbnail || product.image || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE;
+  const thumbnail = explicitRemoteImages.length
+    ? (product.thumbnail || product.image || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
+    : (safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE);
 
   return {
     thumbnail,
     image: thumbnail,
     images: safeImages,
     gallery: safeImages,
-    boxFront: product.boxFront || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE,
-    boxBack: product.boxBack || safeImages[1] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE,
-    leftSide: product.leftSide || safeImages[2] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE,
-    rightSide: product.rightSide || safeImages[3] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE,
+    boxFront: explicitRemoteImages.length
+      ? (product.boxFront || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
+      : (safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE),
+    boxBack: explicitRemoteImages.length
+      ? (product.boxBack || safeImages[1] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
+      : (safeImages[1] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE),
+    leftSide: explicitRemoteImages.length
+      ? (product.leftSide || safeImages[2] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
+      : (safeImages[2] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE),
+    rightSide: explicitRemoteImages.length
+      ? (product.rightSide || safeImages[3] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
+      : (safeImages[3] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE),
   };
 };
 
 const escapeHtmlAttribute = (value = "") => String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 export const createImageAttributes = ({ src, alt, loading = "lazy" } = {}) => {
-  const safeSrc = src || PREMIUM_PLACEHOLDER_IMAGE;
+  const safeSrc = isRemoteUrl(src) || isKnownLocalImage(src) ? src : PREMIUM_PLACEHOLDER_IMAGE;
   const safeAlt = escapeHtmlAttribute(alt || "Collectible");
   const safeLoading = loading === "eager" ? "eager" : "lazy";
 

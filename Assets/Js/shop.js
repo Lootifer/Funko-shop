@@ -4,6 +4,9 @@ import { createHeader } from "../../Components/Header.js";
 import { createFooter } from "../../Components/Footer.js";
 import { createFilterSidebar } from "../../Components/FilterSidebar.js";
 import { bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
+import { attachPremiumFallback } from "../../Products/product-media.js";
+
+const PRODUCTS_URL = new URL("../../Data/products.json", import.meta.url).href;
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -46,7 +49,7 @@ const populateSelect = (select, values, placeholder = "All") => {
 };
 
 const getProducts = async () => {
-  const response = await fetch("Data/products.json");
+  const response = await fetch(PRODUCTS_URL);
   if (!response.ok) throw new Error("Unable to load products");
   const rawProducts = await response.json();
   products = normalizeProductCatalog(rawProducts);
@@ -133,17 +136,24 @@ const getFilteredProducts = () => {
   const onlyInStock = shopInStock?.checked || false;
 
   return products.filter((product) => {
-    const matchesQuery = `${product.name} ${product.universe} ${product.franchise} ${product.description} ${product.tags.join(" ")} ${product.number} ${product.id} ${product.sku}`.toLowerCase().includes(query);
-    const matchesCategory = !category || product.category === category;
-    const matchesUniverse = !universe || product.universe === universe;
-    const matchesBrand = !brand || product.brand === brand;
-    const matchesPrice = product.price <= maxPrice;
-    const matchesExclusive = !onlyExclusive || product.exclusive;
-    const matchesChase = !onlyChase || product.chase;
-    const matchesVaulted = !onlyVaulted || product.vaulted;
-    const matchesInStock = !onlyInStock || product.stock > 0;
+    try {
+      const productTags = Array.isArray(product?.tags) ? product.tags : [];
+      const matchesQuery = `${product?.name || ""} ${product?.universe || ""} ${product?.franchise || ""} ${product?.description || ""} ${productTags.join(" ")} ${product?.number || ""} ${product?.id || ""} ${product?.sku || ""}`.toLowerCase().includes(query);
+      const matchesCategory = !category || product.category === category;
+      const matchesUniverse = !universe || product.universe === universe;
+      const matchesBrand = !brand || product.brand === brand;
+      const matchesPrice = Number(product?.price || 0) <= maxPrice;
+      const matchesExclusive = !onlyExclusive || product.exclusive;
+      const matchesChase = !onlyChase || product.chase;
+      const matchesVaulted = !onlyVaulted || product.vaulted;
+      const matchesInStock = !onlyInStock || Number(product?.stock || 0) > 0;
 
-    return matchesQuery && matchesCategory && matchesUniverse && matchesBrand && matchesPrice && matchesExclusive && matchesChase && matchesVaulted && matchesInStock;
+      return matchesQuery && matchesCategory && matchesUniverse && matchesBrand && matchesPrice && matchesExclusive && matchesChase && matchesVaulted && matchesInStock;
+    } catch (error) {
+      const productId = product?.id ?? "unknown";
+      console.error(`Failed to evaluate product filters (id=${productId})`, error);
+      return false;
+    }
   });
 };
 
@@ -171,11 +181,28 @@ const renderProducts = (items) => {
   const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
   const pageItems = items.slice(start, start + PRODUCTS_PER_PAGE);
 
-  shopGrid.innerHTML = pageItems.length
-    ? pageItems.map((product) => createProductCard(product)).join("")
+  const renderedCards = [];
+  pageItems.forEach((product) => {
+    try {
+      renderedCards.push(createProductCard(product));
+    } catch (error) {
+      const productId = product?.id ?? "unknown";
+      const productName = product?.name ?? "unknown";
+      console.error(`Failed to render product card (id=${productId}, name=${productName})`, error);
+    }
+  });
+
+  shopGrid.innerHTML = renderedCards.length
+    ? renderedCards.join("")
     : '<p class="card-empty">No collectibles match the current filters.</p>';
 
-  bindProductCardActions(shopGrid);
+  attachPremiumFallback(shopGrid);
+
+  try {
+    bindProductCardActions(shopGrid);
+  } catch (error) {
+    console.error("Failed to bind product card actions", error);
+  }
 };
 
 const renderPagination = (items) => {
@@ -233,4 +260,27 @@ const applyFilters = () => {
 if (headerRoot) headerRoot.innerHTML = createHeader("shop");
 if (footerRoot) footerRoot.innerHTML = createFooter();
 
-await getProducts();
+const showLoadError = () => {
+  if (shopGrid) {
+    shopGrid.innerHTML = '<p class="card-empty">Product catalog is unavailable right now.</p>';
+  }
+
+  if (shopCount) {
+    shopCount.textContent = "0 products found";
+  }
+
+  if (shopActiveFilters) {
+    shopActiveFilters.textContent = "Active filters: none";
+  }
+};
+
+const initializeShop = async () => {
+  try {
+    await getProducts();
+  } catch (error) {
+    console.error("Shop catalog failed to load:", error);
+    showLoadError();
+  }
+};
+
+initializeShop();
