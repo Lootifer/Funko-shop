@@ -1,4 +1,4 @@
-import { normalizeProduct, PRODUCT_CATEGORIES } from "./product-schema.js";
+import { normalizeProductCatalog, PRODUCT_CATEGORIES } from "./product-schema.js";
 import { createProductCardMarkup } from "./product-card.js";
 
 export class ProductEngine {
@@ -20,7 +20,7 @@ export class ProductEngine {
     if (!response.ok) throw new Error("Unable to load product catalog");
 
     const rawProducts = await response.json();
-    this.products = rawProducts.map(normalizeProduct);
+    this.products = normalizeProductCatalog(rawProducts);
     this.applyFilters();
     return this.products;
   }

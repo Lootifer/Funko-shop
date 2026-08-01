@@ -1,3 +1,5 @@
+import { resolveProductMedia } from "./product-media.js";
+
 export const PRODUCT_CATEGORIES = [
   "All",
   "Funko Pop",
@@ -11,8 +13,27 @@ export const PRODUCT_CATEGORIES = [
 
 const slugify = (value = "") => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
+const REQUIRED_PRODUCT_FIELDS = [
+  "id",
+  "name",
+  "category",
+  "sellingPrice",
+  "stock",
+];
+
+const toBoolean = (value) => {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+  return Boolean(value);
+};
+
 export const PRODUCT_DEFAULTS = {
   id: 0,
+  slug: "",
   sku: "",
   barcode: "",
   category: "Funko Pop",
@@ -22,19 +43,72 @@ export const PRODUCT_DEFAULTS = {
   name: "",
   number: "",
   edition: "Standard",
+  variant: "Standard",
   exclusive: false,
   chase: false,
   vaulted: false,
   signed: false,
-  condition: "Mint",
-  price: 0,
-  stock: 0,
+  convention: "",
   releaseYear: new Date().getFullYear(),
+  condition: "Mint",
+  boxCondition: "Mint",
+  protectorIncluded: false,
+  stock: 0,
+  warehouseLocation: "",
+  reserved: 0,
+  purchasePrice: 0,
+  sellingPrice: 0,
+  discountPrice: null,
+  thumbnail: "",
+  images: [],
+  boxFront: "",
+  boxBack: "",
+  leftSide: "",
+  rightSide: "",
+  metaTitle: "",
+  metaDescription: "",
+  price: 0,
   image: "",
   gallery: [],
   description: "",
   tags: [],
-  slug: "",
+};
+
+export const validateProductsJson = (rawProducts) => {
+  const errors = [];
+  const warnings = [];
+
+  if (!Array.isArray(rawProducts)) {
+    errors.push("Data/products.json must contain a top-level array.");
+    return { isValid: false, errors, warnings };
+  }
+
+  rawProducts.forEach((product, index) => {
+    if (!product || typeof product !== "object" || Array.isArray(product)) {
+      errors.push(`Product at index ${index} must be an object.`);
+      return;
+    }
+
+    REQUIRED_PRODUCT_FIELDS.forEach((field) => {
+      if (product[field] === undefined || product[field] === null || product[field] === "") {
+        warnings.push(`Product at index ${index} is missing required field "${field}".`);
+      }
+    });
+
+    if (product.images && !Array.isArray(product.images) && typeof product.images !== "string") {
+      warnings.push(`Product at index ${index} has an invalid images value. Expected string[] or string.`);
+    }
+
+    if (product.gallery && !Array.isArray(product.gallery) && typeof product.gallery !== "string") {
+      warnings.push(`Product at index ${index} has an invalid gallery value. Expected string[] or string.`);
+    }
+  });
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+    warnings,
+  };
 };
 
 export const normalizeProduct = (rawProduct = {}) => {
@@ -47,16 +121,42 @@ export const normalizeProduct = (rawProduct = {}) => {
     ? rawProduct.category
     : PRODUCT_DEFAULTS.category;
 
-  normalized.price = Number(rawProduct.price) || 0;
+  normalized.purchasePrice = Number(rawProduct.purchasePrice) || 0;
+  normalized.sellingPrice = Number(rawProduct.sellingPrice ?? rawProduct.price) || 0;
+  normalized.discountPrice = rawProduct.discountPrice === null || rawProduct.discountPrice === ""
+    ? null
+    : Number(rawProduct.discountPrice) || null;
+  normalized.price = normalized.sellingPrice;
   normalized.stock = Number(rawProduct.stock) || 0;
+  normalized.reserved = Number(rawProduct.reserved) || 0;
   normalized.releaseYear = Number(rawProduct.releaseYear) || new Date().getFullYear();
-  normalized.exclusive = Boolean(rawProduct.exclusive);
-  normalized.chase = Boolean(rawProduct.chase);
-  normalized.vaulted = Boolean(rawProduct.vaulted);
-  normalized.signed = Boolean(rawProduct.signed);
-  normalized.gallery = Array.isArray(rawProduct.gallery) && rawProduct.gallery.length
-    ? rawProduct.gallery
-    : [rawProduct.image].filter(Boolean);
+  normalized.exclusive = toBoolean(rawProduct.exclusive);
+  normalized.chase = toBoolean(rawProduct.chase);
+  normalized.vaulted = toBoolean(rawProduct.vaulted);
+  normalized.signed = toBoolean(rawProduct.signed);
+  normalized.protectorIncluded = toBoolean(rawProduct.protectorIncluded);
+
+  const media = resolveProductMedia({
+    ...rawProduct,
+    slug: rawProduct.slug || normalized.slug || slugify(rawProduct.name || ""),
+    category: normalized.category,
+    brand: normalized.brand,
+  });
+
+  normalized.images = media.images;
+  normalized.thumbnail = media.thumbnail;
+  normalized.boxFront = media.boxFront;
+  normalized.boxBack = media.boxBack;
+  normalized.leftSide = media.leftSide;
+  normalized.rightSide = media.rightSide;
+
+  normalized.image = media.image;
+  normalized.gallery = media.gallery;
+
+  normalized.metaTitle = rawProduct.metaTitle || `${rawProduct.name || "Collectible"} | Lootifer Collectibles`;
+  normalized.metaDescription = rawProduct.metaDescription || rawProduct.description || "";
+  normalized.description = rawProduct.description || normalized.metaDescription;
+
   normalized.tags = Array.isArray(rawProduct.tags)
     ? rawProduct.tags
     : typeof rawProduct.tags === "string"
@@ -65,6 +165,46 @@ export const normalizeProduct = (rawProduct = {}) => {
   normalized.slug = rawProduct.slug || slugify(rawProduct.name || "");
 
   return normalized;
+};
+
+export const normalizeProductCatalog = (rawProducts = []) => {
+  const validation = validateProductsJson(rawProducts);
+  if (!validation.isValid) {
+    throw new Error(validation.errors.join(" "));
+  }
+
+  if (validation.warnings.length) {
+    console.warn("Product catalog warnings:", validation.warnings);
+  }
+
+  const usedSlugs = new Set();
+
+  return rawProducts.map((rawProduct, index) => {
+    const normalized = normalizeProduct(rawProduct);
+    const baseSlug = normalized.slug || `product-${normalized.id || index + 1}`;
+
+    let candidate = baseSlug;
+    let suffix = 2;
+    while (usedSlugs.has(candidate)) {
+      candidate = `${baseSlug}-${suffix}`;
+      suffix += 1;
+    }
+
+    usedSlugs.add(candidate);
+
+    const media = resolveProductMedia({
+      ...normalized,
+      slug: candidate,
+    });
+
+    return {
+      ...normalized,
+      slug: candidate,
+      ...media,
+      image: media.thumbnail,
+      gallery: media.images,
+    };
+  });
 };
 
 export const createProductBadge = (product) => {

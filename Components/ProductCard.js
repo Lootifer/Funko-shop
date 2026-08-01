@@ -5,9 +5,10 @@ import {
   getStockLabel,
   getStockTone,
 } from "./Collector/collector-experience.js";
+import { createImageAttributes } from "../Products/product-media.js";
 
 export const createProductCard = (product) => {
-  const image = product.image || "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80";
+  const image = product.image;
   const slug = product.slug || product.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   const badges = getProductBadges(product)
     .map((badge) => `<span class="collector-badge ${badge.tone}">${badge.label}</span>`)
@@ -21,7 +22,7 @@ export const createProductCard = (product) => {
     <article class="collectible-card reveal" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" tabindex="0">
       <div class="card-media">
         <a href="product.html?slug=${slug}" class="card-link" aria-label="View ${product.name}">
-          <img src="${image}" alt="${product.name}" loading="lazy" />
+          <img ${createImageAttributes({ src: image, alt: product.name })} />
         </a>
         <button class="wishlist-heart ${inWishlist ? "active" : ""}" data-action="toggle-wishlist" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button" aria-label="Toggle wishlist for ${product.name}">${inWishlist ? "♥" : "♡"}</button>
         <button class="quick-view-pill" data-action="quick-view" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">Quick View</button>

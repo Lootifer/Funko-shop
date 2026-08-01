@@ -1,0 +1,31 @@
+<svg width="1200" height="1200" viewBox="0 0 1200 1200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lootifer premium collectible placeholder">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="80" x2="1080" y2="1120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A0D17"/>
+      <stop offset="1" stop-color="#1A2030"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="300" y1="280" x2="900" y2="920" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6D47A" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#E6AA2D" stop-opacity="0.55"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(600 420) rotate(90) scale(340)">
+      <stop stop-color="#F6D47A" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#F6D47A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="600" cy="420" r="340" fill="url(#halo)"/>
+
+  <rect x="220" y="210" width="760" height="780" rx="44" fill="#0F1320" stroke="#C9982C" stroke-width="4"/>
+  <rect x="280" y="280" width="640" height="640" rx="32" fill="url(#panel)" stroke="#F6D47A" stroke-opacity="0.6"/>
+
+  <path d="M600 425C654.124 425 698 381.124 698 327C698 272.876 654.124 229 600 229C545.876 229 502 272.876 502 327C502 381.124 545.876 425 600 425Z" fill="#F6D47A" fill-opacity="0.8"/>
+  <rect x="504" y="418" width="192" height="272" rx="96" fill="#F6D47A" fill-opacity="0.72"/>
+  <rect x="455" y="470" width="95" height="210" rx="46" fill="#F6D47A" fill-opacity="0.62"/>
+  <rect x="650" y="470" width="95" height="210" rx="46" fill="#F6D47A" fill-opacity="0.62"/>
+
+  <rect x="320" y="950" width="560" height="2" fill="#F6D47A" fill-opacity="0.5"/>
+  <text x="600" y="1020" fill="#F6D47A" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="42" font-weight="600" letter-spacing="1.6">Lootifer Collectibles</text>
+  <text x="600" y="1068" fill="#DDB25B" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="24" letter-spacing="1.2">Premium Image Pending</text>
+</svg>

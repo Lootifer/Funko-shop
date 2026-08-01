@@ -1,10 +1,11 @@
 import { shoppingState } from "./shopping-state.js";
 import { createQuickView } from "../Collector/collector-experience.js";
+import { createImageAttributes } from "../../Products/product-media.js";
 
 const createItemMarkup = (item, type) => `
   <div class="drawer-item">
     <div class="drawer-item-media">
-      <img src="${item.image || "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"}" alt="${item.name}" />
+      <img ${createImageAttributes({ src: item.image, alt: item.name })} />
     </div>
     <div class="drawer-item-body">
       <strong>${item.name}</strong>

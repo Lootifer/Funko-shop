@@ -1,4 +1,5 @@
 import { shoppingState } from "../Experience/shopping-state.js";
+import { createImageAttributes } from "../../Products/product-media.js";
 
 export const getProductBadges = (product) => {
   const badges = [];
@@ -32,7 +33,7 @@ export const getCollectorScore = (product) => {
 
 export const createQuickView = (product) => `
   <div class="quick-view-card">
-    <img src="${product.image || "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"}" alt="${product.name}" />
+    <img ${createImageAttributes({ src: product.image, alt: product.name })} />
     <div class="quick-view-body">
       <p class="eyebrow">Quick View</p>
       <h3>${product.name}</h3>

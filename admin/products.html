@@ -18,58 +18,137 @@
 
         <section class="admin-section">
           <div class="admin-card">
-            <h3>+ Add Product</h3>
-            <div class="admin-form-grid">
-              <label>
-                Name
-                <input placeholder="Collector figure name" />
-              </label>
-              <label>
-                Number
-                <input placeholder="e.g. 593" />
-              </label>
-              <label>
-                Universe
-                <input placeholder="DC, Marvel, Pokémon..." />
-              </label>
-              <label>
-                Price
-                <input type="number" value="89" />
-              </label>
-              <label>
-                Exclusive
-                <select>
-                  <option>No</option>
-                  <option>Yes</option>
-                </select>
-              </label>
-              <label>
-                Chase
-                <select>
-                  <option>No</option>
-                  <option>Yes</option>
-                </select>
-              </label>
-              <label>
-                Vaulted
-                <select>
-                  <option>No</option>
-                  <option>Yes</option>
-                </select>
-              </label>
-              <label>
-                Stock
-                <input type="number" value="8" />
-              </label>
-              <label>
-                Upload Images
-                <input type="file" multiple />
-              </label>
-              <label>
-                Save
-                <button class="button primary" type="button">Save</button>
-              </label>
-            </div>
+            <h3><span id="formModeLabel">Add Product</span></h3>
+            <p class="admin-detail" id="productStatus">Loading product catalog...</p>
+            <div class="admin-error" id="productErrors" style="display: none;"></div>
+
+            <form id="productForm">
+              <div class="admin-form-grid">
+                <label>
+                  ID
+                  <input id="fieldId" type="number" placeholder="Auto-generated" disabled />
+                </label>
+                <label>
+                  Name *
+                  <input id="fieldName" placeholder="Collector figure name" required />
+                </label>
+                <label>
+                  Number
+                  <input id="fieldNumber" placeholder="e.g. #593" />
+                </label>
+                <label>
+                  Slug *
+                  <div class="admin-inline-controls">
+                    <input id="fieldSlug" placeholder="auto-generated" required />
+                    <button class="button secondary" type="button" id="resetSlugButton">Auto</button>
+                  </div>
+                </label>
+                <label>
+                  SKU *
+                  <input id="fieldSku" placeholder="FP-DC-593" required />
+                </label>
+                <label>
+                  Barcode
+                  <input id="fieldBarcode" placeholder="UPC/EAN" />
+                </label>
+                <label>
+                  Category *
+                  <input id="fieldCategory" value="Funko Pop" required />
+                </label>
+                <label>
+                  Brand *
+                  <input id="fieldBrand" value="Funko" required />
+                </label>
+                <label>
+                  Universe *
+                  <input id="fieldUniverse" placeholder="DC, Marvel, Pokemon" required />
+                </label>
+                <label>
+                  Franchise *
+                  <input id="fieldFranchise" placeholder="Batman" required />
+                </label>
+                <label>
+                  Edition
+                  <input id="fieldEdition" value="Standard" />
+                </label>
+                <label>
+                  Variant
+                  <input id="fieldVariant" value="Standard" />
+                </label>
+                <label>
+                  Release Year
+                  <input id="fieldReleaseYear" type="number" value="2026" />
+                </label>
+                <label>
+                  Condition
+                  <input id="fieldCondition" value="Mint" />
+                </label>
+                <label>
+                  Box Condition
+                  <input id="fieldBoxCondition" value="Mint" />
+                </label>
+                <label>
+                  Warehouse Location
+                  <input id="fieldWarehouseLocation" placeholder="WH-DC-593" />
+                </label>
+                <label>
+                  Purchase Price
+                  <input id="fieldPurchasePrice" type="number" step="0.01" value="0" />
+                </label>
+                <label>
+                  Selling Price *
+                  <input id="fieldSellingPrice" type="number" step="0.01" value="0" required />
+                </label>
+                <label>
+                  Discount Price
+                  <input id="fieldDiscountPrice" type="number" step="0.01" />
+                </label>
+                <label>
+                  Stock *
+                  <input id="fieldStock" type="number" value="0" required />
+                </label>
+                <label>
+                  Reserved
+                  <input id="fieldReserved" type="number" value="0" />
+                </label>
+                <label>
+                  Tags
+                  <input id="fieldTags" placeholder="exclusive, dc, batman" />
+                </label>
+                <label class="admin-grid-wide">
+                  Description
+                  <textarea id="fieldDescription" rows="3" placeholder="Short collector-facing description."></textarea>
+                </label>
+                <label class="admin-grid-wide">
+                  Images (one per line)
+                  <textarea id="fieldImages" rows="5" placeholder="Assets/Images/Products/funko/your-slug/front.webp"></textarea>
+                </label>
+              </div>
+
+              <div class="admin-check-grid">
+                <label><input id="fieldExclusive" type="checkbox" /> Exclusive</label>
+                <label><input id="fieldChase" type="checkbox" /> Chase</label>
+                <label><input id="fieldVaulted" type="checkbox" /> Vaulted</label>
+                <label><input id="fieldSigned" type="checkbox" /> Signed</label>
+                <label><input id="fieldProtectorIncluded" type="checkbox" /> Protector Included</label>
+              </div>
+
+              <div class="admin-form-actions">
+                <button class="button secondary" type="button" id="autoLinkImagesButton">Auto Link Images</button>
+                <button class="button secondary" type="button" id="cancelEditButton" style="display: none;">Cancel Edit</button>
+                <button class="button secondary" type="button" id="resetCatalogButton">Reset Local Changes</button>
+                <button class="button primary" type="submit" id="saveProductButton">Save Product</button>
+              </div>
+              <p class="admin-detail" id="imageSourceHint">Images: manual list or auto-linked by slug.</p>
+            </form>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Live Preview</h3>
+            <p class="admin-detail">Preview reflects current form values before save.</p>
+            <div id="productLivePreview"></div>
           </div>
         </section>
 
@@ -79,18 +158,6 @@
       </main>
     </div>
 
-    <script type="module">
-      import { createAdminSidebar, createAdminTopbar, createTable } from './components/layout.js';
-      document.getElementById('adminSidebar').innerHTML = createAdminSidebar('products');
-      document.getElementById('adminTopbar').innerHTML = createAdminTopbar('Products');
-      document.getElementById('productTable').innerHTML = createTable(
-        ['Name', 'Universe', 'Stock', 'Status'],
-        [
-          ['Midnight Viper', 'DC', '6', 'Live'],
-          ['Aurora Guardian', 'Marvel', '3', 'Low Stock'],
-          ['Snow Queen', 'Disney', '8', 'Featured'],
-        ]
-      );
-    </script>
+    <script type="module" src="assets/products-admin.js"></script>
   </body>
 </html>

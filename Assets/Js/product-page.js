@@ -1,5 +1,6 @@
-import { normalizeProduct, createProductBadge } from "../../Products/product-schema.js";
+import { normalizeProductCatalog, createProductBadge } from "../../Products/product-schema.js";
 import { createProductCardMarkup } from "../../Products/product-card.js";
+import { attachPremiumFallback, createImageAttributes } from "../../Products/product-media.js";
 import { createHeader } from "../../Components/Header.js";
 import { createFooter } from "../../Components/Footer.js";
 import { createShoppingUi, bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
@@ -44,7 +45,7 @@ const getProductById = async () => {
   if (!response.ok) throw new Error("Unable to load product");
 
   const rawProducts = await response.json();
-  const normalized = rawProducts.map(normalizeProduct);
+  const normalized = normalizeProductCatalog(rawProducts);
   const slugValue = String(productSlug || "").toLowerCase();
   return normalized.find((product) => product.slug === slugValue || product.id === Number(productSlug)) || normalized[0];
 };
@@ -55,14 +56,18 @@ const renderGallery = (product) => {
   const galleryItems = [product.image, ...(product.gallery || [])].filter(Boolean);
   const mainImage = galleryItems[0];
 
-  productGalleryMain.innerHTML = `<img src="${mainImage}" alt="${product.name}" loading="eager" />`;
+  productGalleryMain.innerHTML = `<img ${createImageAttributes({ src: mainImage, alt: product.name, loading: "eager" })} />`;
   productGalleryThumbs.innerHTML = galleryItems
-    .map((image, index) => `<button type="button" class="gallery-thumb${index === 0 ? " active" : ""}" data-image="${image}"><img src="${image}" alt="${product.name} ${index + 1}" loading="lazy" /></button>`)
+    .map((image, index) => `<button type="button" class="gallery-thumb${index === 0 ? " active" : ""}" data-image="${image}"><img ${createImageAttributes({ src: image, alt: `${product.name} ${index + 1}` })} /></button>`)
     .join("");
+
+  attachPremiumFallback(productGalleryMain);
+  attachPremiumFallback(productGalleryThumbs);
 
   productGalleryThumbs.querySelectorAll(".gallery-thumb").forEach((button) => {
     button.addEventListener("click", () => {
-      productGalleryMain.innerHTML = `<img src="${button.dataset.image}" alt="${product.name}" loading="eager" />`;
+      productGalleryMain.innerHTML = `<img ${createImageAttributes({ src: button.dataset.image, alt: product.name, loading: "eager" })} />`;
+      attachPremiumFallback(productGalleryMain);
       productGalleryThumbs.querySelectorAll(".gallery-thumb").forEach((thumb) => thumb.classList.toggle("active", thumb === button));
     });
   });
@@ -187,7 +192,7 @@ const renderProduct = async () => {
 
   const response = await fetch("Data/products.json");
   const rawProducts = await response.json();
-  const normalized = rawProducts.map(normalizeProduct);
+  const normalized = normalizeProductCatalog(rawProducts);
   const recentIds = JSON.parse(localStorage.getItem("lootifer-recent") || "[]");
   const recent = normalized.filter((item) => recentIds.includes(item.id));
 

@@ -1,4 +1,4 @@
-import { normalizeProduct } from "../../Products/product-schema.js";
+import { normalizeProductCatalog } from "../../Products/product-schema.js";
 import { createProductCard } from "../../Components/ProductCard.js";
 import { createHeader } from "../../Components/Header.js";
 import { createFooter } from "../../Components/Footer.js";
@@ -49,7 +49,7 @@ const getProducts = async () => {
   const response = await fetch("Data/products.json");
   if (!response.ok) throw new Error("Unable to load products");
   const rawProducts = await response.json();
-  products = rawProducts.map(normalizeProduct);
+  products = normalizeProductCatalog(rawProducts);
   populateFilters();
   applyFilters();
 };
