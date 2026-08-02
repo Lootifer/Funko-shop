@@ -67,7 +67,13 @@
           </div>
         </section>
 
-        <section class="admin-section" id="ordersOverview"></section>
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Bestellingen beheren</h3>
+            <p class="admin-detail">Open de uitgebreide bestelbeheerpagina voor filters, statusacties en exports.</p>
+            <a class="button secondary" href="orders.html">Ga naar bestellingen</a>
+          </div>
+        </section>
       </main>
     </div>
 
@@ -77,6 +83,5 @@
       document.getElementById('adminTopbar').innerHTML = createAdminTopbar('Dashboard');
     </script>
     <script type="module" src="assets/dashboard-admin.js"></script>
-    <script type="module" src="assets/orders-overview.js"></script>
   </body>
 </html>

@@ -5,6 +5,7 @@ import { createShoppingUi, syncHeaderCounters } from "../../Components/Experienc
 import { formatCurrency, formatQuantity } from "./formatting.js";
 import { createImageAttributes } from "../../Products/product-media.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
+import { addOrder, applyStockReductionForOrder, createOrderNumber, synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -24,13 +25,6 @@ createShoppingUi({ root: shoppingRoot });
 const postalCodePattern = /^[1-9][0-9]{3}\s?[A-Za-z]{2}$/;
 
 const getFormValues = () => Object.fromEntries(new FormData(checkoutForm).entries());
-
-const createOrderNumber = () => {
-  const stamp = new Date();
-  const datePart = `${stamp.getFullYear()}${String(stamp.getMonth() + 1).padStart(2, "0")}${String(stamp.getDate()).padStart(2, "0")}`;
-  const timePart = String(stamp.getTime()).slice(-5);
-  return `LOOT-${datePart}-${timePart}`;
-};
 
 const validateForm = (values, cart) => {
   const errors = [];
@@ -108,77 +102,127 @@ const showErrors = (errors = []) => {
 const showConfirmation = (order) => {
   if (!checkoutConfirmation) return;
 
+  const itemRows = (order.items || [])
+    .map((item) => `<li>${item.name} × ${formatQuantity(item.quantity)} - ${formatCurrency((Number(item.price) || 0) * (Number(item.quantity) || 0))}</li>`)
+    .join("");
+
+  const deliveryAddress = `${order.customer.street} ${order.customer.houseNumber}, ${order.customer.postalCode} ${order.customer.city}, ${order.customer.country}`;
+
   checkoutConfirmation.hidden = false;
   checkoutConfirmation.innerHTML = `
-    <p class="order-number">Orderaanvraag ${order.number}</p>
+    <p class="order-number">Orderbevestiging ${order.number}</p>
     <h2>Bedankt, ${order.customer.name}.</h2>
     <p>Je orderaanvraag is ontvangen en wordt nu klaargezet voor handmatige afhandeling.</p>
     <p class="confirmation-note">Dit is een professionele testorder, geen online betaling. Een betaalprovider kan later worden toegevoegd zonder deze flow te wijzigen.</p>
-    <div class="confirmation-note" style="margin-top: 1rem;">
-      <strong>Leveringsmethode:</strong> ${order.deliveryMethod}<br />
-      <strong>Totaal:</strong> ${formatCurrency(order.total)}<br />
-      <strong>Status:</strong> ${order.status}
+    <div class="confirmation-note confirmation-grid" style="margin-top: 1rem; text-align: left;">
+      <div><strong>Leveringsmethode:</strong><br />${order.deliveryMethod}</div>
+      <div><strong>Status:</strong><br />${order.status}</div>
+      <div><strong>Totaal:</strong><br />${formatCurrency(order.total)}</div>
+      <div><strong>Testorder:</strong><br />Ja (lokaal opgeslagen)</div>
+      <div><strong>Klant:</strong><br />${order.customer.name}<br />${order.customer.email}<br />${order.customer.phone}</div>
+      <div><strong>Bezorgadres:</strong><br />${deliveryAddress}</div>
+      ${order.notes ? `<div class="full-span"><strong>Notities:</strong><br />${order.notes}</div>` : ""}
+      <div class="full-span"><strong>Producten:</strong><ul class="confirmation-items">${itemRows}</ul></div>
     </div>
     <div class="checkout-actions" style="justify-content: center;">
-      <a class="button primary" href="shop.html">Verder winkelen</a>
+      <button class="button secondary" type="button" id="printConfirmationButton">Print bevestiging</button>
+      <a class="button primary" href="shop.html">Terug naar winkel</a>
       <a class="button secondary" href="cart.html">Bekijk winkelwagen</a>
     </div>
   `;
+
+  const printButton = document.getElementById("printConfirmationButton");
+  printButton?.addEventListener("click", () => {
+    window.print();
+  });
 };
 
 checkoutForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const values = getFormValues();
-  const cart = shoppingState.getCart();
-  const errors = validateForm(values, cart);
+  const run = async () => {
+    const sync = await synchronizeCartWithInventory();
+    const cart = sync.cart;
 
-  if (errors.length) {
-    showErrors(errors);
-    return;
-  }
+    if (sync.warnings.length) {
+      showErrors(["Voorraad is bijgewerkt voordat je bestelde:", ...sync.warnings]);
+      renderSummary();
+      return;
+    }
 
-  showErrors([]);
+    const values = getFormValues();
+    const errors = validateForm(values, cart);
 
-  const subtotal = shoppingState.getCartSubtotal();
-  const deliveryMethodSelect = checkoutForm?.elements?.deliveryMethod;
-  const deliveryMethodLabel = deliveryMethodSelect?.selectedOptions?.[0]?.textContent || values.deliveryMethod || "";
-  const order = {
-    id: Date.now(),
-    number: createOrderNumber(),
-    createdAt: new Date().toISOString(),
-    status: "Orderaanvraag ontvangen",
-    paymentStatus: "Nog geen online betaling",
-    deliveryMethod: deliveryMethodLabel,
-    total: subtotal,
-    subtotal,
-    customer: {
-      name: values.name.trim(),
-      email: values.email.trim(),
-      phone: values.phone.trim(),
-      street: values.street.trim(),
-      houseNumber: values.houseNumber.trim(),
-      postalCode: values.postalCode.trim(),
-      city: values.city.trim(),
-      country: values.country.trim(),
-    },
-    notes: values.notes?.trim() || "",
-    items: cart.map((item) => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      image: item.image,
-    })),
+    if (errors.length) {
+      showErrors(errors);
+      return;
+    }
+
+    showErrors([]);
+
+    const subtotal = shoppingState.getCartSubtotal();
+    const deliveryMethodSelect = checkoutForm?.elements?.deliveryMethod;
+    const deliveryMethodLabel = deliveryMethodSelect?.selectedOptions?.[0]?.textContent || values.deliveryMethod || "";
+    const order = {
+      id: Date.now(),
+      number: createOrderNumber(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      status: "Nieuw",
+      paymentStatus: "Nog geen online betaling",
+      isTestOrder: true,
+      stockRestoredAt: null,
+      deliveryMethod: deliveryMethodLabel,
+      total: subtotal,
+      subtotal,
+      customer: {
+        name: values.name.trim(),
+        email: values.email.trim(),
+        phone: values.phone.trim(),
+        street: values.street.trim(),
+        houseNumber: values.houseNumber.trim(),
+        postalCode: values.postalCode.trim(),
+        city: values.city.trim(),
+        country: values.country.trim(),
+      },
+      notes: values.notes?.trim() || "",
+      items: cart.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      })),
+    };
+
+    await applyStockReductionForOrder(order);
+    addOrder(order);
+    shoppingState.clearCart();
+    showConfirmation(order);
+    checkoutForm.reset();
+    renderSummary();
+    syncHeaderCounters();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  shoppingState.addOrder(order);
-  shoppingState.clearCart();
-  showConfirmation(order);
-  checkoutForm.reset();
-  renderSummary();
-  syncHeaderCounters();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  event.preventDefault();
+
+  run().catch((error) => {
+    console.error("Afrekenen mislukt:", error);
+    showErrors(["Er ging iets mis bij het verwerken van de bestelling."]);
+  });
 });
 
+const initializeCheckout = async () => {
+  try {
+    const sync = await synchronizeCartWithInventory();
+    if (sync.warnings.length) {
+      showErrors(["Voorraad is gewijzigd sinds je producten toevoegde:", ...sync.warnings]);
+    }
+  } catch (error) {
+    console.error("Voorraadsynchronisatie mislukt:", error);
+  }
+  renderSummary();
+};
+
 window.addEventListener("lootifer:state-updated", renderSummary);
-renderSummary();
+window.addEventListener("lootifer:inventory-updated", initializeCheckout);
+initializeCheckout();

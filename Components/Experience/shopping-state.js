@@ -8,9 +8,11 @@ const STORAGE_KEYS = {
   orders: "lootifer-test-orders",
 };
 
-const emitStateChange = () => {
+const emitStateChange = (key = "") => {
   if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
-  window.dispatchEvent(new CustomEvent("lootifer:state-updated"));
+  window.dispatchEvent(new CustomEvent("lootifer:state-updated", {
+    detail: { key },
+  }));
 };
 
 const readStorage = (key) => {
@@ -23,9 +25,7 @@ const readStorage = (key) => {
 
 const writeStorage = (key, value) => {
   localStorage.setItem(key, JSON.stringify(value));
-  if (key !== STORAGE_KEYS.orders) {
-    emitStateChange();
-  }
+  emitStateChange(key);
 };
 
 const normalizeProduct = (product) => ({

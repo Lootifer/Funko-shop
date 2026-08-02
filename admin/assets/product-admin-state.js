@@ -46,8 +46,20 @@ export const loadFileProductCatalog = async () => {
 
 export const saveProductCatalog = (products = []) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+  if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+    window.dispatchEvent(new CustomEvent("lootifer:inventory-updated"));
+    window.dispatchEvent(new CustomEvent("lootifer:state-updated", {
+      detail: { key: STORAGE_KEY },
+    }));
+  }
 };
 
 export const clearSavedCatalog = () => {
   localStorage.removeItem(STORAGE_KEY);
+  if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+    window.dispatchEvent(new CustomEvent("lootifer:inventory-updated"));
+    window.dispatchEvent(new CustomEvent("lootifer:state-updated", {
+      detail: { key: STORAGE_KEY },
+    }));
+  }
 };

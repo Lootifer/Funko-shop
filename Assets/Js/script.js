@@ -6,6 +6,7 @@ import { createUniverseCard } from "../../Components/UniverseCard.js";
 import { createShoppingUi, bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
 import { createInstantSearch } from "../../Components/Experience/instant-search.js";
 import { shoppingState } from "../../Components/Experience/shopping-state.js";
+import { loadRuntimeCatalog } from "../../Products/runtime-catalog.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -160,16 +161,24 @@ const bindProductCardActions = (root) => {
 
 bindProductCardActions(productGrid);
 
-engine.loadProducts("Data/products.json").then(() => {
-  instantSearch.updateProducts(engine.products);
-  renderUniverseCards(engine.products);
-  bindProductCardActions(productGrid);
-}).catch(() => {
-  renderUniverseCards([]);
-  if (productGrid) {
-    productGrid.innerHTML = '<p class="card-empty">De productcatalogus is momenteel niet beschikbaar.</p>';
+const renderHomepageCatalog = async () => {
+  try {
+    const result = await loadRuntimeCatalog();
+    engine.products = result.products;
+    engine.applyFilters();
+    instantSearch.updateProducts(engine.products);
+    renderUniverseCards(engine.products);
+    bindProductCardActions(productGrid);
+  } catch {
+    renderUniverseCards([]);
+    if (productGrid) {
+      productGrid.innerHTML = '<p class="card-empty">De productcatalogus is momenteel niet beschikbaar.</p>';
+    }
   }
-});
+};
+
+renderHomepageCatalog();
+window.addEventListener("lootifer:inventory-updated", renderHomepageCatalog);
 
 const revealItems = document.querySelectorAll(".reveal");
 

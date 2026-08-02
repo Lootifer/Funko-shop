@@ -9,6 +9,7 @@ import { shoppingState } from "../../Components/Experience/shopping-state.js";
 import { syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
 import { formatCurrency } from "./formatting.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
+import { loadRuntimeCatalog } from "../../Products/runtime-catalog.js";
 
 const params = new URLSearchParams(window.location.search);
 const productSlug = params.get("slug") || params.get("id");
@@ -56,11 +57,8 @@ const hasValue = (value) => {
 };
 
 const getProductById = async () => {
-  const response = await fetch("Data/products.json");
-  if (!response.ok) throw new Error("Product kan niet worden geladen");
-
-  const rawProducts = await response.json();
-  const normalized = normalizeProductCatalog(rawProducts);
+  const result = await loadRuntimeCatalog();
+  const normalized = normalizeProductCatalog(result.products);
   const slugValue = String(productSlug || "").toLowerCase();
   return normalized.find((product) => product.slug === slugValue || product.id === Number(productSlug)) || normalized[0];
 };
@@ -234,9 +232,8 @@ const renderProduct = async () => {
     wishlistButton.dataset.state = saved ? "saved" : "unsaved";
   }
 
-  const response = await fetch("Data/products.json");
-  const rawProducts = await response.json();
-  const normalized = normalizeProductCatalog(rawProducts);
+  const result = await loadRuntimeCatalog();
+  const normalized = normalizeProductCatalog(result.products);
   const recentIds = JSON.parse(localStorage.getItem("lootifer-recent") || "[]");
   const recent = normalized.filter((item) => recentIds.includes(item.id));
 
@@ -256,3 +253,8 @@ wishlistButton?.addEventListener("click", () => {
 bindProductCardActions(document);
 
 renderProduct();
+window.addEventListener("lootifer:inventory-updated", () => {
+  renderProduct().catch((error) => {
+    console.error("Product kon niet worden vernieuwd:", error);
+  });
+});

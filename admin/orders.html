@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bestellingen | Lootifer Admin</title>
+    <link rel="stylesheet" href="../Assets/Css/main.css" />
+    <link rel="stylesheet" href="assets/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-shell">
+      <div id="adminSidebar"></div>
+      <main class="admin-main">
+        <div id="adminTopbar"></div>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Bestellingen</h3>
+            <p class="admin-detail" id="ordersStatus">Lokale testbestellingen uit localStorage.</p>
+
+            <div class="admin-toolbar">
+              <button class="button secondary" type="button" id="exportAllOrdersButton">Exporteer alle orders (JSON)</button>
+              <button class="button secondary" type="button" id="deleteAllTestOrdersButton">Verwijder alle testorders</button>
+            </div>
+
+            <div class="admin-filters-grid">
+              <label>
+                Zoeken
+                <input id="orderSearch" type="text" placeholder="Ordernummer, klant of e-mail" />
+              </label>
+              <label>
+                Status
+                <select id="orderStatusFilter">
+                  <option value="">Alle statussen</option>
+                </select>
+              </label>
+              <label>
+                Datum
+                <input id="orderDateFilter" type="date" />
+              </label>
+              <label>
+                Klant
+                <input id="orderCustomerFilter" type="text" placeholder="Naam van klant" />
+              </label>
+            </div>
+
+            <p class="admin-detail" id="ordersResultHint">0 bestellingen zichtbaar.</p>
+
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Ordernummer</th>
+                    <th>Datum</th>
+                    <th>Klant</th>
+                    <th>Totaal</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Acties</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                  <tr><td colspan="7">Nog geen orders gevonden.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card" id="orderDetailCard">
+            <h3>Orderdetails</h3>
+            <p class="admin-detail">Kies een order in de lijst om alle details te bekijken.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="assets/orders-admin.js"></script>
+  </body>
+</html>

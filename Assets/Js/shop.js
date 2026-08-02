@@ -3,12 +3,11 @@ import { createProductCard } from "../../Components/ProductCard.js";
 import { createHeader } from "../../Components/Header.js";
 import { createFooter } from "../../Components/Footer.js";
 import { createFilterSidebar } from "../../Components/FilterSidebar.js";
-import { bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
+import { bindShoppingActions, attachProductCardInteractions, syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
 import { attachPremiumFallback } from "../../Products/product-media.js";
 import { formatCurrency } from "./formatting.js";
 import { getDisplayPrice, hasValidSellingPrice } from "../../Products/product-pricing.js";
-
-const PRODUCTS_URL = new URL("../../Data/products.json", import.meta.url).href;
+import { loadRuntimeCatalog } from "../../Products/runtime-catalog.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -51,10 +50,8 @@ const populateSelect = (select, values, placeholder = "Alles") => {
 };
 
 const getProducts = async () => {
-  const response = await fetch(PRODUCTS_URL);
-  if (!response.ok) throw new Error("Producten kunnen niet worden geladen");
-  const rawProducts = await response.json();
-  products = normalizeProductCatalog(rawProducts);
+  const result = await loadRuntimeCatalog();
+  products = normalizeProductCatalog(result.products);
   populateFilters();
   applyFilters();
 };
@@ -273,6 +270,8 @@ const applyFilters = () => {
 
 if (headerRoot) headerRoot.innerHTML = createHeader("shop");
 if (footerRoot) footerRoot.innerHTML = createFooter();
+syncHeaderCounters();
+window.addEventListener("lootifer:state-updated", syncHeaderCounters);
 
 const showLoadError = () => {
   if (shopGrid) {
@@ -298,6 +297,7 @@ const initializeShop = async () => {
 };
 
 initializeShop();
+window.addEventListener("lootifer:inventory-updated", initializeShop);
 const revealItems = document.querySelectorAll(".reveal");
 
 if (revealItems.length) {

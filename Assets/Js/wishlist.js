@@ -4,6 +4,7 @@ import { createProductCard } from "../../Components/ProductCard.js";
 import { normalizeProductCatalog } from "../../Products/product-schema.js";
 import { shoppingState } from "../../Components/Experience/shopping-state.js";
 import { createShoppingUi, bindShoppingActions, attachProductCardInteractions, syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
+import { loadRuntimeCatalog } from "../../Products/runtime-catalog.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -21,9 +22,8 @@ const renderWishlist = async () => {
   if (!wishlistGrid) return;
 
   try {
-    const response = await fetch("Data/products.json");
-    const rawProducts = await response.json();
-    const catalog = normalizeProductCatalog(rawProducts);
+    const result = await loadRuntimeCatalog();
+    const catalog = normalizeProductCatalog(result.products);
     const wishlistItems = catalog.filter((product) => items.some((item) => item.id === product.id));
 
     wishlistGrid.innerHTML = wishlistItems.length
@@ -53,3 +53,4 @@ const renderWishlist = async () => {
 
 renderWishlist();
 window.addEventListener("lootifer:state-updated", renderWishlist);
+window.addEventListener("lootifer:inventory-updated", renderWishlist);

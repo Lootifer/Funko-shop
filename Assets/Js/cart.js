@@ -5,12 +5,18 @@ import { createShoppingUi, syncHeaderCounters } from "../../Components/Experienc
 import { formatCurrency, formatQuantity } from "./formatting.js";
 import { createImageAttributes } from "../../Products/product-media.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
+import { synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
 const cartItems = document.getElementById("cartItems");
 const cartSummary = document.getElementById("cartSummary");
 const cartMeta = document.getElementById("cartMeta");
+const cartWarnings = document.createElement("div");
+cartWarnings.className = "checkout-notice";
+cartWarnings.style.display = "none";
+
+cartMeta?.insertAdjacentElement("afterend", cartWarnings);
 
 if (headerRoot) headerRoot.innerHTML = createHeader("cart");
 if (footerRoot) footerRoot.innerHTML = createFooter();
@@ -83,6 +89,28 @@ const renderCart = () => {
   syncHeaderCounters();
 };
 
+const renderWarnings = (warnings = []) => {
+  if (!cartWarnings) return;
+  if (!warnings.length) {
+    cartWarnings.style.display = "none";
+    cartWarnings.innerHTML = "";
+    return;
+  }
+
+  cartWarnings.style.display = "block";
+  cartWarnings.innerHTML = `<strong>Voorraad bijgewerkt:</strong><ul>${warnings.map((warning) => `<li>${warning}</li>`).join("")}</ul>`;
+};
+
+const syncAndRenderCart = async () => {
+  try {
+    const sync = await synchronizeCartWithInventory();
+    renderWarnings(sync.warnings);
+  } catch (error) {
+    console.error("Cart-inventaris kon niet worden gesynchroniseerd:", error);
+  }
+  renderCart();
+};
+
 cartItems?.addEventListener("click", (event) => {
   const increment = event.target.closest("[data-cart-increment]");
   if (increment) {
@@ -106,4 +134,5 @@ cartItems?.addEventListener("click", (event) => {
 });
 
 window.addEventListener("lootifer:state-updated", renderCart);
-renderCart();
+window.addEventListener("lootifer:inventory-updated", syncAndRenderCart);
+syncAndRenderCart();
