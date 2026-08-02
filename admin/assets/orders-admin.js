@@ -5,6 +5,7 @@ import {
   deleteOrderById,
   getOrderById,
   getOrders,
+  syncOrdersFromApi,
   updateOrderStatus,
 } from "../../Components/Experience/order-inventory.js";
 
@@ -308,7 +309,7 @@ const render = () => {
   renderOrderDetails();
 };
 
-const initialize = () => {
+const initialize = async () => {
   if (root.sidebar) {
     root.sidebar.innerHTML = createAdminSidebar("orders");
   }
@@ -318,9 +319,20 @@ const initialize = () => {
 
   renderStatusOptions();
   bindToolbarActions();
+
+  try {
+    await syncOrdersFromApi();
+    setStatus("Bestellingen geladen vanuit database.", "accent");
+  } catch {
+    setStatus("Database niet bereikbaar. Lokale testorders worden gebruikt.", "muted");
+  }
+
   render();
 };
 
 window.addEventListener("lootifer:state-updated", render);
 window.addEventListener("lootifer:inventory-updated", render);
-initialize();
+initialize().catch((error) => {
+  console.error("Kon bestellingen niet initialiseren:", error);
+  setStatus("Bestellingen konden niet worden geïnitialiseerd.", "muted");
+});

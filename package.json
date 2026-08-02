@@ -1,0 +1,32 @@
+{
+  "name": "funko-shop",
+  "version": "1.0.0",
+  "description": "Funko Pop collectie te koop",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "migrate": "node backend/scripts/migrate.js",
+    "start": "node backend/src/server.js",
+    "dev": "node --watch backend/src/server.js",
+    "test": "node --test backend/tests/**/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lootifer/Funko-shop.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Lootifer/Funko-shop/issues"
+  },
+  "homepage": "https://github.com/Lootifer/Funko-shop#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.2.2"
+  }
+}

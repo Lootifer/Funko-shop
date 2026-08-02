@@ -1,4 +1,5 @@
 import { normalizeProductCatalog } from "./product-schema.js";
+import { adjustStockInApi, fetchProductsFromApi } from "../Assets/Js/api-client.js";
 
 export const ADMIN_PRODUCT_STORAGE_KEY = "lootifer-admin-products-v1";
 const DATA_URL = new URL("../Data/products.json", import.meta.url).href;
@@ -31,6 +32,18 @@ export const loadRuntimeCatalog = async () => {
     };
   }
 
+  try {
+    const apiProducts = await fetchProductsFromApi();
+    if (apiProducts.length) {
+      return {
+        products: normalizeProductCatalog(apiProducts),
+        source: "api",
+      };
+    }
+  } catch {
+    // Fall back to JSON file when API is unavailable.
+  }
+
   return {
     products: await loadFileCatalog(),
     source: "file",
@@ -50,6 +63,22 @@ export const saveRuntimeCatalog = (products = []) => {
 };
 
 export const updateRuntimeStockByItems = async ({ items = [], mode = "decrease" } = {}) => {
+  try {
+    const apiResult = await adjustStockInApi({
+      items,
+      mode,
+      reason: mode === "increase" ? "runtime-order-reversal" : "runtime-order-checkout",
+    });
+
+    return {
+      products: normalizeProductCatalog(apiResult.products),
+      warnings: apiResult.warnings,
+      source: "api",
+    };
+  } catch {
+    // Continue with local fallback to preserve current frontend behavior.
+  }
+
   const { products } = await loadRuntimeCatalog();
   const grouped = items.reduce((accumulator, item) => {
     const id = Number(item.id) || 0;
@@ -82,6 +111,7 @@ export const updateRuntimeStockByItems = async ({ items = [], mode = "decrease" 
   return {
     products: saveRuntimeCatalog(next),
     warnings,
+    source: "local",
   };
 };
 

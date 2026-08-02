@@ -1,5 +1,6 @@
 import { shoppingState } from "./shopping-state.js";
 import { buildCatalogIndex, loadRuntimeCatalog, updateRuntimeStockByItems } from "../../Products/runtime-catalog.js";
+import { createOrderInApi, fetchOrdersFromApi, updateOrderStatusInApi } from "../../Assets/Js/api-client.js";
 
 export const ORDER_STATUSES = [
   "Nieuw",
@@ -36,6 +37,13 @@ export const getOrders = () => {
   }));
 };
 
+export const syncOrdersFromApi = async () => {
+  const orders = await fetchOrdersFromApi();
+  if (!orders.length) return [];
+  saveOrders(orders);
+  return orders;
+};
+
 export const saveOrders = (orders = []) => {
   shoppingState.saveOrders(orders);
   emitInventoryUpdate();
@@ -43,8 +51,23 @@ export const saveOrders = (orders = []) => {
 };
 
 export const addOrder = (order) => {
-  const orders = [order, ...getOrders()];
-  return saveOrders(orders);
+  return (async () => {
+    try {
+      const created = await createOrderInApi(order);
+      if (created) {
+        const local = getOrders().filter((item) => Number(item.id) !== Number(created.id));
+        saveOrders([created, ...local]);
+        return created;
+      }
+    } catch {
+      // Fall back to local order storage when API is offline.
+    }
+
+    await applyStockReductionForOrder(order);
+    const fallbackOrders = [order, ...getOrders()];
+    saveOrders(fallbackOrders);
+    return order;
+  })();
 };
 
 export const getOrderById = (orderId) => {
@@ -130,6 +153,20 @@ export const restoreStockForOrder = async (order) => {
 };
 
 export const updateOrderStatus = async (orderId, nextStatus) => {
+  try {
+    const updated = await updateOrderStatusInApi(orderId, nextStatus);
+    if (updated) {
+      const localOrders = getOrders();
+      const nextOrders = localOrders.some((item) => Number(item.id) === Number(updated.id))
+        ? localOrders.map((item) => (Number(item.id) === Number(updated.id) ? updated : item))
+        : [updated, ...localOrders];
+      saveOrders(nextOrders);
+      return updated;
+    }
+  } catch {
+    // Use local status workflow when API is unavailable.
+  }
+
   const id = Number(orderId) || 0;
   if (!id) throw new Error("Ongeldig order-id.");
   if (!ORDER_STATUSES.includes(nextStatus)) throw new Error("Ongeldige orderstatus.");

@@ -5,7 +5,7 @@ import { createShoppingUi, syncHeaderCounters } from "../../Components/Experienc
 import { formatCurrency, formatQuantity } from "./formatting.js";
 import { createImageAttributes } from "../../Products/product-media.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
-import { addOrder, applyStockReductionForOrder, createOrderNumber, synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
+import { addOrder, createOrderNumber, synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -193,10 +193,9 @@ checkoutForm?.addEventListener("submit", (event) => {
       })),
     };
 
-    await applyStockReductionForOrder(order);
-    addOrder(order);
+    const persistedOrder = await addOrder(order);
     shoppingState.clearCart();
-    showConfirmation(order);
+    showConfirmation(persistedOrder);
     checkoutForm.reset();
     renderSummary();
     syncHeaderCounters();
