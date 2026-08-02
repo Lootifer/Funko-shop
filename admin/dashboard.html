@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,49 +18,51 @@
 
         <section class="admin-grid">
           <article class="admin-card admin-stat-card">
-            <p class="admin-label">Total Products</p>
+            <p class="admin-label">Totaal producten</p>
             <h3>120</h3>
-            <p class="admin-detail">Across premium drops</p>
+            <p class="admin-detail">Verspreid over premium drops</p>
           </article>
           <article class="admin-card admin-stat-card">
-            <p class="admin-label">Total Universes</p>
+            <p class="admin-label">Totaal universums</p>
             <h3>12</h3>
-            <p class="admin-detail">Curated collector worlds</p>
+            <p class="admin-detail">Gecureerde verzamelwerelden</p>
           </article>
           <article class="admin-card admin-stat-card">
-            <p class="admin-label">Low Stock</p>
+            <p class="admin-label">Weinig voorraad</p>
             <h3>8</h3>
-            <p class="admin-detail">Needs attention soon</p>
+            <p class="admin-detail">Vraagt binnenkort aandacht</p>
           </article>
           <article class="admin-card admin-stat-card">
-            <p class="admin-label">New Products</p>
+            <p class="admin-label">Nieuwe producten</p>
             <h3>6</h3>
-            <p class="admin-detail">Added this week</p>
+            <p class="admin-detail">Deze week toegevoegd</p>
           </article>
         </section>
 
         <section class="admin-section">
           <div class="admin-card">
-            <h3>Collector Club Members</h3>
-            <p class="admin-detail">Placeholder widget for future CRM and signup insights.</p>
+            <h3>Collector Club leden</h3>
+            <p class="admin-detail">Widget voor toekomstige CRM- en aanmeldinzichten.</p>
           </div>
         </section>
 
         <section class="admin-section">
           <div class="admin-card">
-            <h3>Recent Activity</h3>
+            <h3>Recente activiteit</h3>
             <table class="admin-table">
               <thead>
-                <tr><th>Item</th><th>Status</th><th>Updated</th></tr>
+                <tr><th>Item</th><th>Status</th><th>Bijgewerkt</th></tr>
               </thead>
               <tbody>
-                <tr><td>Midnight Viper</td><td>Live</td><td>2h ago</td></tr>
-                <tr><td>Aurora Guardian</td><td>Restock queued</td><td>5h ago</td></tr>
-                <tr><td>Snow Queen</td><td>Featured</td><td>Yesterday</td></tr>
+                <tr><td>Midnight Viper</td><td>Live</td><td>2 uur geleden</td></tr>
+                <tr><td>Aurora Guardian</td><td>Herbevoorrading in wachtrij</td><td>5 uur geleden</td></tr>
+                <tr><td>Snow Queen</td><td>Uitgelicht</td><td>Gisteren</td></tr>
               </tbody>
             </table>
           </div>
         </section>
+
+        <section class="admin-section" id="ordersOverview"></section>
       </main>
     </div>
 
@@ -69,5 +71,6 @@
       document.getElementById('adminSidebar').innerHTML = createAdminSidebar('dashboard');
       document.getElementById('adminTopbar').innerHTML = createAdminTopbar('Dashboard');
     </script>
+    <script type="module" src="assets/orders-overview.js"></script>
   </body>
 </html>

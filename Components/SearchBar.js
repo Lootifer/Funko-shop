@@ -1,12 +1,12 @@
-export const createSearchBar = (placeholder = "Search collectibles", suggestions = []) => `
+export const createSearchBar = (placeholder = "Zoek collectibles", suggestions = []) => `
   <div class="search-shell reveal">
-    <div class="search-bar" role="search" aria-label="Collector search">
+    <div class="search-bar" role="search" aria-label="Zoekbalk voor verzamelaars">
       <span class="search-icon">⌕</span>
-      <input id="searchInput" type="text" placeholder="${placeholder}" aria-label="Search collectibles" />
-      <button id="searchButton" type="button">Search</button>
+      <input id="searchInput" type="text" placeholder="${placeholder}" aria-label="Zoek collectibles" />
+      <button id="searchButton" type="button">Zoeken</button>
     </div>
     <div id="instantSearchResults" class="search-results" hidden></div>
     ${suggestions.length ? `<div class="search-suggestions">${suggestions.map((suggestion) => `<button class="search-suggestion" type="button" data-suggestion="${suggestion}">${suggestion}</button>`).join("")}</div>` : ""}
-    <p id="searchStatus">Search across premium figures, pins, and display pieces.</p>
+    <p id="searchStatus">Zoek door premium figures, pins en displaystukken.</p>
   </div>
 `;

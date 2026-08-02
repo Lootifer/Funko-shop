@@ -138,7 +138,7 @@ export const createInstantSearch = ({ input, resultsContainer, products = [], st
     if (!results.length) {
       resultsContainer.hidden = false;
       input.setAttribute("aria-expanded", "true");
-      resultsContainer.innerHTML = '<div class="search-result-empty">No matching collectibles found.</div>';
+      resultsContainer.innerHTML = '<div class="search-result-empty">Geen bijpassende collectibles gevonden.</div>';
       return;
     }
 

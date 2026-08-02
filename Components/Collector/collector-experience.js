@@ -1,15 +1,16 @@
 import { shoppingState } from "../Experience/shopping-state.js";
 import { createImageAttributes } from "../../Products/product-media.js";
+import { formatCurrency } from "../../Assets/Js/formatting.js";
 
 export const getProductBadges = (product) => {
   const badges = [];
-  if (product.exclusive) badges.push({ label: "Exclusive", tone: "accent" });
+  if (product.exclusive) badges.push({ label: "Exclusief", tone: "accent" });
   if (product.chase) badges.push({ label: "Chase", tone: "warning" });
-  if (product.vaulted) badges.push({ label: "Vaulted", tone: "muted" });
-  if (product.stock <= 3 && product.stock > 0) badges.push({ label: "Low Stock", tone: "warning" });
-  if (product.stock === 0) badges.push({ label: "Sold Out", tone: "danger" });
-  if (product.releaseYear >= new Date().getFullYear() - 1) badges.push({ label: "New", tone: "accent" });
-  if (product.price >= 150) badges.push({ label: "Limited", tone: "muted" });
+  if (product.vaulted) badges.push({ label: "Gewaardeerd", tone: "muted" });
+  if (product.stock <= 3 && product.stock > 0) badges.push({ label: "Bijna op", tone: "warning" });
+  if (product.stock === 0) badges.push({ label: "Uitverkocht", tone: "danger" });
+  if (product.releaseYear >= new Date().getFullYear() - 1) badges.push({ label: "Nieuw", tone: "accent" });
+  if (product.price >= 150) badges.push({ label: "Gelimiteerd", tone: "muted" });
   return badges;
 };
 
@@ -20,9 +21,9 @@ export const getStockTone = (product) => {
 };
 
 export const getStockLabel = (product) => {
-  if (product.stock === 0) return "Sold Out";
-  if (product.stock <= 3) return "Low Stock";
-  return "In Stock";
+  if (product.stock === 0) return "Uitverkocht";
+  if (product.stock <= 3) return "Weinig op voorraad";
+  return "Op voorraad";
 };
 
 export const getCollectorScore = (product) => {
@@ -35,12 +36,12 @@ export const createQuickView = (product) => `
   <div class="quick-view-card">
     <img ${createImageAttributes({ src: product.image, alt: product.name })} />
     <div class="quick-view-body">
-      <p class="eyebrow">Quick View</p>
+      <p class="eyebrow">Snel bekijken</p>
       <h3>${product.name}</h3>
-      <p class="quick-view-price">$${product.price}</p>
-      <p>${product.edition || "Standard"}</p>
+      <p class="quick-view-price">${formatCurrency(product.price)}</p>
+      <p>${product.edition || "Standaard"}</p>
       <div class="quick-view-actions">
-        <button class="button primary" data-action="add-to-cart" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${product.slug || ""}" type="button">Get Yours</button>
+        <button class="button primary" data-action="add-to-cart" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${product.slug || ""}" type="button">In winkelwagen</button>
       </div>
     </div>
   </div>
@@ -49,8 +50,8 @@ export const createQuickView = (product) => `
 export const renderWishlistSection = (products, container) => {
   if (!container) return;
   container.innerHTML = products.length
-    ? products.map((product) => `<div class="drawer-item"><div class="drawer-item-body"><strong>${product.name}</strong><p>$${product.price}</p></div></div>`).join("")
-    : '<p class="card-empty">Your wishlist is empty.</p>';
+    ? products.map((product) => `<div class="drawer-item"><div class="drawer-item-body"><strong>${product.name}</strong><p>${formatCurrency(product.price)}</p></div></div>`).join("")
+    : '<p class="card-empty">Je verlanglijst is leeg.</p>';
 };
 
 export const getRecentProducts = () => shoppingState.getRecent();

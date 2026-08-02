@@ -6,6 +6,7 @@ import {
   getStockTone,
 } from "./Collector/collector-experience.js";
 import { createImageAttributes } from "../Products/product-media.js";
+import { formatCurrency } from "../Assets/Js/formatting.js";
 
 export const createProductCard = (product) => {
   const safeName = String(product?.name || "Collector item");
@@ -23,27 +24,27 @@ export const createProductCard = (product) => {
   return `
     <article class="collectible-card reveal" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" tabindex="0">
       <div class="card-media">
-        <a href="product.html?slug=${slug}" class="card-link" aria-label="View ${safeName}">
+        <a href="product.html?slug=${slug}" class="card-link" aria-label="Bekijk ${safeName}">
           <img ${createImageAttributes({ src: image, alt: safeName })} />
         </a>
-        <button class="wishlist-heart ${inWishlist ? "active" : ""}" data-action="toggle-wishlist" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button" aria-label="Toggle wishlist for ${safeName}">${inWishlist ? "♥" : "♡"}</button>
-        <button class="quick-view-pill" data-action="quick-view" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">Quick View</button>
+        <button class="wishlist-heart ${inWishlist ? "active" : ""}" data-action="toggle-wishlist" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button" aria-label="${inWishlist ? "Verwijder uit verlanglijst" : "Toevoegen aan verlanglijst"}">${inWishlist ? "♥" : "♡"}</button>
+        <button class="quick-view-pill" data-action="quick-view" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">Snel bekijken</button>
       </div>
       <div class="card-body">
         <div class="collector-badges">${badges}</div>
-        <p class="card-meta">${product.universe || product.category} • ${product.franchise || "Collector"}</p>
+        <p class="card-meta">${product.universe || product.category} • ${product.franchise || "Verzamelaar"}</p>
         <h3>${safeName}</h3>
         <p>${product.description}</p>
         <p class="collector-score">${collectorScore}</p>
         <div class="card-footer">
-          <span>$${safePrice}</span>
+          <span>${formatCurrency(safePrice)}</span>
           <div class="card-actions">
-            <button class="text-link" data-action="add-to-cart" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">Add to cart</button>
-            <button class="text-link" data-action="toggle-compare" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">Compare</button>
-            <a href="product.html?slug=${slug}">View</a>
+            <button class="text-link" data-action="add-to-cart" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">In winkelwagen</button>
+            <button class="text-link" data-action="toggle-compare" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">Vergelijken</button>
+            <a href="product.html?slug=${slug}">Bekijken</a>
           </div>
         </div>
-        <span class="stock-pill ${stockTone}">${stockLabel} • ${product.stock > 0 ? `${product.stock} left` : "out now"}</span>
+        <span class="stock-pill ${stockTone}">${stockLabel} • ${product.stock > 0 ? `${product.stock} resterend` : "uitverkocht"}</span>
       </div>
     </article>
   `;

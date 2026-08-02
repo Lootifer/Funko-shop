@@ -40,10 +40,10 @@ export class ProductEngine {
       const categoryMatch = !this.currentCategory || this.currentCategory === "All" || product.category === this.currentCategory;
       const universeMatch = selectedUniverses.length === 0 || selectedUniverses.includes(product.universe);
       const editionMatch = selectedEditions.length === 0 || selectedEditions.some((edition) => {
-        if (edition === "Exclusive") return product.exclusive;
+        if (edition === "Exclusive" || edition === "Exclusief") return product.exclusive;
         if (edition === "Chase") return product.chase;
-        if (edition === "Vaulted") return product.vaulted;
-        if (edition === "Signed") return product.signed;
+        if (edition === "Vaulted" || edition === "Gewaardeerd") return product.vaulted;
+        if (edition === "Signed" || edition === "Ondertekend") return product.signed;
         return false;
       });
       const priceMatch = product.price <= maxPrice;
@@ -73,13 +73,13 @@ export class ProductEngine {
     if (!this.searchStatus) return;
 
     if (!count) {
-      this.searchStatus.textContent = "No collectibles match the current filters.";
+      this.searchStatus.textContent = "Er passen geen collectibles bij de huidige filters.";
       return;
     }
 
     this.searchStatus.textContent = this.showAllProducts
-      ? `Showing ${shownCount} of ${count} collectibles for your current filters.`
-      : `Showing ${shownCount} collectible${shownCount === 1 ? "" : "s"} for your current filters.`;
+      ? `Er worden ${shownCount} van de ${count} collectibles getoond voor je huidige filters.`
+      : `Er worden ${shownCount} collectible${shownCount === 1 ? "" : "s"} getoond voor je huidige filters.`;
   }
 
   updateViewAllButton(count) {
@@ -91,7 +91,7 @@ export class ProductEngine {
     }
 
     this.viewAllButton.style.display = "inline-flex";
-    this.viewAllButton.textContent = this.showAllProducts ? "Show less" : "View all";
+    this.viewAllButton.textContent = this.showAllProducts ? "Minder tonen" : "Alles tonen";
   }
 
   toggleViewAll() {
@@ -148,7 +148,7 @@ export const createCatalogUi = ({ categorySelect, universeContainer, editionCont
     PRODUCT_CATEGORIES.forEach((category) => {
       const option = document.createElement("option");
       option.value = category;
-      option.textContent = category;
+      option.textContent = category === "All" ? "Alles" : category;
       categorySelect.appendChild(option);
     });
   }
@@ -164,7 +164,7 @@ export const createCatalogUi = ({ categorySelect, universeContainer, editionCont
   }
 
   if (editionContainer) {
-    ["Exclusive", "Chase", "Vaulted", "Signed"].forEach((edition) => {
+    ["Exclusief", "Chase", "Gewaardeerd", "Ondertekend"].forEach((edition) => {
       const label = document.createElement("label");
       label.className = "filter-option";
       label.innerHTML = `<input type="checkbox" class="edition-option" value="${edition}" /> ${edition}`;
@@ -175,7 +175,7 @@ export const createCatalogUi = ({ categorySelect, universeContainer, editionCont
 
   if (priceRange && priceRangeValue) {
     priceRange.addEventListener("input", () => {
-      priceRangeValue.textContent = priceRange.value === "300" ? "Up to $300" : `Up to $${priceRange.value}`;
+      priceRangeValue.textContent = priceRange.value === "300" ? "Tot €300" : `Tot €${priceRange.value}`;
     });
   }
 

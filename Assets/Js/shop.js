@@ -5,6 +5,7 @@ import { createFooter } from "../../Components/Footer.js";
 import { createFilterSidebar } from "../../Components/FilterSidebar.js";
 import { bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
 import { attachPremiumFallback } from "../../Products/product-media.js";
+import { formatCurrency } from "./formatting.js";
 
 const PRODUCTS_URL = new URL("../../Data/products.json", import.meta.url).href;
 
@@ -32,7 +33,7 @@ let products = [];
 let filteredProducts = [];
 let currentPage = 1;
 
-const populateSelect = (select, values, placeholder = "All") => {
+const populateSelect = (select, values, placeholder = "Alles") => {
   if (!select) return;
   select.innerHTML = "";
   const option = document.createElement("option");
@@ -50,7 +51,7 @@ const populateSelect = (select, values, placeholder = "All") => {
 
 const getProducts = async () => {
   const response = await fetch(PRODUCTS_URL);
-  if (!response.ok) throw new Error("Unable to load products");
+  if (!response.ok) throw new Error("Producten kunnen niet worden geladen");
   const rawProducts = await response.json();
   products = normalizeProductCatalog(rawProducts);
   populateFilters();
@@ -86,7 +87,7 @@ const populateFilters = () => {
 
   if (shopPrice && shopPriceValue) {
     shopPrice.addEventListener("input", () => {
-      shopPriceValue.textContent = shopPrice.value === "300" ? "Up to $300" : `Up to $${shopPrice.value}`;
+      shopPriceValue.textContent = shopPrice.value === "300" ? "Tot €300" : `Tot ${formatCurrency(shopPrice.value)}`;
       applyFilters();
     });
   }
@@ -98,7 +99,7 @@ const populateFilters = () => {
     if (shopUniverse) shopUniverse.value = "";
     if (shopBrand) shopBrand.value = "";
     if (shopPrice) shopPrice.value = "300";
-    if (shopPriceValue) shopPriceValue.textContent = "Up to $300";
+    if (shopPriceValue) shopPriceValue.textContent = "Tot €300";
     if (shopExclusive) shopExclusive.checked = false;
     if (shopChase) shopChase.checked = false;
     if (shopVaulted) shopVaulted.checked = false;
@@ -194,7 +195,7 @@ const renderProducts = (items) => {
 
   shopGrid.innerHTML = renderedCards.length
     ? renderedCards.join("")
-    : '<p class="card-empty">No collectibles match the current filters.</p>';
+    : '<p class="card-empty">Er passen geen collectibles bij de huidige filters.</p>';
 
   attachPremiumFallback(shopGrid);
 
@@ -233,20 +234,20 @@ const renderPagination = (items) => {
 
 const updateCount = (items) => {
   if (!shopCount || !shopActiveFilters) return;
-  shopCount.textContent = `${items.length} product${items.length === 1 ? "" : "s"} found`;
+  shopCount.textContent = `${items.length} product${items.length === 1 ? "" : "en"} gevonden`;
 
   const activeFilters = [];
-  if (shopSearch?.value.trim()) activeFilters.push(`Search: ${shopSearch.value.trim()}`);
-  if (shopCategory?.value) activeFilters.push(`Category: ${shopCategory.value}`);
-  if (shopUniverse?.value) activeFilters.push(`Universe: ${shopUniverse.value}`);
-  if (shopBrand?.value) activeFilters.push(`Brand: ${shopBrand.value}`);
-  if (shopPrice?.value !== "300") activeFilters.push(`Price: ≤ $${shopPrice.value}`);
-  if (shopExclusive?.checked) activeFilters.push("Exclusive");
+  if (shopSearch?.value.trim()) activeFilters.push(`Zoekterm: ${shopSearch.value.trim()}`);
+  if (shopCategory?.value) activeFilters.push(`Categorie: ${shopCategory.value}`);
+  if (shopUniverse?.value) activeFilters.push(`Universum: ${shopUniverse.value}`);
+  if (shopBrand?.value) activeFilters.push(`Merk: ${shopBrand.value}`);
+  if (shopPrice?.value !== "300") activeFilters.push(`Prijs: ≤ ${formatCurrency(shopPrice.value)}`);
+  if (shopExclusive?.checked) activeFilters.push("Exclusief");
   if (shopChase?.checked) activeFilters.push("Chase");
-  if (shopVaulted?.checked) activeFilters.push("Vaulted");
-  if (shopInStock?.checked) activeFilters.push("In stock");
+  if (shopVaulted?.checked) activeFilters.push("Gewaardeerd");
+  if (shopInStock?.checked) activeFilters.push("Op voorraad");
 
-  shopActiveFilters.textContent = activeFilters.length ? `Active filters: ${activeFilters.join(" • ")}` : "Active filters: none";
+  shopActiveFilters.textContent = activeFilters.length ? `Actieve filters: ${activeFilters.join(" • ")}` : "Actieve filters: geen";
 };
 
 const applyFilters = () => {

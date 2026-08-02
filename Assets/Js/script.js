@@ -14,7 +14,7 @@ const searchRoot = document.getElementById("searchRoot");
 if (headerRoot) headerRoot.innerHTML = createHeader("home");
 if (footerRoot) footerRoot.innerHTML = createFooter();
 const searchSuggestions = ["Batman", "593", "Marvel", "Pokémon"];
-if (searchRoot) searchRoot.innerHTML = createSearchBar("Search figures, universes, or limited drops", searchSuggestions);
+if (searchRoot) searchRoot.innerHTML = createSearchBar("Zoek figures, universums of gelimiteerde drops", searchSuggestions);
 
 const universeGrid = document.getElementById("universeGrid");
 const universeImageByName = {
@@ -54,7 +54,7 @@ const renderUniverseCards = (products = []) => {
 
   const universeItems = UNIVERSE_ORDER.filter((name) => counts[name]).map((name) => ({
     title: name,
-    description: `${counts[name]} collectible${counts[name] === 1 ? "" : "s"}`,
+    description: `${counts[name]} verzamelstuk${counts[name] === 1 ? "" : "ken"}`,
     image: universeImageByName[name] || universeImageByName.DC,
   }));
 
@@ -91,7 +91,7 @@ clubForm?.addEventListener("submit", (event) => {
   if (!clubEmail?.value) return;
   shoppingState.subscribeToClub(clubEmail.value);
   if (clubMessage) {
-    clubMessage.textContent = "You're on the list — early access and alerts are on the way.";
+    clubMessage.textContent = "Je staat op de lijst - vroege toegang en meldingen komen eraan.";
   }
   clubForm.reset();
 });
@@ -101,7 +101,7 @@ notifyForm?.addEventListener("submit", (event) => {
   if (!notifyEmail?.value) return;
   shoppingState.subscribeToClub(notifyEmail.value);
   if (notifyMessage) {
-    notifyMessage.textContent = "You're on the notify list — restocks and rare drops will reach you first.";
+    notifyMessage.textContent = "Je staat op de meldlijst - herbevoorrading en zeldzame drops komen als eerste bij jou aan.";
   }
   notifyForm.reset();
 });

@@ -28,9 +28,9 @@ const renderWishlist = async () => {
 
     wishlistGrid.innerHTML = wishlistItems.length
       ? wishlistItems.map((item) => createProductCard(item)).join("")
-      : '<p class="card-empty">Your wishlist is empty. Save a few grails from the catalog and they will appear here.</p>';
+      : '<p class="card-empty">Je verlanglijst is leeg. Sla een paar grails op en ze verschijnen hier.</p>';
   } catch (error) {
-    wishlistGrid.innerHTML = '<p class="card-empty">Your wishlist is unavailable right now.</p>';
+    wishlistGrid.innerHTML = '<p class="card-empty">Je verlanglijst is momenteel niet beschikbaar.</p>';
   }
 
   wishlistGrid.querySelectorAll("[data-action]").forEach((trigger) => {

@@ -1,6 +1,29 @@
 import { shoppingState } from "./shopping-state.js";
 import { createQuickView } from "../Collector/collector-experience.js";
 import { createImageAttributes } from "../../Products/product-media.js";
+import { formatCurrency, formatQuantity } from "../../Assets/Js/formatting.js";
+
+let shoppingFeedback = null;
+let shoppingFeedbackTimer = null;
+
+const showShoppingFeedback = (message, tone = "accent") => {
+  if (!shoppingFeedback) {
+    shoppingFeedback = document.createElement("div");
+    shoppingFeedback.className = "shopping-feedback";
+    shoppingFeedback.setAttribute("role", "status");
+    shoppingFeedback.setAttribute("aria-live", "polite");
+    document.body.appendChild(shoppingFeedback);
+  }
+
+  shoppingFeedback.textContent = message;
+  shoppingFeedback.dataset.tone = tone;
+  shoppingFeedback.classList.add("visible");
+
+  if (shoppingFeedbackTimer) window.clearTimeout(shoppingFeedbackTimer);
+  shoppingFeedbackTimer = window.setTimeout(() => {
+    shoppingFeedback?.classList.remove("visible");
+  }, 2200);
+};
 
 const createItemMarkup = (item, type) => `
   <div class="drawer-item">
@@ -9,8 +32,15 @@ const createItemMarkup = (item, type) => `
     </div>
     <div class="drawer-item-body">
       <strong>${item.name}</strong>
-      <p>${type === "cart" ? `$${item.price} • Qty ${item.quantity}` : `$${item.price}`}</p>
-      ${type === "cart" ? `<button class="text-link" data-cart-remove="${item.id}">Remove</button>` : ""}
+      <p>${formatCurrency(item.price)}${type === "cart" ? ` • Aantal ${formatQuantity(item.quantity)}` : ""}</p>
+      ${type === "cart" ? `
+        <div class="drawer-quantity-controls">
+          <button class="quantity-btn" type="button" data-cart-decrement="${item.id}" aria-label="Verlaag aantal van ${item.name}">−</button>
+          <span class="quantity-value">${formatQuantity(item.quantity)}</span>
+          <button class="quantity-btn" type="button" data-cart-increment="${item.id}" aria-label="Verhoog aantal van ${item.name}">+</button>
+        </div>
+        <button class="text-link" data-cart-remove="${item.id}">Verwijderen</button>
+      ` : ""}
     </div>
   </div>
 `;
@@ -36,7 +66,7 @@ export const syncHeaderCounters = () => {
     element.textContent = shoppingState.getWishlist().length;
   });
   document.querySelectorAll("[data-header-cart-count]").forEach((element) => {
-    element.textContent = shoppingState.getCart().length;
+    element.textContent = shoppingState.getCartQuantity();
   });
 };
 
@@ -47,25 +77,26 @@ export const createShoppingUi = ({ root, product }) => {
   drawer.className = "side-drawer";
   drawer.innerHTML = `
     <div class="drawer-header">
-      <h3>Shopping Experience</h3>
+      <h3>Winkelwagen</h3>
       <button class="drawer-close" type="button">×</button>
     </div>
     <div class="drawer-tabs">
-      <button class="drawer-tab active" data-view="cart">Cart</button>
-      <button class="drawer-tab" data-view="wishlist">Wishlist</button>
-      <button class="drawer-tab" data-view="compare">Compare</button>
+      <button class="drawer-tab active" data-view="cart">Winkelwagen</button>
+      <button class="drawer-tab" data-view="wishlist">Verlanglijst</button>
+      <button class="drawer-tab" data-view="compare">Vergelijken</button>
       <button class="drawer-tab" data-view="recent">Recent</button>
     </div>
     <div class="drawer-content" id="drawerContent"></div>
     <div class="drawer-actions">
-      <button class="button secondary" id="notifyButton" type="button">Notify me</button>
-      <button class="button primary" id="whatsappButton" type="button">WhatsApp checkout</button>
+      <button class="button secondary" id="notifyButton" type="button">Meld mij</button>
+      <a class="button secondary" href="cart.html">Open winkelwagen</a>
+      <button class="button primary" id="whatsappButton" type="button">WhatsApp afrekenen</button>
     </div>
   `;
   const trigger = document.createElement("button");
   trigger.className = "shopping-trigger";
   trigger.type = "button";
-  trigger.textContent = "🛍️ Cart";
+  trigger.textContent = "🛍️ Winkelwagen";
   root.appendChild(trigger);
   root.appendChild(drawer);
 
@@ -112,21 +143,22 @@ export const createShoppingUi = ({ root, product }) => {
       content.innerHTML = cart.length
         ? `
           <div class="drawer-list">${cart.map((item) => createItemMarkup(item, "cart")).join("")}</div>
-          <p class="drawer-summary">Subtotal: $${cart.reduce((sum, item) => sum + item.price * item.quantity, 0)}</p>
+          <p class="drawer-summary">Subtotaal: ${formatCurrency(shoppingState.getCartSubtotal())}</p>
+          <a class="button secondary drawer-link" href="cart.html">Naar volledige winkelwagen</a>
         `
-        : '<p class="card-empty">Your cart is empty.</p>';
+        : '<p class="card-empty">Je winkelwagen is leeg.</p>';
     } else if (activeView === "wishlist") {
       content.innerHTML = wishlist.length
         ? `<div class="drawer-list">${wishlist.map((item) => createItemMarkup(item, "wishlist")).join("")}</div>`
-        : '<p class="card-empty">Your wishlist is empty.</p>';
+        : '<p class="card-empty">Je verlanglijst is leeg.</p>';
     } else if (activeView === "compare") {
       content.innerHTML = compare.length
         ? `<div class="drawer-list">${compare.map((item) => createItemMarkup(item, "compare")).join("")}</div>`
-        : '<p class="card-empty">Compare up to three products.</p>';
+        : '<p class="card-empty">Vergelijk tot drie producten.</p>';
     } else {
       content.innerHTML = recent.length
         ? `<div class="drawer-list">${recent.map((item) => createItemMarkup(item, "recent")).join("")}</div>`
-        : '<p class="card-empty">Recently viewed items will appear here.</p>';
+        : '<p class="card-empty">Recent bekeken items verschijnen hier.</p>';
     }
   };
 
@@ -156,22 +188,48 @@ export const createShoppingUi = ({ root, product }) => {
   notifyButton?.addEventListener("click", () => {
     if (product) {
       shoppingState.addNotification(product);
-      content.innerHTML = '<p class="card-empty">You will be notified when this item is back in stock.</p>';
+      content.innerHTML = '<p class="card-empty">Je ontvangt een melding zodra dit item terug op voorraad is.</p>';
     }
   });
 
   whatsappButton?.addEventListener("click", () => {
     const cart = shoppingState.getCart();
     const message = cart.length
-      ? `Hello Lootifer! I would like to order: ${cart.map((item) => `${item.name} x${item.quantity}`).join(", ")}`
-      : "Hello Lootifer! I would like to place an order.";
+      ? `Hallo Lootifer! Ik wil graag bestellen: ${cart.map((item) => `${item.name} x${item.quantity}`).join(", ")}`
+      : "Hallo Lootifer! Ik wil graag een bestelling plaatsen.";
     window.open(`https://wa.me/31612345678?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
   });
 
   content.addEventListener("click", (event) => {
+    const incrementButton = event.target.closest("[data-cart-increment]");
+    if (incrementButton) {
+      const productId = Number(incrementButton.dataset.cartIncrement);
+      const beforeItem = shoppingState.getCart().find((item) => item.id === productId);
+      const beforeQuantity = Number(beforeItem?.quantity) || 0;
+      shoppingState.incrementCartQuantity(productId);
+      const afterItem = shoppingState.getCart().find((item) => item.id === productId);
+      const afterQuantity = Number(afterItem?.quantity) || 0;
+      if (afterQuantity === beforeQuantity) {
+        showShoppingFeedback("De maximale voorraad is bereikt.", "warning");
+      } else {
+        showShoppingFeedback("Aantal bijgewerkt.", "accent");
+      }
+      render();
+      return;
+    }
+
+    const decrementButton = event.target.closest("[data-cart-decrement]");
+    if (decrementButton) {
+      shoppingState.decrementCartQuantity(Number(decrementButton.dataset.cartDecrement));
+      showShoppingFeedback("Aantal bijgewerkt.", "accent");
+      render();
+      return;
+    }
+
     const removeButton = event.target.closest("[data-cart-remove]");
     if (removeButton) {
       shoppingState.removeFromCart(Number(removeButton.dataset.cartRemove));
+      showShoppingFeedback("Product uit de winkelwagen verwijderd.", "accent");
       render();
     }
   });
@@ -187,28 +245,7 @@ export const createShoppingUi = ({ root, product }) => {
 export const attachProductCardInteractions = (container = document) => {
   if (!container) return;
   container.querySelectorAll(".collectible-card").forEach((card) => {
-    card.addEventListener("mouseenter", () => {
-      const item = getProductFromTrigger(card);
-      if (item.id) {
-        const overlay = document.getElementById("lootiferQuickViewOverlay");
-        if (overlay) {
-          const shell = overlay.querySelector(".quick-view-card-shell");
-          shell.innerHTML = createQuickView(item);
-          shell.querySelectorAll("[data-action]").forEach((trigger) => {
-            bindShoppingActions(item, trigger);
-          });
-          overlay.classList.add("open");
-        }
-      }
-    });
-
-    card.addEventListener("mouseleave", () => {
-      const overlay = document.getElementById("lootiferQuickViewOverlay");
-      if (overlay) {
-        overlay.classList.remove("open");
-        overlay.querySelector(".quick-view-card-shell").innerHTML = "";
-      }
-    });
+    card.setAttribute("data-quick-view-enabled", "false");
   });
 };
 
@@ -222,13 +259,20 @@ export const bindShoppingActions = (product, trigger) => {
     if (!payload) return;
 
     if (action === "add-to-cart") {
-      shoppingState.addToCart(payload);
-      trigger.textContent = "Added";
-      setTimeout(() => {
-        if (trigger.dataset.action === "add-to-cart") {
-          trigger.textContent = "Add to cart";
-        }
-      }, 1200);
+      const result = shoppingState.addToCart(payload);
+      if (result.added) {
+        trigger.textContent = "Toegevoegd";
+        showShoppingFeedback("Toegevoegd aan winkelwagen.", "accent");
+        setTimeout(() => {
+          if (trigger.dataset.action === "add-to-cart") {
+            trigger.textContent = "In winkelwagen";
+          }
+        }, 1200);
+      } else if (result.reason === "out-of-stock") {
+        showShoppingFeedback("Dit product is niet op voorraad.", "warning");
+      } else {
+        showShoppingFeedback("Je hebt de maximale voorraad bereikt.", "warning");
+      }
     }
 
     if (action === "toggle-wishlist") {
@@ -236,11 +280,13 @@ export const bindShoppingActions = (product, trigger) => {
       const isActive = shoppingState.isWishlisted(payload.id);
       trigger.classList.toggle("active", isActive);
       trigger.innerHTML = isActive ? "♥" : "♡";
+      showShoppingFeedback(isActive ? "Toegevoegd aan verlanglijst." : "Verwijderd uit verlanglijst.", "accent");
     }
 
     if (action === "toggle-compare") {
       shoppingState.toggleCompare(payload);
-      trigger.textContent = trigger.textContent === "Compare" ? "Compared" : "Compare";
+      trigger.textContent = trigger.textContent === "Vergelijken" ? "Toegevoegd" : "Vergelijken";
+      showShoppingFeedback("Vergelijking bijgewerkt.", "accent");
     }
 
     if (action === "view-recent") {
@@ -249,9 +295,9 @@ export const bindShoppingActions = (product, trigger) => {
 
     if (action === "notify-stock") {
       shoppingState.addNotification(payload);
-      trigger.textContent = "Notified";
+      trigger.textContent = "Gemeld";
       setTimeout(() => {
-        trigger.textContent = "Notify me";
+        trigger.textContent = "Meld mij";
       }, 1200);
     }
 
@@ -266,7 +312,5 @@ export const bindShoppingActions = (product, trigger) => {
         overlay.classList.add("open");
       }
     }
-
-    window.dispatchEvent(new CustomEvent("lootifer:state-updated"));
   });
 };

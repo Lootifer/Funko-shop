@@ -6,6 +6,8 @@ import { createFooter } from "../../Components/Footer.js";
 import { createShoppingUi, bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
 import { getCollectorScore, getProductBadges, getStockLabel, getStockTone } from "../../Components/Collector/collector-experience.js";
 import { shoppingState } from "../../Components/Experience/shopping-state.js";
+import { syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
+import { formatCurrency } from "./formatting.js";
 
 const params = new URLSearchParams(window.location.search);
 const productSlug = params.get("slug") || params.get("id");
@@ -39,10 +41,11 @@ const relatedProducts = document.getElementById("relatedProducts");
 const recommendedProducts = document.getElementById("recommendedProducts");
 const recentProducts = document.getElementById("recentProducts");
 const wishlistButton = document.getElementById("wishlistButton");
+let currentProduct = null;
 
 const getProductById = async () => {
   const response = await fetch("Data/products.json");
-  if (!response.ok) throw new Error("Unable to load product");
+  if (!response.ok) throw new Error("Product kan niet worden geladen");
 
   const rawProducts = await response.json();
   const normalized = normalizeProductCatalog(rawProducts);
@@ -77,9 +80,9 @@ const renderCollectorInfo = (product) => {
   if (!collectorInfo) return;
 
   const chips = [
-    product.exclusive ? "Exclusive" : null,
-    product.vaulted ? "Vaulted" : null,
-    product.releaseYear ? `Released ${product.releaseYear}` : null,
+    product.exclusive ? "Exclusief" : null,
+    product.vaulted ? "Gewaardeerd" : null,
+    product.releaseYear ? `Uitgebracht ${product.releaseYear}` : null,
     product.franchise || null,
     product.universe || null,
   ].filter(Boolean);
@@ -95,10 +98,10 @@ const renderSpecs = (product) => {
   const specs = [
     ["SKU", product.sku],
     ["Barcode", product.barcode],
-    ["Brand", product.brand],
-    ["Edition", product.edition],
-    ["Condition", product.condition],
-    ["Release Year", product.releaseYear],
+    ["Merk", product.brand],
+    ["Editie", product.edition],
+    ["Staat", product.condition],
+    ["Uitgavejaar", product.releaseYear],
     ["Tags", (product.tags || []).join(", ")],
   ];
 
@@ -132,7 +135,7 @@ const renderRelatedProducts = (products, currentProduct) => {
 
   relatedProducts.innerHTML = related.length
     ? related.map((product) => createProductCardMarkup(product)).join("")
-    : '<p class="card-empty">No related products available.</p>';
+    : '<p class="card-empty">Geen gerelateerde producten beschikbaar.</p>';
   bindProductCardActions(relatedProducts);
 };
 
@@ -145,7 +148,7 @@ const renderRecommendedProducts = (products, currentProduct) => {
 
   recommendedProducts.innerHTML = recommended.length
     ? recommended.map((product) => createProductCardMarkup(product)).join("")
-    : '<p class="card-empty">No recommendations available.</p>';
+    : '<p class="card-empty">Geen aanbevelingen beschikbaar.</p>';
   bindProductCardActions(recommendedProducts);
 };
 
@@ -155,7 +158,7 @@ const renderRecentProducts = (products) => {
   const recent = products.slice(0, 4);
   recentProducts.innerHTML = recent.length
     ? recent.map((product) => createProductCardMarkup(product)).join("")
-    : '<p class="card-empty">Recently viewed items will appear here.</p>';
+    : '<p class="card-empty">Recent bekeken items verschijnen hier.</p>';
   bindProductCardActions(recentProducts);
 };
 
@@ -180,15 +183,22 @@ const renderProduct = async () => {
   productUniverse.textContent = product.universe;
   productEdition.textContent = product.edition;
   productCondition.textContent = product.condition;
-  productPrice.textContent = `$${product.price}`;
+  productPrice.textContent = formatCurrency(product.price);
   const stockTone = getStockTone(product);
   const stockLabel = getStockLabel(product);
-  collectorScore.textContent = `Collector score ${getCollectorScore(product)}`;
-  productStock.textContent = `${stockLabel} • ${product.stock > 0 ? `${product.stock} left` : "out now"}`;
+  collectorScore.textContent = `Verzamelaarscore ${getCollectorScore(product)}`;
+  productStock.textContent = `${stockLabel} • ${product.stock > 0 ? `${product.stock} resterend` : "uitverkocht"}`;
   productStock.className = `product-stock ${stockTone}`;
   productDescription.textContent = product.description;
   renderCollectorInfo(product);
   renderSpecs(product);
+  currentProduct = product;
+
+  if (wishlistButton) {
+    const saved = shoppingState.isWishlisted(product.id);
+    wishlistButton.textContent = saved ? "Uit verlanglijst verwijderen" : "Toevoegen aan verlanglijst";
+    wishlistButton.dataset.state = saved ? "saved" : "unsaved";
+  }
 
   const response = await fetch("Data/products.json");
   const rawProducts = await response.json();
@@ -202,8 +212,11 @@ const renderProduct = async () => {
 };
 
 wishlistButton?.addEventListener("click", () => {
-  const current = wishlistButton.textContent;
-  wishlistButton.textContent = current === "Wishlist" ? "Saved" : "Wishlist";
+  if (!currentProduct) return;
+  shoppingState.toggleWishlist(currentProduct);
+  const saved = shoppingState.isWishlisted(currentProduct.id);
+  wishlistButton.textContent = saved ? "Uit verlanglijst verwijderen" : "Toevoegen aan verlanglijst";
+  syncHeaderCounters();
 });
 
 bindProductCardActions(document);
