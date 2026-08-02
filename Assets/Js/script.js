@@ -27,7 +27,7 @@ const universeImageByName = {
   "Harry Potter": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80",
   Disney: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80",
   "Dragon Ball": "https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&w=900&q=80",
-  Naruto: "https://images.unsplash.com/photo-1612036782180-6f0822045d07?auto=format&fit=crop&w=900&q=80",
+  Naruto: "https://images.unsplash.com/photo-1608889476561-6242cfdbf622?auto=format&fit=crop&w=900&q=80",
   "One Piece": "https://images.unsplash.com/photo-1608889476561-6242cfdbf622?auto=format&fit=crop&w=900&q=80",
 };
 
