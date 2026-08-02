@@ -1,8 +1,8 @@
-export const createSearchBar = (placeholder = "Zoek collectibles", suggestions = []) => `
+export const createSearchBar = (placeholder = "Zoek verzamelitems", suggestions = []) => `
   <div class="search-shell reveal">
     <div class="search-bar" role="search" aria-label="Zoekbalk voor verzamelaars">
       <span class="search-icon">⌕</span>
-      <input id="searchInput" type="text" placeholder="${placeholder}" aria-label="Zoek collectibles" />
+      <input id="searchInput" type="text" placeholder="${placeholder}" aria-label="Zoek verzamelitems" />
       <button id="searchButton" type="button">Zoeken</button>
     </div>
     <div id="instantSearchResults" class="search-results" hidden></div>

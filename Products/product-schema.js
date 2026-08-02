@@ -1,4 +1,5 @@
 import { resolveProductMedia } from "./product-media.js";
+import { getDisplayPrice, getSellingPrice, getValidDiscountPrice, hasValidSellingPrice } from "./product-pricing.js";
 
 export const PRODUCT_CATEGORIES = [
   "All",
@@ -74,6 +75,8 @@ export const PRODUCT_DEFAULTS = {
   tags: [],
 };
 
+const DEFAULT_DESCRIPTION = "Details volgen zodra deze collectable volledig is verwerkt.";
+
 export const validateProductsJson = (rawProducts) => {
   const errors = [];
   const warnings = [];
@@ -122,14 +125,21 @@ export const normalizeProduct = (rawProduct = {}) => {
     : PRODUCT_DEFAULTS.category;
 
   normalized.purchasePrice = Number(rawProduct.purchasePrice) || 0;
-  normalized.sellingPrice = Number(rawProduct.sellingPrice ?? rawProduct.price) || 0;
-  normalized.discountPrice = rawProduct.discountPrice === null || rawProduct.discountPrice === ""
-    ? null
-    : Number(rawProduct.discountPrice) || null;
-  normalized.price = normalized.sellingPrice;
+  normalized.sellingPrice = getSellingPrice(rawProduct);
+  normalized.discountPrice = getValidDiscountPrice({
+    sellingPrice: normalized.sellingPrice,
+    discountPrice: rawProduct.discountPrice,
+  });
+  normalized.price = getDisplayPrice({
+    sellingPrice: normalized.sellingPrice,
+    discountPrice: normalized.discountPrice,
+    price: rawProduct.price,
+  });
+  normalized.hasValidPrice = hasValidSellingPrice({ sellingPrice: normalized.sellingPrice, price: rawProduct.price });
   normalized.stock = Number(rawProduct.stock) || 0;
   normalized.reserved = Number(rawProduct.reserved) || 0;
-  normalized.releaseYear = Number(rawProduct.releaseYear) || new Date().getFullYear();
+  const releaseYear = Number(rawProduct.releaseYear);
+  normalized.releaseYear = Number.isInteger(releaseYear) && releaseYear > 0 ? releaseYear : null;
   normalized.exclusive = toBoolean(rawProduct.exclusive);
   normalized.chase = toBoolean(rawProduct.chase);
   normalized.vaulted = toBoolean(rawProduct.vaulted);
@@ -155,7 +165,7 @@ export const normalizeProduct = (rawProduct = {}) => {
 
   normalized.metaTitle = rawProduct.metaTitle || `${rawProduct.name || "Collectible"} | Lootifer Collectibles`;
   normalized.metaDescription = rawProduct.metaDescription || rawProduct.description || "";
-  normalized.description = rawProduct.description || normalized.metaDescription;
+  normalized.description = (rawProduct.description || normalized.metaDescription || "").trim() || DEFAULT_DESCRIPTION;
 
   normalized.tags = Array.isArray(rawProduct.tags)
     ? rawProduct.tags

@@ -6,6 +6,7 @@ import { createFilterSidebar } from "../../Components/FilterSidebar.js";
 import { bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
 import { attachPremiumFallback } from "../../Products/product-media.js";
 import { formatCurrency } from "./formatting.js";
+import { getDisplayPrice, hasValidSellingPrice } from "../../Products/product-pricing.js";
 
 const PRODUCTS_URL = new URL("../../Data/products.json", import.meta.url).href;
 
@@ -115,9 +116,21 @@ const sortProducts = (items) => {
 
   switch (sortValue) {
     case "price-asc":
-      return sorted.sort((left, right) => left.price - right.price);
+      return sorted.sort((left, right) => {
+        const leftHasPrice = hasValidSellingPrice(left);
+        const rightHasPrice = hasValidSellingPrice(right);
+        if (leftHasPrice && !rightHasPrice) return -1;
+        if (!leftHasPrice && rightHasPrice) return 1;
+        return getDisplayPrice(left) - getDisplayPrice(right);
+      });
     case "price-desc":
-      return sorted.sort((left, right) => right.price - left.price);
+      return sorted.sort((left, right) => {
+        const leftHasPrice = hasValidSellingPrice(left);
+        const rightHasPrice = hasValidSellingPrice(right);
+        if (leftHasPrice && !rightHasPrice) return -1;
+        if (!leftHasPrice && rightHasPrice) return 1;
+        return getDisplayPrice(right) - getDisplayPrice(left);
+      });
     case "alpha":
       return sorted.sort((left, right) => left.name.localeCompare(right.name));
     default:
@@ -143,7 +156,7 @@ const getFilteredProducts = () => {
       const matchesCategory = !category || product.category === category;
       const matchesUniverse = !universe || product.universe === universe;
       const matchesBrand = !brand || product.brand === brand;
-      const matchesPrice = Number(product?.price || 0) <= maxPrice;
+      const matchesPrice = !hasValidSellingPrice(product) || getDisplayPrice(product) <= maxPrice;
       const matchesExclusive = !onlyExclusive || product.exclusive;
       const matchesChase = !onlyChase || product.chase;
       const matchesVaulted = !onlyVaulted || product.vaulted;
@@ -162,7 +175,7 @@ const bindProductCardActions = (root) => {
   root?.querySelectorAll("[data-action]").forEach((trigger) => {
     const product = {
       id: Number(trigger.dataset.productId || 0),
-      name: trigger.dataset.productName || "Collector item",
+      name: trigger.dataset.productName || "Collectible",
       price: Number(trigger.dataset.productPrice || 0),
       image: trigger.dataset.productImage || "",
       universe: trigger.dataset.productUniverse || "",
@@ -195,7 +208,7 @@ const renderProducts = (items) => {
 
   shopGrid.innerHTML = renderedCards.length
     ? renderedCards.join("")
-    : '<p class="card-empty">Er passen geen collectibles bij de huidige filters.</p>';
+    : '<p class="card-empty">Er passen geen verzamelitems bij de huidige filters.</p>';
 
   attachPremiumFallback(shopGrid);
 
@@ -263,15 +276,15 @@ if (footerRoot) footerRoot.innerHTML = createFooter();
 
 const showLoadError = () => {
   if (shopGrid) {
-    shopGrid.innerHTML = '<p class="card-empty">Product catalog is unavailable right now.</p>';
+    shopGrid.innerHTML = '<p class="card-empty">De productcatalogus is momenteel niet beschikbaar.</p>';
   }
 
   if (shopCount) {
-    shopCount.textContent = "0 products found";
+    shopCount.textContent = "0 producten gevonden";
   }
 
   if (shopActiveFilters) {
-    shopActiveFilters.textContent = "Active filters: none";
+    shopActiveFilters.textContent = "Actieve filters: geen";
   }
 };
 

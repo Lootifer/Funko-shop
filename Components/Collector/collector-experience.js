@@ -1,6 +1,7 @@
 import { shoppingState } from "../Experience/shopping-state.js";
 import { createImageAttributes } from "../../Products/product-media.js";
 import { formatCurrency } from "../../Assets/Js/formatting.js";
+import { getDisplayPrice, getProductPriceLabel, hasValidSellingPrice } from "../../Products/product-pricing.js";
 
 export const getProductBadges = (product) => {
   const badges = [];
@@ -21,8 +22,8 @@ export const getStockTone = (product) => {
 };
 
 export const getStockLabel = (product) => {
-  if (product.stock === 0) return "Uitverkocht";
-  if (product.stock <= 3) return "Weinig op voorraad";
+  if (product.stock === 0) return "Niet op voorraad";
+  if (product.stock <= 3) return "Bijna uitverkocht";
   return "Op voorraad";
 };
 
@@ -38,10 +39,10 @@ export const createQuickView = (product) => `
     <div class="quick-view-body">
       <p class="eyebrow">Snel bekijken</p>
       <h3>${product.name}</h3>
-      <p class="quick-view-price">${formatCurrency(product.price)}</p>
+      <p class="quick-view-price">${getProductPriceLabel(product, formatCurrency)}</p>
       <p>${product.edition || "Standaard"}</p>
       <div class="quick-view-actions">
-        <button class="button primary" data-action="add-to-cart" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${product.slug || ""}" type="button">In winkelwagen</button>
+        <button class="button primary" data-action="add-to-cart" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${getDisplayPrice(product)}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${product.slug || ""}" type="button" ${hasValidSellingPrice(product) ? "" : "disabled aria-disabled=\"true\""}>${hasValidSellingPrice(product) ? "In winkelwagen" : "Prijs op aanvraag"}</button>
       </div>
     </div>
   </div>

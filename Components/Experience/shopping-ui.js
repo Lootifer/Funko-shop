@@ -2,6 +2,7 @@ import { shoppingState } from "./shopping-state.js";
 import { createQuickView } from "../Collector/collector-experience.js";
 import { createImageAttributes } from "../../Products/product-media.js";
 import { formatCurrency, formatQuantity } from "../../Assets/Js/formatting.js";
+import { getProductPriceLabel } from "../../Products/product-pricing.js";
 
 let shoppingFeedback = null;
 let shoppingFeedbackTimer = null;
@@ -32,7 +33,7 @@ const createItemMarkup = (item, type) => `
     </div>
     <div class="drawer-item-body">
       <strong>${item.name}</strong>
-      <p>${formatCurrency(item.price)}${type === "cart" ? ` • Aantal ${formatQuantity(item.quantity)}` : ""}</p>
+      <p>${getProductPriceLabel(item, formatCurrency)}${type === "cart" ? ` • Aantal ${formatQuantity(item.quantity)}` : ""}</p>
       ${type === "cart" ? `
         <div class="drawer-quantity-controls">
           <button class="quantity-btn" type="button" data-cart-decrement="${item.id}" aria-label="Verlaag aantal van ${item.name}">−</button>
@@ -50,7 +51,7 @@ const getProductFromTrigger = (trigger) => {
   const source = card || trigger;
   return {
     id: Number(source.dataset.productId || trigger.dataset.productId || 0),
-    name: source.dataset.productName || trigger.dataset.productName || "Collector item",
+    name: source.dataset.productName || trigger.dataset.productName || "Collectible",
     price: Number(source.dataset.productPrice || trigger.dataset.productPrice || 0),
     image: source.dataset.productImage || trigger.dataset.productImage || "",
     universe: source.dataset.productUniverse || trigger.dataset.productUniverse || "",
@@ -84,7 +85,7 @@ export const createShoppingUi = ({ root, product }) => {
       <button class="drawer-tab active" data-view="cart">Winkelwagen</button>
       <button class="drawer-tab" data-view="wishlist">Verlanglijst</button>
       <button class="drawer-tab" data-view="compare">Vergelijken</button>
-      <button class="drawer-tab" data-view="recent">Recent</button>
+      <button class="drawer-tab" data-view="recent">Recent bekeken</button>
     </div>
     <div class="drawer-content" id="drawerContent"></div>
     <div class="drawer-actions">
@@ -270,6 +271,8 @@ export const bindShoppingActions = (product, trigger) => {
         }, 1200);
       } else if (result.reason === "out-of-stock") {
         showShoppingFeedback("Dit product is niet op voorraad.", "warning");
+      } else if (result.reason === "price-on-request") {
+        showShoppingFeedback("Prijs op aanvraag. Neem contact op voor dit item.", "warning");
       } else {
         showShoppingFeedback("Je hebt de maximale voorraad bereikt.", "warning");
       }

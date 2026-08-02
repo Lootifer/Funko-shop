@@ -7,9 +7,10 @@ import {
 } from "./Collector/collector-experience.js";
 import { createImageAttributes } from "../Products/product-media.js";
 import { formatCurrency } from "../Assets/Js/formatting.js";
+import { getDisplayPrice, getProductPriceLabel, hasValidSellingPrice } from "../Products/product-pricing.js";
 
 export const createProductCard = (product) => {
-  const safeName = String(product?.name || "Collector item");
+  const safeName = String(product?.name || "Collectible");
   const image = product?.image;
   const slug = product?.slug || safeName.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   const badges = getProductBadges(product)
@@ -19,7 +20,10 @@ export const createProductCard = (product) => {
   const stockLabel = getStockLabel(product);
   const collectorScore = getCollectorScore(product);
   const inWishlist = shoppingState.isWishlisted(product?.id);
-  const safePrice = Number(product?.price || 0);
+  const safePrice = getDisplayPrice(product || {});
+  const hasValidPrice = hasValidSellingPrice(product || {});
+  const stockCount = Number(product?.stock || 0);
+  const stockCountLabel = stockCount <= 0 ? "Niet op voorraad" : stockCount === 1 ? "Nog 1 beschikbaar" : `Nog ${stockCount} beschikbaar`;
 
   return `
     <article class="collectible-card reveal" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" tabindex="0">
@@ -37,14 +41,14 @@ export const createProductCard = (product) => {
         <p>${product.description}</p>
         <p class="collector-score">${collectorScore}</p>
         <div class="card-footer">
-          <span>${formatCurrency(safePrice)}</span>
+          <span class="card-price">${getProductPriceLabel(product, formatCurrency)}</span>
           <div class="card-actions">
-            <button class="text-link" data-action="add-to-cart" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">In winkelwagen</button>
+            <button class="text-link" data-action="add-to-cart" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button" ${hasValidPrice ? "" : "disabled aria-disabled=\"true\""}>${hasValidPrice ? "In winkelwagen" : "Prijs op aanvraag"}</button>
             <button class="text-link" data-action="toggle-compare" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">Vergelijken</button>
-            <a href="product.html?slug=${slug}">Bekijken</a>
+            <a class="text-link view-link" href="product.html?slug=${slug}">Bekijken</a>
           </div>
         </div>
-        <span class="stock-pill ${stockTone}">${stockLabel} • ${product.stock > 0 ? `${product.stock} resterend` : "uitverkocht"}</span>
+        <span class="stock-pill ${stockTone}">${stockLabel} • ${stockCountLabel}</span>
       </div>
     </article>
   `;

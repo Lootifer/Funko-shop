@@ -36,7 +36,7 @@ const renderWishlist = async () => {
   wishlistGrid.querySelectorAll("[data-action]").forEach((trigger) => {
     const product = {
       id: Number(trigger.dataset.productId || 0),
-      name: trigger.dataset.productName || "Collector item",
+      name: trigger.dataset.productName || "Collectible",
       price: Number(trigger.dataset.productPrice || 0),
       image: trigger.dataset.productImage || "",
       universe: trigger.dataset.productUniverse || "",

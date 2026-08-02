@@ -4,6 +4,7 @@ import { shoppingState } from "../../Components/Experience/shopping-state.js";
 import { createShoppingUi, syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
 import { formatCurrency, formatQuantity } from "./formatting.js";
 import { createImageAttributes } from "../../Products/product-media.js";
+import { getProductPriceLabel } from "../../Products/product-pricing.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -78,8 +79,8 @@ const renderSummary = () => {
               </div>
               <div class="drawer-item-body">
                 <strong>${item.name}</strong>
-                <p>${formatCurrency(item.price)} · Aantal ${formatQuantity(item.quantity)}</p>
-                <p class="cart-item-meta">${formatCurrency(item.price * item.quantity)}</p>
+                <p>${getProductPriceLabel(item, formatCurrency)} · Aantal ${formatQuantity(item.quantity)}</p>
+                <p class="cart-item-meta">${formatCurrency((Number(item.price) || 0) * (Number(item.quantity) || 0))}</p>
               </div>
             </div>
           `

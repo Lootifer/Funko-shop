@@ -1,5 +1,6 @@
 import { normalizeProductCatalog, PRODUCT_CATEGORIES } from "./product-schema.js";
 import { createProductCardMarkup } from "./product-card.js";
+import { getDisplayPrice, hasValidSellingPrice } from "./product-pricing.js";
 
 export class ProductEngine {
   constructor({ productGrid, searchInput, searchStatus, filters = {}, viewAllButton, displayLimit = 8 }) {
@@ -17,7 +18,7 @@ export class ProductEngine {
 
   async loadProducts(url = "Data/products.json") {
     const response = await fetch(url);
-    if (!response.ok) throw new Error("Unable to load product catalog");
+    if (!response.ok) throw new Error("Productcatalogus kan niet worden geladen");
 
     const rawProducts = await response.json();
     this.products = normalizeProductCatalog(rawProducts);
@@ -46,7 +47,7 @@ export class ProductEngine {
         if (edition === "Signed" || edition === "Ondertekend") return product.signed;
         return false;
       });
-      const priceMatch = product.price <= maxPrice;
+      const priceMatch = !hasValidSellingPrice(product) || getDisplayPrice(product) <= maxPrice;
       const searchMatch = `${product.name} ${product.universe} ${product.franchise} ${product.description} ${product.tags.join(" ")} ${product.number} ${product.id} ${product.sku}`.toLowerCase().includes(query);
 
       return categoryMatch && universeMatch && editionMatch && priceMatch && searchMatch;
@@ -73,13 +74,13 @@ export class ProductEngine {
     if (!this.searchStatus) return;
 
     if (!count) {
-      this.searchStatus.textContent = "Er passen geen collectibles bij de huidige filters.";
+      this.searchStatus.textContent = "Er passen geen verzamelitems bij de huidige filters.";
       return;
     }
 
     this.searchStatus.textContent = this.showAllProducts
-      ? `Er worden ${shownCount} van de ${count} collectibles getoond voor je huidige filters.`
-      : `Er worden ${shownCount} collectible${shownCount === 1 ? "" : "s"} getoond voor je huidige filters.`;
+      ? `Er worden ${shownCount} van de ${count} verzamelitems getoond voor je huidige filters.`
+      : `Er worden ${shownCount} verzamelstuk${shownCount === 1 ? "" : "ken"} getoond voor je huidige filters.`;
   }
 
   updateViewAllButton(count) {

@@ -4,6 +4,7 @@ import { shoppingState } from "../../Components/Experience/shopping-state.js";
 import { createShoppingUi, syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
 import { formatCurrency, formatQuantity } from "./formatting.js";
 import { createImageAttributes } from "../../Products/product-media.js";
+import { getProductPriceLabel } from "../../Products/product-pricing.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -59,7 +60,7 @@ const renderCart = () => {
               <div class="cart-item-body">
                 <p class="card-meta">${item.universe || "Collector"}</p>
                 <h3>${item.name}</h3>
-                <p class="cart-item-meta">Prijs ${formatCurrency(item.price)} · Totaal ${formatCurrency(item.price * item.quantity)}</p>
+                <p class="cart-item-meta">Prijs ${getProductPriceLabel(item, formatCurrency)} · Totaal ${formatCurrency((Number(item.price) || 0) * (Number(item.quantity) || 0))}</p>
                 <div class="cart-item-actions">
                   <button class="quantity-btn" type="button" data-cart-decrement="${item.id}" aria-label="Verlaag aantal">−</button>
                   <span class="quantity-value">${formatQuantity(item.quantity)}</span>

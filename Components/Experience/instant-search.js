@@ -1,4 +1,6 @@
 import { createImageAttributes } from "../../Products/product-media.js";
+import { formatCurrency } from "../../Assets/Js/formatting.js";
+import { getProductPriceLabel } from "../../Products/product-pricing.js";
 
 const SEARCH_LIMIT = 8;
 const DEBOUNCE_MS = 120;
@@ -28,11 +30,16 @@ const debounce = (fn, delay = DEBOUNCE_MS) => {
 
 const getStatusBadges = (product) => {
   const badges = [];
-  if (product.exclusive) badges.push("Exclusive");
+  if (product.exclusive) badges.push("Exclusief");
   if (product.chase) badges.push("Chase");
-  if (product.vaulted) badges.push("Vaulted");
-  if (!badges.length) badges.push("Standard");
+  if (product.vaulted) badges.push("Gewaardeerd");
+  if (!badges.length) badges.push("Standaard");
   return badges;
+};
+
+const isKnownBarcode = (value = "") => {
+  const barcode = String(value || "").trim();
+  return Boolean(barcode) && !/^unknown/i.test(barcode);
 };
 
 const getCharacter = (product) => {
@@ -138,7 +145,7 @@ export const createInstantSearch = ({ input, resultsContainer, products = [], st
     if (!results.length) {
       resultsContainer.hidden = false;
       input.setAttribute("aria-expanded", "true");
-      resultsContainer.innerHTML = '<div class="search-result-empty">Geen bijpassende collectibles gevonden.</div>';
+      resultsContainer.innerHTML = '<div class="search-result-empty">Geen bijpassende verzamelitems gevonden.</div>';
       return;
     }
 
@@ -152,7 +159,7 @@ export const createInstantSearch = ({ input, resultsContainer, products = [], st
       const number = highlightTokens(product.number || "-", terms);
       const universe = highlightTokens(product.universe || product.category || "-", terms);
       const sku = highlightTokens(product.sku || "-", terms);
-      const barcode = highlightTokens(product.barcode || "-", terms);
+      const barcode = isKnownBarcode(product.barcode) ? highlightTokens(product.barcode, terms) : "Niet beschikbaar";
       const franchise = highlightTokens(product.franchise || "-", terms);
       const character = highlightTokens(getCharacter(product), terms);
 
@@ -170,11 +177,11 @@ export const createInstantSearch = ({ input, resultsContainer, products = [], st
           <div class="search-result-content">
             <div class="search-result-title-row">
               <strong class="search-result-name">${name}</strong>
-              <span class="search-result-price">$${Number(product.price || product.sellingPrice || 0).toFixed(2)}</span>
+              <span class="search-result-price">${getProductPriceLabel(product, formatCurrency)}</span>
             </div>
             <p class="search-result-meta">${number} • ${universe}</p>
             <p class="search-result-submeta">SKU: ${sku} • Barcode: ${barcode}</p>
-            <p class="search-result-submeta">Franchise: ${franchise} • Character: ${character}</p>
+            <p class="search-result-submeta">Franchise: ${franchise} • Personage: ${character}</p>
             <div class="search-status-badges">${badges}</div>
           </div>
         </a>
@@ -234,8 +241,8 @@ export const createInstantSearch = ({ input, resultsContainer, products = [], st
 
     if (statusElement) {
       statusElement.textContent = matches.length
-        ? `Showing ${matches.length} instant result${matches.length === 1 ? "" : "s"}.`
-        : "No instant results for this query.";
+        ? `${matches.length} direct resultaat${matches.length === 1 ? "" : "en"} gevonden.`
+        : "Geen directe resultaten voor deze zoekopdracht.";
     }
   };
 

@@ -4,10 +4,11 @@ import { attachPremiumFallback, createImageAttributes } from "../../Products/pro
 import { createHeader } from "../../Components/Header.js";
 import { createFooter } from "../../Components/Footer.js";
 import { createShoppingUi, bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
-import { getCollectorScore, getProductBadges, getStockLabel, getStockTone } from "../../Components/Collector/collector-experience.js";
+import { getCollectorScore, getProductBadges, getStockTone } from "../../Components/Collector/collector-experience.js";
 import { shoppingState } from "../../Components/Experience/shopping-state.js";
 import { syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
 import { formatCurrency } from "./formatting.js";
+import { getProductPriceLabel } from "../../Products/product-pricing.js";
 
 const params = new URLSearchParams(window.location.search);
 const productSlug = params.get("slug") || params.get("id");
@@ -42,6 +43,17 @@ const recommendedProducts = document.getElementById("recommendedProducts");
 const recentProducts = document.getElementById("recentProducts");
 const wishlistButton = document.getElementById("wishlistButton");
 let currentProduct = null;
+
+const isKnownBarcode = (value = "") => {
+  const barcode = String(value || "").trim();
+  return Boolean(barcode) && !/^unknown/i.test(barcode);
+};
+
+const hasValue = (value) => {
+  if (value === null || value === undefined) return false;
+  const text = String(value).trim();
+  return text.length > 0;
+};
 
 const getProductById = async () => {
   const response = await fetch("Data/products.json");
@@ -97,22 +109,25 @@ const renderSpecs = (product) => {
 
   const specs = [
     ["SKU", product.sku],
-    ["Barcode", product.barcode],
+    ["Barcode", isKnownBarcode(product.barcode) ? product.barcode : null],
     ["Merk", product.brand],
     ["Editie", product.edition],
     ["Staat", product.condition],
     ["Uitgavejaar", product.releaseYear],
+    ["Conventie", product.convention],
     ["Tags", (product.tags || []).join(", ")],
-  ];
+  ].filter(([, value]) => hasValue(value));
 
-  productSpecs.innerHTML = specs.map(([label, value]) => `<li><strong>${label}:</strong> ${value}</li>`).join("");
+  productSpecs.innerHTML = specs.length
+    ? specs.map(([label, value]) => `<li><strong>${label}:</strong> ${value}</li>`).join("")
+    : "<li>Geen aanvullende specificaties beschikbaar.</li>";
 };
 
 const bindProductCardActions = (root) => {
   root?.querySelectorAll("[data-action]").forEach((trigger) => {
     const product = {
       id: Number(trigger.dataset.productId || 0),
-      name: trigger.dataset.productName || "Collector item",
+      name: trigger.dataset.productName || "Collectible",
       price: Number(trigger.dataset.productPrice || 0),
       image: trigger.dataset.productImage || "",
       universe: trigger.dataset.productUniverse || "",
@@ -178,16 +193,35 @@ const renderProduct = async () => {
   const badgeMarkup = badges.length ? badges.map((badge) => `<span class="collector-badge ${badge.tone}">${badge.label}</span>`).join("") : `<span class="collector-badge accent">${createProductBadge(product)}</span>`;
   productBadge.innerHTML = `${badgeMarkup} <span class="eyebrow">${product.universe || product.category}</span>`;
   productTitle.textContent = product.name;
-  productMeta.textContent = `${product.category} • ${product.franchise}`;
-  productNumber.textContent = product.number;
-  productUniverse.textContent = product.universe;
-  productEdition.textContent = product.edition;
-  productCondition.textContent = product.condition;
-  productPrice.textContent = formatCurrency(product.price);
+  productMeta.textContent = [product.category, product.franchise].filter(hasValue).join(" • ");
+
+  const infoFields = [
+    [productNumber, product.number],
+    [productUniverse, product.universe],
+    [productEdition, product.edition],
+    [productCondition, product.condition],
+  ];
+
+  infoFields.forEach(([element, value]) => {
+    if (!element) return;
+    const wrapper = element.closest("div");
+    const visible = hasValue(value);
+    element.textContent = visible ? value : "";
+    if (wrapper) {
+      wrapper.style.display = visible ? "" : "none";
+    }
+  });
+
+  productPrice.textContent = getProductPriceLabel(product, formatCurrency);
   const stockTone = getStockTone(product);
-  const stockLabel = getStockLabel(product);
+  const stockCount = Number(product.stock) || 0;
+  const stockLabel = stockCount <= 0
+    ? "Niet op voorraad"
+    : stockCount === 1
+      ? "Nog 1 beschikbaar"
+      : `Nog ${stockCount} beschikbaar`;
   collectorScore.textContent = `Verzamelaarscore ${getCollectorScore(product)}`;
-  productStock.textContent = `${stockLabel} • ${product.stock > 0 ? `${product.stock} resterend` : "uitverkocht"}`;
+  productStock.textContent = stockLabel;
   productStock.className = `product-stock ${stockTone}`;
   productDescription.textContent = product.description;
   renderCollectorInfo(product);

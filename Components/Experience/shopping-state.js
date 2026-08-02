@@ -32,7 +32,7 @@ const normalizeProduct = (product) => ({
   id: product.id,
   slug: product.slug || product.name?.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
   name: product.name,
-  price: product.price,
+  price: Number(product.price) || 0,
   image: product.image,
   universe: product.universe,
   franchise: product.franchise,
@@ -61,6 +61,10 @@ export const shoppingState = {
     const current = this.getCart();
     const normalized = normalizeProduct(product);
     const existing = current.find((item) => item.id === normalized.id);
+
+    if ((Number(normalized.price) || 0) <= 0) {
+      return { items: current, added: false, reason: "price-on-request" };
+    }
 
     if ((Number(normalized.stock) || 0) <= 0) {
       return { items: current, added: false, reason: "out-of-stock" };

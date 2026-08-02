@@ -144,7 +144,7 @@ const bindProductCardActions = (root) => {
   root?.querySelectorAll("[data-action]").forEach((trigger) => {
     const product = {
       id: Number(trigger.dataset.productId || 0),
-      name: trigger.dataset.productName || "Collector item",
+      name: trigger.dataset.productName || "Collectible",
       price: Number(trigger.dataset.productPrice || 0),
       image: trigger.dataset.productImage || "",
       universe: trigger.dataset.productUniverse || "",
@@ -167,7 +167,7 @@ engine.loadProducts("Data/products.json").then(() => {
 }).catch(() => {
   renderUniverseCards([]);
   if (productGrid) {
-    productGrid.innerHTML = '<p class="card-empty">Product catalog is unavailable right now.</p>';
+    productGrid.innerHTML = '<p class="card-empty">De productcatalogus is momenteel niet beschikbaar.</p>';
   }
 });
 

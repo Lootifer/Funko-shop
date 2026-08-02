@@ -4,7 +4,7 @@ export const createFilterSidebar = ({ categories, universes, brands, priceValue 
   <aside class="shop-sidebar" aria-label="Shop filters">
     <div class="filter-group">
       <h3>Zoeken</h3>
-      <input id="shopSearch" type="text" placeholder="Zoek collectibles" />
+      <input id="shopSearch" type="text" placeholder="Zoek verzamelitems" />
     </div>
 
     <div class="filter-group">
