@@ -19,23 +19,28 @@
         <section class="admin-grid">
           <article class="admin-card admin-stat-card">
             <p class="admin-label">Totaal producten</p>
-            <h3>120</h3>
+            <h3 id="statTotalProducts">0</h3>
             <p class="admin-detail">Verspreid over premium drops</p>
           </article>
           <article class="admin-card admin-stat-card">
             <p class="admin-label">Totaal universums</p>
-            <h3>12</h3>
+            <h3 id="statTotalUniverses">0</h3>
             <p class="admin-detail">Gecureerde verzamelwerelden</p>
           </article>
           <article class="admin-card admin-stat-card">
             <p class="admin-label">Weinig voorraad</p>
-            <h3>8</h3>
+            <h3 id="statLowStock">0</h3>
             <p class="admin-detail">Vraagt binnenkort aandacht</p>
           </article>
           <article class="admin-card admin-stat-card">
-            <p class="admin-label">Nieuwe producten</p>
-            <h3>6</h3>
-            <p class="admin-detail">Deze week toegevoegd</p>
+            <p class="admin-label">Volledige producten</p>
+            <h3 id="statCompleteProducts">0</h3>
+            <p class="admin-detail">Met complete kerngegevens</p>
+          </article>
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">Onvolledige producten</p>
+            <h3 id="statIncompleteProducts">0</h3>
+            <p class="admin-detail">Mist prijs, barcode, jaar, tekst of foto's</p>
           </article>
         </section>
 
@@ -71,6 +76,7 @@
       document.getElementById('adminSidebar').innerHTML = createAdminSidebar('dashboard');
       document.getElementById('adminTopbar').innerHTML = createAdminTopbar('Dashboard');
     </script>
+    <script type="module" src="assets/dashboard-admin.js"></script>
     <script type="module" src="assets/orders-overview.js"></script>
   </body>
 </html>

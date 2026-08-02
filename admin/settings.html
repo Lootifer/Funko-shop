@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Settings | Lootifer Admin</title>
+    <title>Instellingen | Lootifer Admin</title>
     <link rel="stylesheet" href="../Assets/Css/main.css" />
     <link rel="stylesheet" href="assets/admin.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,28 +25,28 @@
     <script type="module">
       import { createAdminSidebar, createAdminTopbar, createFormCard } from './components/layout.js';
       document.getElementById('adminSidebar').innerHTML = createAdminSidebar('settings');
-      document.getElementById('adminTopbar').innerHTML = createAdminTopbar('Settings');
+      document.getElementById('adminTopbar').innerHTML = createAdminTopbar('Instellingen');
       document.getElementById('productForm').innerHTML = createFormCard(
-        'Store Preferences',
+        'Winkelinstellingen',
         `
           <label>
-            Store Name
+            Winkelnaam
             <input value="Lootifer Collectibles" />
           </label>
           <label>
-            Fresh Drop Mode
+            Dropmodus
             <select>
-              <option>Enabled</option>
-              <option>Paused</option>
+              <option>Ingeschakeld</option>
+              <option>Gepauzeerd</option>
             </select>
           </label>
           <label>
-            Welcome Message
-            <textarea rows="4">Premium collector experience, ready for the next phase.</textarea>
+            Welkomstbericht
+            <textarea rows="4">Premium verzamelervaring, klaar voor de volgende fase.</textarea>
           </label>
           <label>
-            Default Currency
-            <input value="USD" />
+            Standaardvaluta
+            <input value="EUR" />
           </label>
         `
       );

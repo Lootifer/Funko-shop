@@ -10,8 +10,8 @@ export const createAdminSidebar = (active = "dashboard") => `
 
     <nav class="admin-nav">
       <a href="dashboard.html" class="${active === "dashboard" ? "active" : ""}">Dashboard</a>
-      <a href="products.html" class="${active === "products" ? "active" : ""}">Products</a>
-      <a href="settings.html" class="${active === "settings" ? "active" : ""}">Settings</a>
+      <a href="products.html" class="${active === "products" ? "active" : ""}">Producten</a>
+      <a href="settings.html" class="${active === "settings" ? "active" : ""}">Instellingen</a>
     </nav>
   </aside>
 `;
@@ -20,8 +20,8 @@ export const createAdminTopbar = (title = "Dashboard") => `
   <header class="admin-topbar">
     <h1>${title}</h1>
     <div class="admin-topbar-actions">
-      <span class="admin-pill">Collector Admin</span>
-      <a class="button secondary" href="../index.html">View Store</a>
+      <span class="admin-pill">Collector-beheer</span>
+      <a class="button secondary" href="../index.html">Bekijk winkel</a>
     </div>
   </header>
 `;

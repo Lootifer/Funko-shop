@@ -4,7 +4,9 @@ import { getMappedImageSet, PREMIUM_PLACEHOLDER_IMAGE } from "../../Products/pro
 const slugify = (value = "") => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 export const REQUIRED_FIELDS = [
+  "id",
   "name",
+  "slug",
   "sku",
   "category",
   "brand",
@@ -25,6 +27,42 @@ const toBoolean = (value) => {
 
 export const buildAutoSlug = ({ name = "", number = "" } = {}) => {
   return slugify(`${name} ${String(number).replace(/#/g, " ")}`);
+};
+
+const normalizeUniverseFolder = (universe = "") => {
+  const value = String(universe || "").trim().toLowerCase();
+  if (value.includes("marvel")) return "Marvel";
+  if (value.includes("dc") || value.includes("batman")) return "DC";
+  if (value.includes("disney")) return "Disney";
+  if (value.includes("anime") || value.includes("dragon") || value.includes("naruto") || value.includes("one piece")) return "Anime";
+  if (value.includes("game")) return "Games";
+  if (value.includes("tv") || value.includes("television")) return "Television";
+  return "Movies";
+};
+
+const getCategoryRoot = ({ category = "", brand = "" } = {}) => {
+  const source = `${category} ${brand}`.toLowerCase();
+  if (source.includes("funko")) return "funko";
+  if (source.includes("lego")) return "lego";
+  if (source.includes("hot toys") || source.includes("hottoys")) return "Hot Toys";
+  if (source.includes("pokemon")) return "Pokémon";
+  if (source.includes("trading cards") || source.includes("tcg")) return "Trading Cards";
+  if (source.includes("statue")) return "Statues";
+  return "funko";
+};
+
+export const getCanonicalImageInfo = ({ slug = "", category = "", brand = "", universe = "" } = {}) => {
+  const safeSlug = slugify(slug);
+  const root = getCategoryRoot({ category, brand });
+  const folder = root === "funko"
+    ? `Assets/Images/Products/${root}/${normalizeUniverseFolder(universe)}/${safeSlug}`
+    : `Assets/Images/Products/${root}/${safeSlug}`;
+
+  const files = ["front.webp", "back.webp", "left.webp", "right.webp", "box.webp"];
+  return {
+    folder,
+    paths: files.map((fileName) => `${folder}/${fileName}`),
+  };
 };
 
 const sanitizeList = (items = []) => {
@@ -114,36 +152,67 @@ export const validateDraft = ({ draft, products, editingId = null }) => {
   REQUIRED_FIELDS.forEach((field) => {
     const value = draft[field];
     if (value === undefined || value === null || value === "") {
-      errors.push(`${field} is required.`);
+      errors.push(`${field} is verplicht.`);
     }
   });
 
   if (!draft.slug) {
-    errors.push("slug is required.");
+    errors.push("slug is verplicht.");
+  }
+
+  if (Number.isNaN(draft.id) || Number(draft.id) <= 0) {
+    errors.push("id moet groter zijn dan 0.");
   }
 
   if (Number.isNaN(draft.sellingPrice) || draft.sellingPrice <= 0) {
-    errors.push("sellingPrice must be greater than 0.");
+    errors.push("sellingPrice moet groter zijn dan 0.");
   }
 
   if (Number.isNaN(draft.stock) || draft.stock < 0) {
-    errors.push("stock must be 0 or greater.");
+    errors.push("stock moet 0 of hoger zijn.");
   }
 
   const currentId = editingId === null ? null : Number(editingId);
+  const duplicateId = products.find((product) => Number(product.id) === Number(draft.id) && Number(product.id) !== currentId);
+  if (duplicateId) {
+    errors.push(`Dubbel id gevonden: ${draft.id}`);
+  }
+
   const duplicateSlug = products.find((product) => product.slug?.toLowerCase() === draft.slug.toLowerCase() && Number(product.id) !== currentId);
   if (duplicateSlug) {
-    errors.push(`Duplicate slug detected: ${draft.slug}`);
+    errors.push(`Dubbele slug gevonden: ${draft.slug}`);
   }
 
   const duplicateSku = products.find((product) => product.sku?.toLowerCase() === draft.sku.toLowerCase() && Number(product.id) !== currentId);
   if (duplicateSku) {
-    errors.push(`Duplicate SKU detected: ${draft.sku}`);
+    errors.push(`Dubbele SKU gevonden: ${draft.sku}`);
   }
 
   return {
     valid: errors.length === 0,
     errors,
+  };
+};
+
+export const getProductCompleteness = (product = {}) => {
+  const hasPrice = Number(product.sellingPrice) > 0;
+  const barcode = String(product.barcode || "").trim();
+  const hasBarcode = Boolean(barcode) && !/^unknown/i.test(barcode);
+  const hasReleaseYear = Number(product.releaseYear) > 0;
+  const hasDescription = Boolean(String(product.description || "").trim());
+  const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
+  const hasPhotos = images.length >= 5 && images[0] !== PREMIUM_PLACEHOLDER_IMAGE;
+
+  const missing = [];
+  if (!hasPrice) missing.push("prijs");
+  if (!hasBarcode) missing.push("barcode");
+  if (!hasReleaseYear) missing.push("uitgavejaar");
+  if (!hasDescription) missing.push("beschrijving");
+  if (!hasPhotos) missing.push("foto's");
+
+  return {
+    complete: missing.length === 0,
+    missing,
   };
 };
 

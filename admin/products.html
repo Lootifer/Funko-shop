@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Products | Lootifer Admin</title>
+    <title>Producten | Lootifer Admin</title>
     <link rel="stylesheet" href="../Assets/Css/main.css" />
     <link rel="stylesheet" href="assets/admin.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,29 +18,40 @@
 
         <section class="admin-section">
           <div class="admin-card">
-            <h3><span id="formModeLabel">Add Product</span></h3>
-            <p class="admin-detail" id="productStatus">Loading product catalog...</p>
+            <h3><span id="formModeLabel">Product toevoegen</span></h3>
+            <p class="admin-detail" id="productStatus">Productcatalogus wordt geladen...</p>
             <div class="admin-error" id="productErrors" style="display: none;"></div>
+
+            <div class="admin-toolbar">
+              <button class="button secondary" type="button" id="exportCatalogButton">Exporteer products.json</button>
+              <button class="button secondary" type="button" id="importCatalogButton">Importeer JSON</button>
+              <input id="importCatalogInput" type="file" accept="application/json" hidden />
+              <button class="button secondary" type="button" id="resetCatalogButton">Lokale wijzigingen resetten</button>
+            </div>
+
+            <div class="admin-import-preview" id="importPreview" style="display: none;"></div>
+
+            <div class="admin-overview-stats" id="productCompletenessStats"></div>
 
             <form id="productForm">
               <div class="admin-form-grid">
                 <label>
                   ID
-                  <input id="fieldId" type="number" placeholder="Auto-generated" disabled />
+                  <input id="fieldId" type="number" placeholder="Automatisch" required />
                 </label>
                 <label>
-                  Name *
-                  <input id="fieldName" placeholder="Collector figure name" required />
+                  Naam *
+                  <input id="fieldName" placeholder="Naam van het product" required />
                 </label>
                 <label>
-                  Number
-                  <input id="fieldNumber" placeholder="e.g. #593" />
+                  Nummer
+                  <input id="fieldNumber" placeholder="bijv. #593" />
                 </label>
                 <label>
                   Slug *
                   <div class="admin-inline-controls">
-                    <input id="fieldSlug" placeholder="auto-generated" required />
-                    <button class="button secondary" type="button" id="resetSlugButton">Auto</button>
+                    <input id="fieldSlug" placeholder="automatisch" required />
+                    <button class="button secondary" type="button" id="resetSlugButton">Genereer</button>
                   </div>
                 </label>
                 <label>
@@ -49,26 +60,26 @@
                 </label>
                 <label>
                   Barcode
-                  <input id="fieldBarcode" placeholder="UPC/EAN" />
+                  <input id="fieldBarcode" placeholder="EAN/UPC" />
                 </label>
                 <label>
-                  Category *
+                  Categorie *
                   <input id="fieldCategory" value="Funko Pop" required />
                 </label>
                 <label>
-                  Brand *
+                  Merk *
                   <input id="fieldBrand" value="Funko" required />
                 </label>
                 <label>
-                  Universe *
-                  <input id="fieldUniverse" placeholder="DC, Marvel, Pokemon" required />
+                  Universum *
+                  <input id="fieldUniverse" placeholder="DC, Marvel, Pokémon" required />
                 </label>
                 <label>
                   Franchise *
                   <input id="fieldFranchise" placeholder="Batman" required />
                 </label>
                 <label>
-                  Edition
+                  Editie
                   <input id="fieldEdition" value="Standard" />
                 </label>
                 <label>
@@ -76,39 +87,39 @@
                   <input id="fieldVariant" value="Standard" />
                 </label>
                 <label>
-                  Release Year
+                  Uitgavejaar
                   <input id="fieldReleaseYear" type="number" value="2026" />
                 </label>
                 <label>
-                  Condition
+                  Staat
                   <input id="fieldCondition" value="Mint" />
                 </label>
                 <label>
-                  Box Condition
+                  Staat doos
                   <input id="fieldBoxCondition" value="Mint" />
                 </label>
                 <label>
-                  Warehouse Location
+                  Magazijnlocatie
                   <input id="fieldWarehouseLocation" placeholder="WH-DC-593" />
                 </label>
                 <label>
-                  Purchase Price
+                  Inkoopprijs
                   <input id="fieldPurchasePrice" type="number" step="0.01" value="0" />
                 </label>
                 <label>
-                  Selling Price *
+                  Verkoopprijs *
                   <input id="fieldSellingPrice" type="number" step="0.01" value="0" required />
                 </label>
                 <label>
-                  Discount Price
+                  Actieprijs
                   <input id="fieldDiscountPrice" type="number" step="0.01" />
                 </label>
                 <label>
-                  Stock *
+                  Voorraad *
                   <input id="fieldStock" type="number" value="0" required />
                 </label>
                 <label>
-                  Reserved
+                  Gereserveerd (alleen admin)
                   <input id="fieldReserved" type="number" value="0" />
                 </label>
                 <label>
@@ -116,11 +127,11 @@
                   <input id="fieldTags" placeholder="exclusive, dc, batman" />
                 </label>
                 <label class="admin-grid-wide">
-                  Description
-                  <textarea id="fieldDescription" rows="3" placeholder="Short collector-facing description."></textarea>
+                  Beschrijving
+                  <textarea id="fieldDescription" rows="3" placeholder="Korte productbeschrijving voor de winkel."></textarea>
                 </label>
                 <label class="admin-grid-wide">
-                  Images (one per line)
+                  Afbeeldingen (een per regel)
                   <textarea id="fieldImages" rows="5" placeholder="Assets/Images/Products/funko/your-slug/front.webp"></textarea>
                 </label>
               </div>
@@ -129,30 +140,78 @@
                 <label><input id="fieldExclusive" type="checkbox" /> Exclusive</label>
                 <label><input id="fieldChase" type="checkbox" /> Chase</label>
                 <label><input id="fieldVaulted" type="checkbox" /> Vaulted</label>
-                <label><input id="fieldSigned" type="checkbox" /> Signed</label>
-                <label><input id="fieldProtectorIncluded" type="checkbox" /> Protector Included</label>
+                <label><input id="fieldSigned" type="checkbox" /> Gesigneerd</label>
+                <label><input id="fieldProtectorIncluded" type="checkbox" /> Protector inbegrepen</label>
               </div>
 
+              <div class="admin-canonical-preview" id="canonicalImageHint"></div>
+
               <div class="admin-form-actions">
-                <button class="button secondary" type="button" id="autoLinkImagesButton">Auto Link Images</button>
-                <button class="button secondary" type="button" id="cancelEditButton" style="display: none;">Cancel Edit</button>
-                <button class="button secondary" type="button" id="resetCatalogButton">Reset Local Changes</button>
-                <button class="button primary" type="submit" id="saveProductButton">Save Product</button>
+                <button class="button secondary" type="button" id="autoLinkImagesButton">Afbeeldingen koppelen</button>
+                <button class="button secondary" type="button" id="cancelEditButton" style="display: none;">Bewerken annuleren</button>
+                <button class="button primary" type="submit" id="saveProductButton">Product opslaan</button>
               </div>
-              <p class="admin-detail" id="imageSourceHint">Images: manual list or auto-linked by slug.</p>
+              <p class="admin-detail" id="imageSourceHint">Afbeeldingen: handmatig invoeren of automatisch koppelen via slug.</p>
             </form>
           </div>
         </section>
 
         <section class="admin-section">
           <div class="admin-card">
-            <h3>Live Preview</h3>
-            <p class="admin-detail">Preview reflects current form values before save.</p>
+            <h3>Live preview</h3>
+            <p class="admin-detail">Preview toont direct hoe de productkaart eruitziet vóór opslaan.</p>
             <div id="productLivePreview"></div>
           </div>
         </section>
 
         <section class="admin-section">
+          <div class="admin-card">
+            <h3>Productoverzicht</h3>
+            <div class="admin-filters-grid">
+              <label>
+                Zoeken
+                <input id="tableSearch" type="text" placeholder="Zoek op naam, slug, SKU of barcode" />
+              </label>
+              <label>
+                Universum
+                <select id="tableUniverseFilter"><option value="">Alle universums</option></select>
+              </label>
+              <label>
+                Franchise
+                <select id="tableFranchiseFilter"><option value="">Alle franchises</option></select>
+              </label>
+              <label>
+                Voorraadstatus
+                <select id="tableStockFilter">
+                  <option value="">Alles</option>
+                  <option value="in-stock">Op voorraad</option>
+                  <option value="low-stock">Lage voorraad (≤2)</option>
+                  <option value="out-of-stock">Niet op voorraad</option>
+                </select>
+              </label>
+              <label>
+                Ontbrekende info
+                <select id="tableMissingFilter">
+                  <option value="">Geen filter</option>
+                  <option value="any">Heeft ontbrekende gegevens</option>
+                  <option value="price">Mist prijs</option>
+                  <option value="barcode">Mist barcode</option>
+                  <option value="releaseYear">Mist uitgavejaar</option>
+                  <option value="description">Mist beschrijving</option>
+                  <option value="photos">Mist foto's</option>
+                </select>
+              </label>
+              <label>
+                Productstatus
+                <select id="tableArchiveFilter">
+                  <option value="active">Actief</option>
+                  <option value="archived">Gearchiveerd</option>
+                  <option value="all">Alles</option>
+                </select>
+              </label>
+            </div>
+            <p class="admin-detail" id="tableResultHint"></p>
+          </div>
           <div id="productTable"></div>
         </section>
       </main>

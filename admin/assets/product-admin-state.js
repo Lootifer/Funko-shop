@@ -3,6 +3,8 @@ import { normalizeProductCatalog } from "../../Products/product-schema.js";
 const STORAGE_KEY = "lootifer-admin-products-v1";
 const DATA_URL = new URL("../../Data/products.json", import.meta.url).href;
 
+export const ADMIN_STORAGE_KEY = STORAGE_KEY;
+
 const parseStoredCatalog = (value) => {
   try {
     const parsed = JSON.parse(value);
@@ -22,7 +24,7 @@ export const loadProductCatalog = async () => {
 
   const response = await fetch(DATA_URL);
   if (!response.ok) {
-    throw new Error("Unable to load products catalog.");
+    throw new Error("Productcatalogus kan niet worden geladen.");
   }
 
   const rawProducts = await response.json();
@@ -30,6 +32,16 @@ export const loadProductCatalog = async () => {
     products: normalizeProductCatalog(rawProducts),
     source: "file",
   };
+};
+
+export const loadFileProductCatalog = async () => {
+  const response = await fetch(DATA_URL, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error("Bronbestand Data/products.json kan niet worden geladen.");
+  }
+
+  const rawProducts = await response.json();
+  return normalizeProductCatalog(rawProducts);
 };
 
 export const saveProductCatalog = (products = []) => {

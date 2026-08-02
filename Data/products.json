@@ -1495,7 +1495,7 @@
         "warehouseLocation":  "WH-DC-066",
         "reserved":  0,
         "purchasePrice":  0,
-        "sellingPrice":  0,
+        "sellingPrice":  14.95,
         "discountPrice":  null,
         "thumbnail":  "Assets/Images/Products/Funko/DC/two-face-funko-pop-66/front.webp",
         "images":  [
@@ -1546,7 +1546,7 @@
         "warehouseLocation":  "WH-DC-113",
         "reserved":  0,
         "purchasePrice":  0,
-        "sellingPrice":  0,
+        "sellingPrice":  12.95,
         "discountPrice":  null,
         "thumbnail":  "Assets/Images/Products/Funko/DC/armored-batman-unmasked-funko-pop-113/front.webp",
         "images":  [
@@ -1597,7 +1597,7 @@
         "warehouseLocation":  "WH-DC-435",
         "reserved":  0,
         "purchasePrice":  0,
-        "sellingPrice":  0,
+        "sellingPrice":  10.95,
         "discountPrice":  null,
         "thumbnail":  "Assets/Images/Products/Funko/DC/black-orchid-funko-pop-435/front.webp",
         "images":  [
@@ -1647,7 +1647,7 @@
         "warehouseLocation":  "WH-DC-530",
         "reserved":  0,
         "purchasePrice":  0,
-        "sellingPrice":  0,
+        "sellingPrice":  12.95,
         "discountPrice":  null,
         "thumbnail":  "Assets/Images/Products/Funko/DC/the-riddler-funko-pop-530/front.webp",
         "images":  [
@@ -1697,7 +1697,7 @@
         "warehouseLocation":  "WH-MAR-480",
         "reserved":  0,
         "purchasePrice":  0,
-        "sellingPrice":  0,
+        "sellingPrice":  9.95,
         "discountPrice":  null,
         "thumbnail":  "Assets/Images/Products/Funko/Marvel/rescue-funko-pop-480/front.webp",
         "images":  [
