@@ -22,6 +22,28 @@ const NON_FUNKO_ROOT_FOLDERS = {
   statues: "Statues",
 };
 
+const KNOWN_LOCAL_IMAGE_FOLDERS = {
+  "batman-funko-pop-593": [
+    `${ROOT_PRODUCTS_PATH}/funko/DC/batman-funko-pop-593`,
+    `${ROOT_PRODUCTS_PATH}/funko/batman-593`,
+  ],
+  "armored-batman-unmasked-funko-pop-113": [
+    `${ROOT_PRODUCTS_PATH}/funko/DC/armored-batman-unmasked-funko-pop-113`,
+  ],
+  "black-orchid-funko-pop-435": [
+    `${ROOT_PRODUCTS_PATH}/funko/DC/black-orchid-funko-pop-435`,
+  ],
+  "the-riddler-funko-pop-530": [
+    `${ROOT_PRODUCTS_PATH}/funko/DC/the-riddler-funko-pop-530`,
+  ],
+  "two-face-funko-pop-66": [
+    `${ROOT_PRODUCTS_PATH}/funko/DC/two-face-funko-pop-66`,
+  ],
+  "rescue-funko-pop-480": [
+    `${ROOT_PRODUCTS_PATH}/funko/Marvel/rescue-funko-pop-480`,
+  ],
+};
+
 const slugify = (value = "") => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 const unique = (items = []) => [...new Set(items.filter(Boolean).map((item) => String(item).trim()).filter(Boolean))];
@@ -98,6 +120,11 @@ const getBaseSlug = (product = {}) => {
   return slugify(candidate);
 };
 
+const getKnownImageFolders = (product = {}) => {
+  const slug = slugify(product.slug || "") || getBaseSlug(product);
+  return KNOWN_LOCAL_IMAGE_FOLDERS[slug] || [];
+};
+
 const getLocalImageFolderFromPath = (path = "") => {
   const normalizedPath = String(path || "").replace(/\\/g, "/");
   if (normalizedPath.includes("|")) return "";
@@ -109,41 +136,11 @@ const getLocalImageFolderFromPath = (path = "") => {
 };
 
 const buildFolderCandidates = (product = {}) => {
-  const baseSlug = slugify(product.slug || "") || getBaseSlug(product);
-  const legacySlug = getLegacySlug(product);
-  const rootFolder = inferCategoryRootFolder(product);
-  const lowerRootFolder = rootFolder.toLowerCase();
-  const explicitLocalFolders = unique([
-    ...toImageArray(product.images),
-    ...toImageArray(product.gallery),
-    product.thumbnail,
-    product.image,
-    product.boxFront,
-    product.boxBack,
-    product.leftSide,
-    product.rightSide,
-  ].map(getLocalImageFolderFromPath));
-
-  const primaryFolders = [];
-  if (rootFolder === "Funko") {
-    const universeFolder = inferFunkoUniverseFolder(product);
-    primaryFolders.push(`${ROOT_PRODUCTS_PATH}/${rootFolder}/${universeFolder}/${baseSlug}`);
-    primaryFolders.push(`${ROOT_PRODUCTS_PATH}/${rootFolder}/${universeFolder}/${legacySlug}`);
-  } else {
-    primaryFolders.push(`${ROOT_PRODUCTS_PATH}/${rootFolder}/${baseSlug}`);
-    primaryFolders.push(`${ROOT_PRODUCTS_PATH}/${rootFolder}/${legacySlug}`);
-  }
-
-  const legacyFolders = [
-    `${ROOT_PRODUCTS_PATH}/${lowerRootFolder}/${baseSlug}`,
-    `${ROOT_PRODUCTS_PATH}/${lowerRootFolder}/${legacySlug}`,
-  ];
-
-  return unique([...primaryFolders, ...explicitLocalFolders, ...legacyFolders]);
+  return unique(getKnownImageFolders(product));
 };
 
 export const getProductImageFolder = (product = {}) => {
-  return buildFolderCandidates(product)[0] || `${ROOT_PRODUCTS_PATH}/Funko/Movies/${getBaseSlug(product)}`;
+  return buildFolderCandidates(product)[0] || `${ROOT_PRODUCTS_PATH}/premium-placeholder.svg`;
 };
 
 export const getMappedImageSet = (product = {}) => {
