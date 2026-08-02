@@ -5,7 +5,7 @@ import { createShoppingUi, syncHeaderCounters } from "../../Components/Experienc
 import { formatCurrency, formatQuantity } from "./formatting.js";
 import { createImageAttributes } from "../../Products/product-media.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
-import { addOrder, createOrderNumber, synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
+import { addOrder, synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -162,10 +162,6 @@ checkoutForm?.addEventListener("submit", (event) => {
     const deliveryMethodSelect = checkoutForm?.elements?.deliveryMethod;
     const deliveryMethodLabel = deliveryMethodSelect?.selectedOptions?.[0]?.textContent || values.deliveryMethod || "";
     const order = {
-      id: Date.now(),
-      number: createOrderNumber(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
       status: "Nieuw",
       paymentStatus: "Nog geen online betaling",
       isTestOrder: true,
@@ -206,7 +202,7 @@ checkoutForm?.addEventListener("submit", (event) => {
 
   run().catch((error) => {
     console.error("Afrekenen mislukt:", error);
-    showErrors(["Er ging iets mis bij het verwerken van de bestelling."]);
+    showErrors([error?.message || "Er ging iets mis bij het verwerken van de bestelling."]);
   });
 });
 

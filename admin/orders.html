@@ -19,12 +19,15 @@
         <section class="admin-section">
           <div class="admin-card">
             <h3>Bestellingen</h3>
-            <p class="admin-detail" id="ordersStatus">Lokale testbestellingen uit localStorage.</p>
+            <p class="admin-detail" id="ordersStatus">Bestellingen uit de database.</p>
 
             <div class="admin-toolbar">
               <button class="button secondary" type="button" id="exportAllOrdersButton">Exporteer alle orders (JSON)</button>
               <button class="button secondary" type="button" id="deleteAllTestOrdersButton">Verwijder alle testorders</button>
+              <button class="button secondary" type="button" id="migrateLegacyOrdersButton">Migreer oude lokale testorders</button>
             </div>
+
+            <div class="admin-import-preview" id="legacyMigrationPreview" style="display: none;"></div>
 
             <div class="admin-filters-grid">
               <label>

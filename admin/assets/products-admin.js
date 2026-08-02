@@ -1,7 +1,14 @@
 import { createAdminSidebar, createAdminTopbar } from "../components/layout.js";
 import { createProductCard } from "../../Components/ProductCard.js";
 import { normalizeProductCatalog } from "../../Products/product-schema.js";
-import { loadFileProductCatalog, loadProductCatalog, saveProductCatalog, clearSavedCatalog } from "./product-admin-state.js";
+import {
+  archiveProduct,
+  changeProductStock,
+  createProduct,
+  loadFileProductCatalog,
+  loadProductCatalog,
+  saveProduct,
+} from "./product-admin-state.js";
 import {
   buildAutoSlug,
   buildDraftFromForm,
@@ -162,8 +169,16 @@ const setProducts = (products = []) => {
   state.products = normalizeProductCatalog(products).map(withAdminDefaults);
 };
 
-const persistProducts = () => {
-  saveProductCatalog(state.products);
+const refreshProducts = async () => {
+  const loaded = await loadProductCatalog();
+  setProducts(loaded.products);
+  renderFilterOptions();
+  renderTable();
+  renderCompletenessStats();
+  if (state.editingId === null) {
+    fields.id.value = String(nextId());
+  }
+  return loaded;
 };
 
 const nextId = () => {
@@ -329,20 +344,31 @@ const renderImportPreview = (products) => {
   const applyButton = document.getElementById("applyImportButton");
   const cancelButton = document.getElementById("cancelImportButton");
 
-  applyButton?.addEventListener("click", () => {
-    const confirmed = window.confirm("Weet je zeker dat je de huidige lokale catalogus wilt vervangen met deze import?");
+  applyButton?.addEventListener("click", async () => {
+    const confirmed = window.confirm("Weet je zeker dat je deze import via de database wilt toepassen?");
     if (!confirmed) return;
 
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
     downloadJson(state.products, `producten-backup-${stamp}.json`);
 
-    setProducts(products);
-    persistProducts();
-    renderFilterOptions();
-    renderTable();
-    renderCompletenessStats();
-    resetImportPreview();
-    setStatus("Import succesvol toegepast. Er is eerst een back-up gedownload.", "accent");
+    try {
+      const existingIds = new Set(state.products.map((item) => Number(item.id)));
+      for (const product of products) {
+        if (existingIds.has(Number(product.id))) {
+          await saveProduct(Number(product.id), product);
+        } else {
+          await createProduct(product);
+        }
+      }
+
+      await refreshProducts();
+      resetImportPreview();
+      setStatus("Import succesvol toegepast via database. Eerst is een back-up gedownload.", "accent");
+      setErrors([]);
+    } catch (error) {
+      setErrors([error.message]);
+      setStatus(error.message, "error");
+    }
   });
 
   cancelButton?.addEventListener("click", () => {
@@ -454,7 +480,7 @@ const linkImagesBySlug = async () => {
   renderPreview();
 };
 
-const duplicateProduct = (product) => {
+const duplicateProduct = async (product) => {
   const id = nextId();
   const slugSet = new Set(state.products.map((item) => String(item.slug || "").toLowerCase()));
   const skuSet = new Set(state.products.map((item) => String(item.sku || "").toLowerCase()));
@@ -471,30 +497,27 @@ const duplicateProduct = (product) => {
     reserved: Number(product.reserved) || 0,
   };
 
-  state.products = [...state.products, copy].map(withAdminDefaults);
-  persistProducts();
-  renderFilterOptions();
-  renderTable();
-  renderCompletenessStats();
-  setStatus(`${copy.name} is gedupliceerd.`, "accent");
+  try {
+    await createProduct(copy);
+    await refreshProducts();
+    setStatus(`${copy.name} is gedupliceerd.`, "accent");
+  } catch (error) {
+    setErrors([error.message]);
+    setStatus(error.message, "error");
+  }
 };
 
-const setProductArchived = (id, archived) => {
-  state.products = state.products.map((item) => (Number(item.id) === Number(id) ? { ...item, archived } : item));
-  persistProducts();
-  renderTable();
-  renderCompletenessStats();
+const setProductArchived = async (id, archived) => {
+  await archiveProduct(id, archived);
+  await refreshProducts();
 };
 
-const adjustStock = (id, delta) => {
-  state.products = state.products.map((item) => {
-    if (Number(item.id) !== Number(id)) return item;
-    const nextStock = Math.max(0, (Number(item.stock) || 0) + delta);
-    return { ...item, stock: nextStock };
-  });
-  persistProducts();
-  renderTable();
-  renderCompletenessStats();
+const adjustStock = async (id, delta) => {
+  const product = state.products.find((item) => Number(item.id) === Number(id));
+  if (!product) return;
+  const nextStock = Math.max(0, (Number(product.stock) || 0) + delta);
+  await changeProductStock(id, nextStock);
+  await refreshProducts();
 };
 
 const renderTable = () => {
@@ -583,40 +606,57 @@ const renderTable = () => {
   });
 
   root.table.querySelectorAll("[data-duplicate-id]").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const id = Number(button.dataset.duplicateId || 0);
       const product = state.products.find((item) => Number(item.id) === id);
       if (!product) return;
-      duplicateProduct(product);
+      await duplicateProduct(product);
     });
   });
 
   root.table.querySelectorAll("[data-archive-id]").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const id = Number(button.dataset.archiveId || 0);
       const archiveNext = button.dataset.archiveState === "1";
-      setProductArchived(id, archiveNext);
       const product = state.products.find((item) => Number(item.id) === id);
-      if (product) {
-        setStatus(`${product.name} is ${archiveNext ? "gearchiveerd" : "hersteld"}.`, "accent");
+      try {
+        await setProductArchived(id, archiveNext);
+        if (product) {
+          setStatus(`${product.name} is ${archiveNext ? "gearchiveerd" : "hersteld"}.`, "accent");
+        }
+      } catch (error) {
+        setErrors([error.message]);
+        setStatus(error.message, "error");
       }
     });
   });
 
   root.table.querySelectorAll("[data-stock-plus]").forEach((button) => {
-    button.addEventListener("click", () => {
-      adjustStock(Number(button.dataset.stockPlus || 0), 1);
+    button.addEventListener("click", async () => {
+      try {
+        await adjustStock(Number(button.dataset.stockPlus || 0), 1);
+        setStatus("Voorraad bijgewerkt via database.", "accent");
+      } catch (error) {
+        setErrors([error.message]);
+        setStatus(error.message, "error");
+      }
     });
   });
 
   root.table.querySelectorAll("[data-stock-minus]").forEach((button) => {
-    button.addEventListener("click", () => {
-      adjustStock(Number(button.dataset.stockMinus || 0), -1);
+    button.addEventListener("click", async () => {
+      try {
+        await adjustStock(Number(button.dataset.stockMinus || 0), -1);
+        setStatus("Voorraad bijgewerkt via database.", "accent");
+      } catch (error) {
+        setErrors([error.message]);
+        setStatus(error.message, "error");
+      }
     });
   });
 };
 
-const saveProduct = async (event) => {
+const handleSaveProduct = async (event) => {
   event.preventDefault();
 
   const formData = readFormData();
@@ -644,24 +684,25 @@ const saveProduct = async (event) => {
     autoLinkedImages: state.autoLinkedImages,
   });
 
-  const nextProducts = editingId === null
-    ? [...state.products, savedProduct]
-    : state.products.map((item) => (Number(item.id) === Number(editingId) ? { ...savedProduct, archived: item.archived } : item));
+  try {
+    if (editingId === null) {
+      await createProduct(savedProduct);
+    } else {
+      await saveProduct(Number(editingId), savedProduct);
+    }
 
-  setProducts(nextProducts);
-  persistProducts();
-
-  renderFilterOptions();
-  renderTable();
-  renderCompletenessStats();
-
-  setErrors([]);
-  setStatus(editingId === null ? `${savedProduct.name} toegevoegd.` : `${savedProduct.name} bijgewerkt.`, "accent");
-  resetForm();
+    await refreshProducts();
+    setErrors([]);
+    setStatus(editingId === null ? `${savedProduct.name} toegevoegd.` : `${savedProduct.name} bijgewerkt.`, "accent");
+    resetForm();
+  } catch (error) {
+    setErrors([error.message]);
+    setStatus(error.message, "error");
+  }
 };
 
 const bindFormInteractions = () => {
-  root.form?.addEventListener("submit", saveProduct);
+  root.form?.addEventListener("submit", handleSaveProduct);
 
   const rerenderInputs = [
     fields.id,
@@ -736,18 +777,19 @@ const bindFormInteractions = () => {
   });
 
   root.resetData?.addEventListener("click", async () => {
-    const confirmed = window.confirm("Lokale adminwijzigingen verwijderen en producten opnieuw laden vanuit Data/products.json?");
+    const confirmed = window.confirm("Producten opnieuw laden vanuit de database?");
     if (!confirmed) return;
 
-    clearSavedCatalog();
-    const loaded = await loadProductCatalog();
-    setProducts(loaded.products);
-    renderFilterOptions();
-    renderTable();
-    renderCompletenessStats();
-    resetForm();
-    resetImportPreview();
-    setStatus("Lokale adminwijzigingen zijn verwijderd.", "accent");
+    try {
+      await refreshProducts();
+      resetForm();
+      resetImportPreview();
+      setStatus("Producten opnieuw geladen vanuit de database.", "accent");
+      setErrors([]);
+    } catch (error) {
+      setErrors([error.message]);
+      setStatus("De server is niet bereikbaar. Probeer het later opnieuw.", "error");
+    }
   });
 
   [
@@ -806,21 +848,17 @@ const init = async () => {
   bindFormInteractions();
 
   try {
-    const loaded = await loadProductCatalog();
-    setProducts(loaded.products);
-    renderFilterOptions();
-    renderTable();
-    renderCompletenessStats();
+    const loaded = await refreshProducts();
     resetForm();
 
     setStatus(
-      loaded.source === "local"
-        ? "Producten geladen vanuit lokale adminwijzigingen."
+      loaded.source === "api"
+        ? "Producten geladen vanuit database."
         : "Producten geladen vanuit Data/products.json.",
       "muted"
     );
   } catch (error) {
-    setStatus("Productcatalogus kan niet worden geladen.", "error");
+    setStatus("De server is niet bereikbaar. Probeer het later opnieuw.", "error");
     setErrors([error.message]);
 
     try {

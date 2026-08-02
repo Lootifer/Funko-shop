@@ -2,26 +2,43 @@ const API_BASE = (typeof window !== "undefined" && window.LOOTIFER_API_BASE)
   ? String(window.LOOTIFER_API_BASE).replace(/\/$/, "")
   : "http://localhost:3001/api";
 
+export const SERVER_UNREACHABLE_MESSAGE = "De server is niet bereikbaar. Probeer het later opnieuw.";
+
+export class ApiClientError extends Error {
+  constructor(message, { status = 0, offline = false, details = [] } = {}) {
+    super(message);
+    this.name = "ApiClientError";
+    this.status = status;
+    this.offline = offline;
+    this.details = Array.isArray(details) ? details : [];
+  }
+}
+
 const requestJson = async (path, options = {}) => {
-  const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE}${path}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      },
+      ...options,
+    });
+  } catch {
+    throw new ApiClientError(SERVER_UNREACHABLE_MESSAGE, { offline: true });
+  }
 
   if (!response.ok) {
-    let details = "";
+    let message = `API ${response.status}`;
+    let details = [];
     try {
       const body = await response.json();
-      details = body?.error || body?.details || "";
+      message = body?.error || body?.details || message;
+      details = Array.isArray(body?.details) ? body.details : [];
     } catch {
-      details = "";
+      message = `API ${response.status}`;
     }
-
-    const suffix = details ? `: ${details}` : "";
-    throw new Error(`API ${response.status}${suffix}`);
+    throw new ApiClientError(message, { status: response.status, details });
   }
 
   return response.json();
@@ -46,6 +63,38 @@ export const fetchProductByIdentifier = async (idOrSlug) => {
   return payload?.product || null;
 };
 
+export const createProductInApi = async (productPayload) => {
+  const payload = await requestJson("/products", {
+    method: "POST",
+    body: JSON.stringify(productPayload || {}),
+  });
+  return payload?.product || null;
+};
+
+export const updateProductInApi = async (productId, productPayload) => {
+  const payload = await requestJson(`/products/${encodeURIComponent(String(productId))}`, {
+    method: "PUT",
+    body: JSON.stringify(productPayload || {}),
+  });
+  return payload?.product || null;
+};
+
+export const updateProductStockInApi = async (productId, stock) => {
+  const payload = await requestJson(`/products/${encodeURIComponent(String(productId))}/stock`, {
+    method: "PATCH",
+    body: JSON.stringify({ stock }),
+  });
+  return payload?.product || null;
+};
+
+export const updateProductArchiveInApi = async (productId, archived) => {
+  const payload = await requestJson(`/products/${encodeURIComponent(String(productId))}/archive`, {
+    method: "PATCH",
+    body: JSON.stringify({ archived }),
+  });
+  return payload?.product || null;
+};
+
 export const fetchOrdersFromApi = async () => {
   const payload = await requestJson("/orders", { method: "GET" });
   return Array.isArray(payload?.orders) ? payload.orders : [];
@@ -59,12 +108,24 @@ export const createOrderInApi = async (orderPayload) => {
   return payload?.order || null;
 };
 
-export const updateOrderStatusInApi = async (orderId, status) => {
-  const payload = await requestJson(`/orders/${encodeURIComponent(String(orderId))}/status`, {
+export const fetchOrderByNumberFromApi = async (orderNumber) => {
+  const payload = await requestJson(`/orders/${encodeURIComponent(String(orderNumber))}`, { method: "GET" });
+  return payload?.order || null;
+};
+
+export const updateOrderStatusInApi = async (orderNumber, status) => {
+  const payload = await requestJson(`/orders/${encodeURIComponent(String(orderNumber))}/status`, {
     method: "PATCH",
     body: JSON.stringify({ status }),
   });
   return payload?.order || null;
+};
+
+export const deleteOrderInApi = async (orderNumber) => {
+  const payload = await requestJson(`/orders/${encodeURIComponent(String(orderNumber))}`, {
+    method: "DELETE",
+  });
+  return Boolean(payload?.deleted);
 };
 
 export const adjustStockInApi = async ({ items = [], mode = "decrease", reason = "manual-adjustment", note = "" } = {}) => {

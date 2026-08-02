@@ -5,7 +5,6 @@ const STORAGE_KEYS = {
   recent: "lootifer-recent",
   notifications: "lootifer-notifications",
   club: "lootifer-club",
-  orders: "lootifer-test-orders",
 };
 
 const emitStateChange = (key = "") => {
@@ -171,17 +170,6 @@ export const shoppingState = {
     const current = readStorage(STORAGE_KEYS.club);
     const next = [...current, { email, createdAt: new Date().toISOString() }];
     writeStorage(STORAGE_KEYS.club, next);
-    return next;
-  },
-  getOrders() {
-    return readStorage(STORAGE_KEYS.orders);
-  },
-  saveOrders(orders) {
-    writeStorage(STORAGE_KEYS.orders, orders);
-  },
-  addOrder(order) {
-    const next = [order, ...this.getOrders()];
-    this.saveOrders(next);
     return next;
   },
 };

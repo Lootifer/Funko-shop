@@ -40,13 +40,13 @@ router.get("/", async (request, response, next) => {
   }
 });
 
-router.get("/:id", async (request, response, next) => {
+router.get("/:orderNumber", async (request, response, next) => {
   try {
-    const id = Number(request.params.id);
-    if (!id) return response.status(400).json({ error: "Valid order id is required." });
+    const orderNumber = String(request.params.orderNumber || "").trim();
+    if (!orderNumber) return response.status(400).json({ error: "Ongeldig ordernummer." });
 
-    const row = await get("SELECT * FROM orders WHERE id = ?", [id]);
-    if (!row) return response.status(404).json({ error: "Order not found." });
+    const row = await get("SELECT * FROM orders WHERE number = ?", [orderNumber]);
+    if (!row) return response.status(404).json({ error: "Bestelling niet gevonden." });
 
     const order = await buildOrderResponse(row);
     response.json({ order });
@@ -62,11 +62,11 @@ router.post("/", async (request, response, next) => {
     const customer = payload.customer && typeof payload.customer === "object" ? payload.customer : null;
 
     if (!items.length) {
-      return response.status(400).json({ error: "Order must contain at least one item." });
+      return response.status(400).json({ error: "Een bestelling moet minimaal één product bevatten." });
     }
 
     if (!customer?.name || !customer?.email) {
-      return response.status(400).json({ error: "Customer name and email are required." });
+      return response.status(400).json({ error: "Klantnaam en e-mail zijn verplicht." });
     }
 
     const nowIso = new Date().toISOString();
@@ -88,12 +88,12 @@ router.post("/", async (request, response, next) => {
 
         const product = await get("SELECT id, name, thumbnail, stock, selling_price FROM products WHERE id = ?", [productId]);
         if (!product) {
-          throw Object.assign(new Error(`Product ${productId} not found.`), { status: 409 });
+          throw Object.assign(new Error(`Product ${productId} bestaat niet.`), { status: 409 });
         }
 
         const stock = Math.max(0, Number(product.stock) || 0);
         if (stock < quantity) {
-          throw Object.assign(new Error(`${product.name} has only ${stock} in stock.`), { status: 409 });
+          throw Object.assign(new Error(`${product.name} heeft maar ${stock} op voorraad.`), { status: 409 });
         }
 
         const unitPrice = Number(product.selling_price) || 0;
@@ -111,7 +111,7 @@ router.post("/", async (request, response, next) => {
       }
 
       if (!normalizedItems.length) {
-        throw Object.assign(new Error("No valid order items were supplied."), { status: 400 });
+        throw Object.assign(new Error("Er zijn geen geldige orderregels aangeleverd."), { status: 400 });
       }
 
       const insertedOrder = await run(
@@ -166,24 +166,25 @@ router.post("/", async (request, response, next) => {
     }
   } catch (error) {
     if (error && typeof error.status === "number") {
-      return response.status(error.status).json({ error: error.message || "Order could not be created." });
+      return response.status(error.status).json({ error: error.message || "Bestelling kon niet worden aangemaakt." });
     }
     return next(error);
   }
 });
 
-router.patch("/:id/status", async (request, response, next) => {
+router.patch("/:orderNumber/status", async (request, response, next) => {
   try {
-    const id = Number(request.params.id);
+    const orderNumber = String(request.params.orderNumber || "").trim();
     const nextStatus = String(request.body?.status || "").trim();
 
-    if (!id) return response.status(400).json({ error: "Valid order id is required." });
+    if (!orderNumber) return response.status(400).json({ error: "Ongeldig ordernummer." });
     if (!ORDER_STATUSES.includes(nextStatus)) {
-      return response.status(400).json({ error: "Invalid order status." });
+      return response.status(400).json({ error: "Ongeldige orderstatus." });
     }
 
-    const order = await get("SELECT * FROM orders WHERE id = ?", [id]);
-    if (!order) return response.status(404).json({ error: "Order not found." });
+    const order = await get("SELECT * FROM orders WHERE number = ?", [orderNumber]);
+    if (!order) return response.status(404).json({ error: "Bestelling niet gevonden." });
+    const orderId = Number(order.id) || 0;
 
     const currentStatus = order.status || "Nieuw";
     const shouldRestoreStock = nextStatus === "Geannuleerd" && currentStatus !== "Geannuleerd" && !order.stock_restored_at;
@@ -191,7 +192,7 @@ router.patch("/:id/status", async (request, response, next) => {
     await exec("BEGIN TRANSACTION");
     try {
       if (shouldRestoreStock) {
-        const orderItems = await all("SELECT * FROM order_items WHERE order_id = ?", [id]);
+        const orderItems = await all("SELECT * FROM order_items WHERE order_id = ?", [orderId]);
         for (const item of orderItems) {
           const product = await get("SELECT id, stock FROM products WHERE id = ?", [item.product_id]);
           if (!product) continue;
@@ -205,7 +206,7 @@ router.patch("/:id/status", async (request, response, next) => {
             `INSERT INTO stock_transactions (product_id, order_id, quantity, mode, reason, note)
              VALUES (?, ?, ?, 'increase', 'order-cancelled', ?)`
             ,
-            [item.product_id, id, quantity, `Order ${order.number} cancelled`]
+            [item.product_id, orderId, quantity, `Order ${order.number} cancelled`]
           );
         }
       }
@@ -217,7 +218,7 @@ router.patch("/:id/status", async (request, response, next) => {
            ELSE stock_restored_at
          END
          WHERE id = ?`,
-        [nextStatus, new Date().toISOString(), shouldRestoreStock ? 1 : 0, shouldRestoreStock ? new Date().toISOString() : null, id]
+        [nextStatus, new Date().toISOString(), shouldRestoreStock ? 1 : 0, shouldRestoreStock ? new Date().toISOString() : null, orderId]
       );
 
       await exec("COMMIT");
@@ -226,10 +227,29 @@ router.patch("/:id/status", async (request, response, next) => {
       throw error;
     }
 
-    const updated = await get("SELECT * FROM orders WHERE id = ?", [id]);
+    const updated = await get("SELECT * FROM orders WHERE id = ?", [orderId]);
     response.json({ order: await buildOrderResponse(updated), source: "database" });
   } catch (error) {
     next(error);
+  }
+});
+
+router.delete("/:orderNumber", async (request, response, next) => {
+  try {
+    const orderNumber = String(request.params.orderNumber || "").trim();
+    if (!orderNumber) return response.status(400).json({ error: "Ongeldig ordernummer." });
+
+    const order = await get("SELECT * FROM orders WHERE number = ?", [orderNumber]);
+    if (!order) return response.status(404).json({ error: "Bestelling niet gevonden." });
+
+    if (Number(order.is_test_order) === 0) {
+      return response.status(403).json({ error: "Alleen testorders mogen worden verwijderd." });
+    }
+
+    await run("DELETE FROM orders WHERE id = ?", [order.id]);
+    return response.json({ deleted: true, orderNumber });
+  } catch (error) {
+    return next(error);
   }
 });
 

@@ -1,10 +1,12 @@
 import { createAdminSidebar, createAdminTopbar } from "../components/layout.js";
 import {
+  backupLegacyLocalOrders,
+  deleteOrderByNumber,
+  getLegacyLocalOrders,
+  getOrderByNumber,
   ORDER_STATUSES,
-  deleteAllTestOrders,
-  deleteOrderById,
-  getOrderById,
   getOrders,
+  migrateLegacyLocalOrdersToApi,
   syncOrdersFromApi,
   updateOrderStatus,
 } from "../../Components/Experience/order-inventory.js";
@@ -24,10 +26,12 @@ const root = {
   customerFilter: document.getElementById("orderCustomerFilter"),
   exportAll: document.getElementById("exportAllOrdersButton"),
   deleteAllTests: document.getElementById("deleteAllTestOrdersButton"),
+  migrateLegacy: document.getElementById("migrateLegacyOrdersButton"),
+  migrationPreview: document.getElementById("legacyMigrationPreview"),
 };
 
 const state = {
-  selectedOrderId: null,
+  selectedOrderNumber: null,
 };
 
 const escapeHtml = (value = "") => String(value)
@@ -50,6 +54,18 @@ const formatDateTime = (value) => {
 
 const downloadJson = (data, fileName) => {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+};
+
+const downloadText = (text, fileName) => {
+  const blob = new Blob([text], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -100,7 +116,7 @@ const renderStatusOptions = () => {
 const renderOrderDetails = () => {
   if (!root.detailCard) return;
 
-  const order = getOrderById(state.selectedOrderId);
+  const order = getOrders().find((entry) => entry.number === state.selectedOrderNumber) || null;
   if (!order) {
     root.detailCard.innerHTML = `
       <h3>Orderdetails</h3>
@@ -117,12 +133,12 @@ const renderOrderDetails = () => {
     <p class="admin-detail">Lokaal opgeslagen testorder${order.isTestOrder === false ? "" : " (test)"}.</p>
 
     <div class="admin-form-actions">
-      <button class="button secondary" type="button" data-print-order="${order.id}">Print order</button>
-      <button class="button secondary" type="button" data-mark-confirmed="${order.id}">Markeer als bevestigd</button>
-      <button class="button secondary" type="button" data-mark-shipped="${order.id}">Markeer als verzonden</button>
-      <button class="button secondary" type="button" data-cancel-order="${order.id}">Annuleer order</button>
-      <button class="button secondary" type="button" data-export-order="${order.id}">Exporteer order (JSON)</button>
-      <button class="button secondary" type="button" data-delete-order="${order.id}">Verwijder testorder</button>
+      <button class="button secondary" type="button" data-print-order="${escapeHtml(order.number)}">Print order</button>
+      <button class="button secondary" type="button" data-mark-confirmed="${escapeHtml(order.number)}">Markeer als bevestigd</button>
+      <button class="button secondary" type="button" data-mark-shipped="${escapeHtml(order.number)}">Markeer als verzonden</button>
+      <button class="button secondary" type="button" data-cancel-order="${escapeHtml(order.number)}">Annuleer order</button>
+      <button class="button secondary" type="button" data-export-order="${escapeHtml(order.number)}">Exporteer order (JSON)</button>
+      <button class="button secondary" type="button" data-delete-order="${escapeHtml(order.number)}">Verwijder testorder</button>
     </div>
 
     <div class="admin-order-detail-grid">
@@ -177,32 +193,48 @@ const renderOrderDetails = () => {
   root.detailCard.querySelector("[data-print-order]")?.addEventListener("click", () => window.print());
 
   root.detailCard.querySelector("[data-mark-confirmed]")?.addEventListener("click", async () => {
-    await updateOrderStatus(order.id, "Bevestigd");
-    setStatus("Order gemarkeerd als bevestigd.", "accent");
-    render();
+    try {
+      await updateOrderStatus(order.number, "Bevestigd");
+      setStatus("Order gemarkeerd als bevestigd.", "accent");
+      render();
+    } catch (error) {
+      setStatus(error.message, "error");
+    }
   });
 
   root.detailCard.querySelector("[data-mark-shipped]")?.addEventListener("click", async () => {
-    await updateOrderStatus(order.id, "Verzonden");
-    setStatus("Order gemarkeerd als verzonden.", "accent");
-    render();
+    try {
+      await updateOrderStatus(order.number, "Verzonden");
+      setStatus("Order gemarkeerd als verzonden.", "accent");
+      render();
+    } catch (error) {
+      setStatus(error.message, "error");
+    }
   });
 
   root.detailCard.querySelector("[data-cancel-order]")?.addEventListener("click", async () => {
     const confirmed = window.confirm("Weet je zeker dat je deze order wilt annuleren? Voorraad wordt eenmalig hersteld.");
     if (!confirmed) return;
-    await updateOrderStatus(order.id, "Geannuleerd");
-    setStatus("Order geannuleerd. Voorraad is hersteld waar nodig.", "accent");
-    render();
+    try {
+      await updateOrderStatus(order.number, "Geannuleerd");
+      setStatus("Order geannuleerd. Voorraad is hersteld waar nodig.", "accent");
+      render();
+    } catch (error) {
+      setStatus(error.message, "error");
+    }
   });
 
-  root.detailCard.querySelector("[data-delete-order]")?.addEventListener("click", () => {
+  root.detailCard.querySelector("[data-delete-order]")?.addEventListener("click", async () => {
     const confirmed = window.confirm("Weet je zeker dat je deze testorder wilt verwijderen?");
     if (!confirmed) return;
-    deleteOrderById(order.id);
-    state.selectedOrderId = null;
-    setStatus("Testorder verwijderd.", "accent");
-    render();
+    try {
+      await deleteOrderByNumber(order.number);
+      state.selectedOrderNumber = null;
+      setStatus("Testorder verwijderd.", "accent");
+      render();
+    } catch (error) {
+      setStatus(error.message, "error");
+    }
   });
 
   root.detailCard.querySelector("[data-export-order]")?.addEventListener("click", () => {
@@ -237,17 +269,24 @@ const renderTable = () => {
         </td>
         <td>${order.isTestOrder === false ? "Productie" : "Testorder (lokaal)"}</td>
         <td>
-          <button class="button secondary" type="button" data-open-order="${order.id}">Openen</button>
+          <button class="button secondary" type="button" data-open-order="${escapeHtml(order.number || "")}">Openen</button>
         </td>
       </tr>
     `).join("")
     : '<tr><td colspan="7">Geen bestellingen gevonden voor deze filters.</td></tr>';
 
   root.tableBody.querySelectorAll("[data-open-order]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.selectedOrderId = Number(button.dataset.openOrder || 0);
-      renderOrderDetails();
-      root.detailCard?.scrollIntoView({ behavior: "smooth", block: "start" });
+    button.addEventListener("click", async () => {
+      const orderNumber = String(button.dataset.openOrder || "");
+      if (!orderNumber) return;
+      try {
+        await getOrderByNumber(orderNumber);
+        state.selectedOrderNumber = orderNumber;
+        renderOrderDetails();
+        root.detailCard?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
     });
   });
 
@@ -264,13 +303,79 @@ const renderTable = () => {
         }
       }
 
-      await updateOrderStatus(orderId, nextStatus);
-      setStatus("Orderstatus bijgewerkt.", "accent");
-      if (state.selectedOrderId === orderId) {
-        renderOrderDetails();
+      const order = getOrders().find((entry) => Number(entry.id) === orderId);
+      if (!order?.number) {
+        setStatus("Ordernummer ontbreekt voor deze bestelling.", "error");
+        renderTable();
+        return;
       }
-      renderTable();
+
+      try {
+        await updateOrderStatus(order.number, nextStatus);
+        setStatus("Orderstatus bijgewerkt.", "accent");
+        if (state.selectedOrderNumber === order.number) {
+          renderOrderDetails();
+        }
+        renderTable();
+      } catch (error) {
+        setStatus(error.message, "error");
+        renderTable();
+      }
     });
+  });
+};
+
+const renderLegacyMigrationPreview = () => {
+  if (!root.migrationPreview) return;
+
+  const legacy = getLegacyLocalOrders();
+  if (!legacy.length) {
+    root.migrationPreview.style.display = "none";
+    root.migrationPreview.innerHTML = "";
+    return;
+  }
+
+  root.migrationPreview.style.display = "block";
+  root.migrationPreview.innerHTML = `
+    <h4>Migratievoorbeeld lokale testorders</h4>
+    <p class="admin-detail">${legacy.length} lokale order${legacy.length === 1 ? "" : "s"} gevonden in localStorage.</p>
+    <ul>
+      ${legacy.slice(0, 5).map((order) => `<li>${escapeHtml(order.number || "zonder nummer")} - ${escapeHtml(order.customer?.name || "onbekende klant")}</li>`).join("")}
+    </ul>
+    <p class="admin-detail">Eerst wordt een handmatige back-up gedownload. Lokale orders blijven behouden totdat de API-migratie slaagt.</p>
+    <div class="admin-form-actions">
+      <button class="button secondary" type="button" id="downloadLegacyBackupButton">Download back-up</button>
+      <button class="button primary" type="button" id="runLegacyMigrationButton">Migratie starten</button>
+      <button class="button secondary" type="button" id="hideLegacyMigrationButton">Sluiten</button>
+    </div>
+  `;
+
+  document.getElementById("downloadLegacyBackupButton")?.addEventListener("click", () => {
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    downloadText(backupLegacyLocalOrders(), `legacy-testorders-backup-${stamp}.json`);
+    setStatus("Back-up van lokale testorders gedownload.", "accent");
+  });
+
+  document.getElementById("runLegacyMigrationButton")?.addEventListener("click", async () => {
+    const confirmed = window.confirm("Eerst back-up downloaden en daarna lokale testorders naar de API migreren?");
+    if (!confirmed) return;
+
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    downloadText(backupLegacyLocalOrders(), `legacy-testorders-backup-${stamp}.json`);
+
+    const result = await migrateLegacyLocalOrdersToApi(legacy);
+    if (result.errors.length) {
+      setStatus(`Migratie deels voltooid: ${result.migrated.length} gelukt, ${result.errors.length} mislukt.`, "error");
+    } else {
+      setStatus(`Migratie geslaagd: ${result.migrated.length} orders overgezet.`, "accent");
+    }
+    await syncOrdersFromApi();
+    render();
+  });
+
+  document.getElementById("hideLegacyMigrationButton")?.addEventListener("click", () => {
+    root.migrationPreview.style.display = "none";
+    root.migrationPreview.innerHTML = "";
   });
 };
 
@@ -282,20 +387,36 @@ const bindToolbarActions = () => {
   });
 
   root.deleteAllTests?.addEventListener("click", () => {
-    const confirmed = window.confirm("Weet je zeker dat je alle lokaal opgeslagen testorders wilt verwijderen?");
-    if (!confirmed) return;
+    const run = async () => {
+      const testOrders = getOrders().filter((order) => order.isTestOrder !== false);
+      if (!testOrders.length) {
+        setStatus("Geen testorders om te verwijderen.", "muted");
+        return;
+      }
 
-    const { backup } = deleteAllTestOrders();
-    if (backup.length) {
-      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-      downloadJson(backup, `testorders-backup-${stamp}.json`);
-      setStatus("Testorders verwijderd. Eerst is een back-up gedownload.", "accent");
-    } else {
-      setStatus("Er waren geen testorders om te verwijderen.", "muted");
+      const confirmed = window.confirm(`Weet je zeker dat je ${testOrders.length} testorders wilt verwijderen?`);
+      if (!confirmed) return;
+
+      for (const order of testOrders) {
+        await deleteOrderByNumber(order.number);
+      }
+
+      await syncOrdersFromApi();
+      state.selectedOrderNumber = null;
+      render();
+      setStatus("Alle testorders zijn verwijderd via de database.", "accent");
+    };
+
+    run().catch((error) => {
+      setStatus(error.message, "error");
+    });
+  });
+
+  root.migrateLegacy?.addEventListener("click", () => {
+    renderLegacyMigrationPreview();
+    if (!getLegacyLocalOrders().length) {
+      setStatus("Geen oude lokale testorders gevonden voor migratie.", "muted");
     }
-
-    state.selectedOrderId = null;
-    render();
   });
 
   [root.search, root.statusFilter, root.dateFilter, root.customerFilter].forEach((field) => {
@@ -323,8 +444,9 @@ const initialize = async () => {
   try {
     await syncOrdersFromApi();
     setStatus("Bestellingen geladen vanuit database.", "accent");
+    renderLegacyMigrationPreview();
   } catch {
-    setStatus("Database niet bereikbaar. Lokale testorders worden gebruikt.", "muted");
+    setStatus("De server is niet bereikbaar. Probeer het later opnieuw.", "error");
   }
 
   render();

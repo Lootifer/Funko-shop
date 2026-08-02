@@ -41,6 +41,7 @@ export const toApiProduct = (row = {}) => {
     purchasePrice: Number(row.purchase_price) || 0,
     sellingPrice,
     discountPrice: row.discount_price === null ? null : Number(row.discount_price) || 0,
+    archived: Boolean(Number(row.archived) || 0),
     thumbnail: row.thumbnail || "",
     images,
     description: row.description || "",

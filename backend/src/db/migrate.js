@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS products (
   purchase_price REAL,
   selling_price REAL,
   discount_price REAL,
+  archived INTEGER NOT NULL DEFAULT 0,
   thumbnail TEXT,
   images_json TEXT,
   description TEXT,
@@ -133,6 +134,7 @@ const normalizeProductRecord = (item = {}, index = 0) => {
     purchasePrice: asNumber(item.purchasePrice, 0),
     sellingPrice: asNumber(item.sellingPrice ?? item.price, 0),
     discountPrice: item.discountPrice === null || item.discountPrice === "" ? null : asNumber(item.discountPrice, 0),
+    archived: toBooleanInt(item.archived),
     thumbnail: item.thumbnail || item.image || "",
     imagesJson: JSON.stringify(images),
     description: item.description || "",
@@ -151,13 +153,13 @@ INSERT INTO products (
   id, slug, sku, barcode, category, brand, universe, franchise, name, number, edition, variant,
   exclusive, chase, vaulted, signed, convention, release_year, condition, box_condition,
   protector_included, stock, warehouse_location, reserved, purchase_price, selling_price,
-  discount_price, thumbnail, images_json, description, tags_json, box_front, box_back,
+  discount_price, archived, thumbnail, images_json, description, tags_json, box_front, box_back,
   left_side, right_side, meta_title, meta_description, updated_at
 ) VALUES (
   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
   ?, ?, ?, ?, ?, ?, ?, ?,
   ?, ?, ?, ?, ?, ?,
-  ?, ?, ?, ?, ?, ?, ?,
+  ?, ?, ?, ?, ?, ?, ?, ?,
   ?, ?, ?, ?, CURRENT_TIMESTAMP
 )
 ON CONFLICT(id) DO UPDATE SET
@@ -187,6 +189,7 @@ ON CONFLICT(id) DO UPDATE SET
   purchase_price = excluded.purchase_price,
   selling_price = excluded.selling_price,
   discount_price = excluded.discount_price,
+  archived = excluded.archived,
   thumbnail = excluded.thumbnail,
   images_json = excluded.images_json,
   description = excluded.description,
@@ -200,8 +203,17 @@ ON CONFLICT(id) DO UPDATE SET
   updated_at = CURRENT_TIMESTAMP;
 `;
 
+const ensureProductsArchivedColumn = async () => {
+  const columns = await all("PRAGMA table_info(products)");
+  const hasArchived = columns.some((column) => String(column.name || "").toLowerCase() === "archived");
+  if (!hasArchived) {
+    await run("ALTER TABLE products ADD COLUMN archived INTEGER NOT NULL DEFAULT 0");
+  }
+};
+
 export const migrateDatabase = async ({ productsFilePath } = {}) => {
   await exec(schemaSql);
+  await ensureProductsArchivedColumn();
 
   const inputPath = productsFilePath
     ? path.resolve(productsFilePath)
@@ -246,6 +258,7 @@ export const migrateDatabase = async ({ productsFilePath } = {}) => {
       product.purchasePrice,
       product.sellingPrice,
       product.discountPrice,
+      product.archived,
       product.thumbnail,
       product.imagesJson,
       product.description,

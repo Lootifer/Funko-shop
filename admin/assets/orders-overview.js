@@ -1,4 +1,4 @@
-import { shoppingState } from "../../Components/Experience/shopping-state.js";
+import { getOrders, syncOrdersFromApi } from "../../Components/Experience/order-inventory.js";
 import { formatCurrency } from "../../Assets/Js/formatting.js";
 
 const root = document.getElementById("ordersOverview");
@@ -17,11 +17,11 @@ const formatDate = (value) => {
 const renderOrders = () => {
   if (!root) return;
 
-  const orders = shoppingState.getOrders();
+  const orders = getOrders();
   root.innerHTML = `
     <div class="admin-card">
       <h3>Testbestellingen</h3>
-      <p class="admin-detail">Lokale testorders uit localStorage, zonder authenticatie.</p>
+      <p class="admin-detail">Bestellingen uit de database, zonder authenticatie.</p>
       <table class="admin-table">
         <thead>
           <tr>
@@ -55,4 +55,7 @@ const renderOrders = () => {
 };
 
 renderOrders();
+syncOrdersFromApi().then(renderOrders).catch(() => {
+  // Keep existing rendered state when server is unavailable.
+});
 window.addEventListener("lootifer:state-updated", renderOrders);

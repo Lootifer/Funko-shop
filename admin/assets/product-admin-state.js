@@ -1,37 +1,40 @@
 import { normalizeProductCatalog } from "../../Products/product-schema.js";
+import {
+  createProductInApi,
+  fetchProductsFromApi,
+  SERVER_UNREACHABLE_MESSAGE,
+  updateProductArchiveInApi,
+  updateProductInApi,
+  updateProductStockInApi,
+} from "../../Assets/Js/api-client.js";
 
-const STORAGE_KEY = "lootifer-admin-products-v1";
 const DATA_URL = new URL("../../Data/products.json", import.meta.url).href;
 
-export const ADMIN_STORAGE_KEY = STORAGE_KEY;
-
-const parseStoredCatalog = (value) => {
-  try {
-    const parsed = JSON.parse(value);
-    if (!Array.isArray(parsed)) return null;
-    return normalizeProductCatalog(parsed);
-  } catch {
-    return null;
+const asFriendlyError = (error) => {
+  if (error?.offline) {
+    return new Error(SERVER_UNREACHABLE_MESSAGE);
   }
+
+  const details = Array.isArray(error?.details) && error.details.length
+    ? ` ${error.details.join(" ")}`
+    : "";
+  return new Error(`${String(error?.message || "Serverfout.")}${details}`.trim());
 };
 
 export const loadProductCatalog = async () => {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  const storedCatalog = stored ? parseStoredCatalog(stored) : null;
-  if (storedCatalog?.length) {
-    return { products: storedCatalog, source: "local" };
+  try {
+    const products = await fetchProductsFromApi();
+    return {
+      products: normalizeProductCatalog(products),
+      source: "api",
+    };
+  } catch {
+    const fallback = await loadFileProductCatalog();
+    return {
+      products: fallback,
+      source: "file",
+    };
   }
-
-  const response = await fetch(DATA_URL);
-  if (!response.ok) {
-    throw new Error("Productcatalogus kan niet worden geladen.");
-  }
-
-  const rawProducts = await response.json();
-  return {
-    products: normalizeProductCatalog(rawProducts),
-    source: "file",
-  };
 };
 
 export const loadFileProductCatalog = async () => {
@@ -44,22 +47,54 @@ export const loadFileProductCatalog = async () => {
   return normalizeProductCatalog(rawProducts);
 };
 
-export const saveProductCatalog = (products = []) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-  if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
-    window.dispatchEvent(new CustomEvent("lootifer:inventory-updated"));
-    window.dispatchEvent(new CustomEvent("lootifer:state-updated", {
-      detail: { key: STORAGE_KEY },
-    }));
+const emitInventoryEvents = () => {
+  if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
+  window.dispatchEvent(new CustomEvent("lootifer:inventory-updated"));
+  window.dispatchEvent(new CustomEvent("lootifer:state-updated", {
+    detail: { key: "lootifer-api-products" },
+  }));
+};
+
+export const createProduct = async (product) => {
+  try {
+    const created = await createProductInApi(product);
+    emitInventoryEvents();
+    return created;
+  } catch (error) {
+    throw asFriendlyError(error);
+  }
+};
+
+export const saveProduct = async (id, product) => {
+  try {
+    const updated = await updateProductInApi(id, product);
+    emitInventoryEvents();
+    return updated;
+  } catch (error) {
+    throw asFriendlyError(error);
+  }
+};
+
+export const changeProductStock = async (id, stock) => {
+  try {
+    const updated = await updateProductStockInApi(id, stock);
+    emitInventoryEvents();
+    return updated;
+  } catch (error) {
+    throw asFriendlyError(error);
+  }
+};
+
+export const archiveProduct = async (id, archived) => {
+  try {
+    const updated = await updateProductArchiveInApi(id, archived);
+    emitInventoryEvents();
+    return updated;
+  } catch (error) {
+    throw asFriendlyError(error);
   }
 };
 
 export const clearSavedCatalog = () => {
-  localStorage.removeItem(STORAGE_KEY);
-  if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
-    window.dispatchEvent(new CustomEvent("lootifer:inventory-updated"));
-    window.dispatchEvent(new CustomEvent("lootifer:state-updated", {
-      detail: { key: STORAGE_KEY },
-    }));
-  }
+  emitInventoryEvents();
 };

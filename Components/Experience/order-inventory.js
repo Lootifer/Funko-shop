@@ -1,6 +1,13 @@
 import { shoppingState } from "./shopping-state.js";
-import { buildCatalogIndex, loadRuntimeCatalog, updateRuntimeStockByItems } from "../../Products/runtime-catalog.js";
-import { createOrderInApi, fetchOrdersFromApi, updateOrderStatusInApi } from "../../Assets/Js/api-client.js";
+import { buildCatalogIndex, loadRuntimeCatalog } from "../../Products/runtime-catalog.js";
+import {
+  SERVER_UNREACHABLE_MESSAGE,
+  createOrderInApi,
+  deleteOrderInApi,
+  fetchOrderByNumberFromApi,
+  fetchOrdersFromApi,
+  updateOrderStatusInApi,
+} from "../../Assets/Js/api-client.js";
 
 export const ORDER_STATUSES = [
   "Nieuw",
@@ -12,6 +19,7 @@ export const ORDER_STATUSES = [
 ];
 
 const ORDERS_STORAGE_KEY = "lootifer-test-orders";
+let ordersCache = [];
 
 const emitInventoryUpdate = () => {
   if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
@@ -29,7 +37,7 @@ export const createOrderNumber = () => {
 };
 
 export const getOrders = () => {
-  return shoppingState.getOrders().map((order) => ({
+  return ordersCache.map((order) => ({
     status: "Nieuw",
     isTestOrder: true,
     stockRestoredAt: null,
@@ -37,42 +45,62 @@ export const getOrders = () => {
   }));
 };
 
+const setOrdersCache = (orders = []) => {
+  ordersCache = Array.isArray(orders) ? [...orders] : [];
+  emitInventoryUpdate();
+  return getOrders();
+};
+
+const toFriendlyError = (error) => {
+  if (error?.offline) {
+    return new Error(SERVER_UNREACHABLE_MESSAGE);
+  }
+
+  const details = Array.isArray(error?.details) && error.details.length
+    ? ` ${error.details.join(" ")}`
+    : "";
+  return new Error(`${String(error?.message || "Er is een fout opgetreden bij de server.")}${details}`.trim());
+};
+
 export const syncOrdersFromApi = async () => {
-  const orders = await fetchOrdersFromApi();
-  if (!orders.length) return [];
-  saveOrders(orders);
-  return orders;
+  try {
+    const orders = await fetchOrdersFromApi();
+    return setOrdersCache(orders);
+  } catch (error) {
+    throw toFriendlyError(error);
+  }
 };
 
 export const saveOrders = (orders = []) => {
-  shoppingState.saveOrders(orders);
-  emitInventoryUpdate();
-  return orders;
+  return setOrdersCache(orders);
 };
 
 export const addOrder = (order) => {
-  return (async () => {
-    try {
-      const created = await createOrderInApi(order);
-      if (created) {
-        const local = getOrders().filter((item) => Number(item.id) !== Number(created.id));
-        saveOrders([created, ...local]);
-        return created;
-      }
-    } catch {
-      // Fall back to local order storage when API is offline.
-    }
-
-    await applyStockReductionForOrder(order);
-    const fallbackOrders = [order, ...getOrders()];
-    saveOrders(fallbackOrders);
-    return order;
-  })();
+  return createOrderInApi(order)
+    .then((created) => {
+      const local = getOrders().filter((item) => item.number !== created.number);
+      saveOrders([created, ...local]);
+      return created;
+    })
+    .catch((error) => {
+      throw toFriendlyError(error);
+    });
 };
 
-export const getOrderById = (orderId) => {
-  const id = Number(orderId) || 0;
-  return getOrders().find((order) => Number(order.id) === id) || null;
+export const getOrderByNumber = async (orderNumber) => {
+  try {
+    const order = await fetchOrderByNumberFromApi(orderNumber);
+    if (!order) return null;
+
+    const current = getOrders();
+    const next = current.some((item) => item.number === order.number)
+      ? current.map((item) => (item.number === order.number ? order : item))
+      : [order, ...current];
+    saveOrders(next);
+    return order;
+  } catch (error) {
+    throw toFriendlyError(error);
+  }
 };
 
 export const synchronizeCartWithInventory = async () => {
@@ -134,78 +162,69 @@ export const synchronizeCartWithInventory = async () => {
   };
 };
 
-export const applyStockReductionForOrder = async (order) => {
-  const items = Array.isArray(order?.items) ? order.items : [];
-  return updateRuntimeStockByItems({ items, mode: "decrease" });
-};
-
-export const restoreStockForOrder = async (order) => {
-  if (!order || !Array.isArray(order.items) || !order.items.length) {
-    return { restored: false, reason: "empty" };
-  }
-
-  if (order.stockRestoredAt) {
-    return { restored: false, reason: "already-restored" };
-  }
-
-  await updateRuntimeStockByItems({ items: order.items, mode: "increase" });
-  return { restored: true };
-};
-
-export const updateOrderStatus = async (orderId, nextStatus) => {
+export const updateOrderStatus = async (orderNumber, nextStatus) => {
   try {
-    const updated = await updateOrderStatusInApi(orderId, nextStatus);
-    if (updated) {
-      const localOrders = getOrders();
-      const nextOrders = localOrders.some((item) => Number(item.id) === Number(updated.id))
-        ? localOrders.map((item) => (Number(item.id) === Number(updated.id) ? updated : item))
-        : [updated, ...localOrders];
-      saveOrders(nextOrders);
-      return updated;
-    }
+    const updated = await updateOrderStatusInApi(orderNumber, nextStatus);
+    const current = getOrders();
+    const next = current.some((item) => item.number === updated.number)
+      ? current.map((item) => (item.number === updated.number ? updated : item))
+      : [updated, ...current];
+    saveOrders(next);
+    return updated;
+  } catch (error) {
+    throw toFriendlyError(error);
+  }
+};
+
+export const deleteOrderByNumber = async (orderNumber) => {
+  try {
+    const deleted = await deleteOrderInApi(orderNumber);
+    if (!deleted) return false;
+    const next = getOrders().filter((order) => order.number !== orderNumber);
+    saveOrders(next);
+    return true;
+  } catch (error) {
+    throw toFriendlyError(error);
+  }
+};
+
+export const getLegacyLocalOrders = () => {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    // Use local status workflow when API is unavailable.
+    return [];
   }
+};
 
-  const id = Number(orderId) || 0;
-  if (!id) throw new Error("Ongeldig order-id.");
-  if (!ORDER_STATUSES.includes(nextStatus)) throw new Error("Ongeldige orderstatus.");
+export const backupLegacyLocalOrders = () => {
+  const legacy = getLegacyLocalOrders();
+  return JSON.stringify(legacy, null, 2);
+};
 
-  const orders = getOrders();
-  const order = orders.find((item) => Number(item.id) === id);
-  if (!order) throw new Error("Order niet gevonden.");
+export const migrateLegacyLocalOrdersToApi = async (orders = []) => {
+  const source = Array.isArray(orders) ? orders : [];
+  const migrated = [];
+  const errors = [];
 
-  const previousStatus = order.status || "Nieuw";
-  const shouldRestoreStock = nextStatus === "Geannuleerd" && previousStatus !== "Geannuleerd";
-
-  if (shouldRestoreStock) {
-    const restoration = await restoreStockForOrder(order);
-    if (restoration.restored) {
-      order.stockRestoredAt = new Date().toISOString();
+  for (const order of source) {
+    try {
+      const created = await createOrderInApi(order);
+      migrated.push(created);
+    } catch (error) {
+      errors.push({
+        number: order?.number || "onbekend",
+        message: toFriendlyError(error).message,
+      });
     }
   }
 
-  order.status = nextStatus;
-  order.updatedAt = new Date().toISOString();
-  saveOrders(orders);
-  return order;
-};
+  if (migrated.length) {
+    await syncOrdersFromApi();
+  }
 
-export const deleteOrderById = (orderId) => {
-  const id = Number(orderId) || 0;
-  const orders = getOrders();
-  const next = orders.filter((order) => Number(order.id) !== id);
-  saveOrders(next);
-  return next;
-};
-
-export const deleteAllTestOrders = () => {
-  const orders = getOrders();
-  const backup = orders.filter((order) => order.isTestOrder !== false);
-  const next = orders.filter((order) => order.isTestOrder === false);
-  saveOrders(next);
   return {
-    next,
-    backup,
+    migrated,
+    errors,
   };
 };
