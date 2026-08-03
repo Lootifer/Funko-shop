@@ -74,7 +74,6 @@ router.post("/", async (request, response, next) => {
     const orderNumber = payload.number || createOrderNumber();
     const status = ORDER_STATUSES.includes(payload.status) ? payload.status : "Nieuw";
     const paymentStatus = String(payload.paymentStatus || "Nog geen online betaling");
-    const isTestOrder = payload.isTestOrder === true ? 1 : 0;
     const deliveryMethod = String(payload.deliveryMethod || "");
     const notes = String(payload.notes || "");
 
@@ -126,7 +125,7 @@ router.post("/", async (request, response, next) => {
           orderNumber,
           status,
           paymentStatus,
-          isTestOrder,
+          1,
           null,
           deliveryMethod,
           notes,

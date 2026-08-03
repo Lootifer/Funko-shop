@@ -217,7 +217,7 @@ checkoutForm?.addEventListener("submit", (event) => {
       const order = {
         status: "Nieuw",
         paymentStatus: "Via WhatsApp af te stemmen",
-        isTestOrder: false,
+        isTestOrder: true,
         stockRestoredAt: null,
         deliveryMethod: "Verzending",
         total: subtotal,
