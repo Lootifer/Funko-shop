@@ -152,6 +152,14 @@ const renderOrderDetails = () => {
         <strong>${escapeHtml(formatDateTime(order.createdAt))}</strong>
       </article>
       <article class="admin-mini-stat">
+        <p class="admin-label">Subtotaal</p>
+        <strong>${euro.format(Number(order.subtotal) || 0)}</strong>
+      </article>
+      <article class="admin-mini-stat">
+        <p class="admin-label">Verzendkosten</p>
+        <strong>${Number(order.shippingCost) > 0 ? euro.format(Number(order.shippingCost)) : (Number(order.subtotal) >= 75 ? "Gratis" : "Niet berekend")}</strong>
+      </article>
+      <article class="admin-mini-stat">
         <p class="admin-label">Totaal</p>
         <strong>${euro.format(Number(order.total) || 0)}</strong>
       </article>

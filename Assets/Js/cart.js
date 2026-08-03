@@ -6,6 +6,7 @@ import { formatCurrency, formatQuantity } from "./formatting.js";
 import { createImageAttributes } from "../../Products/product-media.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
 import { synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
+import { calculateOrderTotals, FREE_SHIPPING_THRESHOLD } from "../../Shared/shipping.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -29,6 +30,7 @@ const renderCart = () => {
   const cart = shoppingState.getCart();
   const quantity = shoppingState.getCartQuantity();
   const subtotal = shoppingState.getCartSubtotal();
+  const totals = calculateOrderTotals(subtotal);
 
   if (cartMeta) {
     cartMeta.textContent = `${formatQuantity(quantity)} artikel${quantity === 1 ? "" : "en"}`;
@@ -48,7 +50,9 @@ const renderCart = () => {
     `;
     cartSummary.innerHTML = `
       <div class="summary-line"><span>Subtotaal</span><strong>${formatCurrency(0)}</strong></div>
+      <div class="summary-line"><span>Verzendkosten</span><strong>${formatCurrency(0)}</strong></div>
       <div class="summary-total"><span>Totaal</span><strong>${formatCurrency(0)}</strong></div>
+      <p class="shipping-threshold-note">Gratis verzending vanaf ${formatCurrency(FREE_SHIPPING_THRESHOLD)}.</p>
     `;
     syncHeaderCounters();
     return;
@@ -81,9 +85,16 @@ const renderCart = () => {
     </div>
   `;
 
+  const shippingLabel = totals.hasFreeShipping ? "Gratis" : formatCurrency(totals.shippingCost);
+  const thresholdMessage = totals.hasFreeShipping
+    ? "Je bestelling wordt gratis verzonden."
+    : `Nog ${formatCurrency(totals.amountUntilFreeShipping)} voor gratis verzending.`;
+
   cartSummary.innerHTML = `
-    <div class="summary-line"><span>Subtotaal</span><strong>${formatCurrency(subtotal)}</strong></div>
-    <div class="summary-total"><span>Totaal</span><strong>${formatCurrency(subtotal)}</strong></div>
+    <div class="summary-line"><span>Subtotaal</span><strong>${formatCurrency(totals.subtotal)}</strong></div>
+    <div class="summary-line"><span>Verzendkosten Nederland</span><strong>${shippingLabel}</strong></div>
+    <div class="summary-total"><span>Totaal</span><strong>${formatCurrency(totals.total)}</strong></div>
+    <p class="shipping-threshold-note ${totals.hasFreeShipping ? "is-free" : ""}">${thresholdMessage}</p>
   `;
 
   syncHeaderCounters();

@@ -700,3 +700,56 @@
     width: 100%;
   }
 }
+
+/* LOOTIFER SHIPPING TOTALS */
+.shipping-threshold-note {
+  margin: 0.8rem 0 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 0.75rem;
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.shipping-threshold-note.is-free {
+  color: var(--accent);
+  border-color: rgba(212, 175, 55, 0.38);
+  background: rgba(212, 175, 55, 0.12);
+}
+
+.drawer-summary-total {
+  margin-top: 0.35rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+}
+
+/* LOOTIFER TERMS CONSENT */
+.checkout-form .checkout-terms-consent {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.checkout-form .checkout-terms-consent input[type="checkbox"] {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  accent-color: var(--accent);
+}
+
+.checkout-terms-consent a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}

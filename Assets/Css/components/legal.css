@@ -1,0 +1,138 @@
+.legal-page,
+.info-page {
+  max-width: 980px;
+}
+
+.info-hero {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.info-hero h1,
+.legal-page h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.12;
+}
+
+.info-card,
+.legal-notice,
+.legal-article {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: var(--shadow);
+}
+
+.info-card {
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.info-card h2,
+.legal-article h2 {
+  margin-top: 0;
+  color: var(--text);
+}
+
+.info-card p,
+.legal-intro,
+.legal-article p,
+.legal-article li {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.info-card p:last-child,
+.legal-article p:last-child,
+.legal-article ol:last-child,
+.legal-article ul:last-child {
+  margin-bottom: 0;
+}
+
+.contact-list {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.2rem 0 0;
+}
+
+.contact-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.35fr) 1fr;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.contact-row:last-child {
+  border-bottom: 0;
+}
+
+.contact-row strong {
+  color: var(--text);
+}
+
+.contact-row a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.legal-header {
+  margin-bottom: 1.3rem;
+}
+
+.legal-version {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.legal-notice {
+  padding: 1.25rem;
+  margin: 1.2rem 0 1.5rem;
+  border-color: rgba(212, 175, 55, 0.5);
+  background: rgba(212, 175, 55, 0.09);
+}
+
+.legal-notice strong {
+  color: var(--accent);
+}
+
+.legal-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.legal-article {
+  padding: clamp(1.1rem, 2.5vw, 1.6rem);
+}
+
+.legal-article h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.7rem;
+}
+
+.legal-article ol,
+.legal-article ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.legal-article li + li {
+  margin-top: 0.5rem;
+}
+
+.legal-callout {
+  margin-top: 1.5rem;
+  padding: 1.2rem;
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+@media (max-width: 620px) {
+  .contact-row {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
