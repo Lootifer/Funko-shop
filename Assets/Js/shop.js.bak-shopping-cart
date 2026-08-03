@@ -3,7 +3,7 @@ import { createProductCard } from "../../Components/ProductCard.js";
 import { createHeader } from "../../Components/Header.js";
 import { createFooter } from "../../Components/Footer.js";
 import { createFilterSidebar } from "../../Components/FilterSidebar.js";
-import { createShoppingUi, bindShoppingActions, attachProductCardInteractions, syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
+import { bindShoppingActions, attachProductCardInteractions, syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
 import { attachPremiumFallback } from "../../Products/product-media.js";
 import { formatCurrency } from "./formatting.js";
 import { getDisplayPrice, hasValidSellingPrice } from "../../Products/product-pricing.js";
