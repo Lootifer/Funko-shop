@@ -25,7 +25,7 @@
             <strong>Zo werkt het</strong>
             <ul>
               <li>Je bestelling wordt eerst veilig opgeslagen.</li>
-              <li>Daarna bespreek je betaling en verzendkosten via WhatsApp.</li>
+              <li>Daarna rond je de betaling af via WhatsApp.</li>
               <li>Er is geen afhaalmogelijkheid; alle bestellingen worden verzonden.</li>
             </ul>
           </div>
@@ -62,7 +62,7 @@
               </label>
               <label>
                 Land
-                <input id="checkoutCountry" name="country" type="text" value="Nederland" autocomplete="country-name" required />
+                <input id="checkoutCountry" name="country" type="text" value="Nederland" autocomplete="country-name" readonly required />
               </label>
 
               <div class="full-span checkout-delivery-card" role="group" aria-labelledby="deliveryHeading">
@@ -76,10 +76,10 @@
                 </span>
                 <span>
                   <strong id="deliveryHeading">Verzending</strong>
-                  <small>Je bestelling wordt verzonden. De verzendkosten en betaalwijze worden via WhatsApp bevestigd.</small>
+                  <small>Vaste verzendkosten: €6,95 binnen Nederland. Gratis verzending vanaf €75,00.</small>
                 </span>
-                <span class="checkout-delivery-status">Enige optie</span>
-                <input id="checkoutDeliveryMethod" name="deliveryMethod" type="hidden" value="Verzending" />
+                <span class="checkout-delivery-status">Nederland</span>
+                <input id="checkoutDeliveryMethod" name="deliveryMethod" type="hidden" value="Verzending binnen Nederland" />
               </div>
 
               <label class="full-span">

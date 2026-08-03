@@ -2,6 +2,7 @@ import { Router } from "express";
 import { all, exec, get, run } from "../db/connection.js";
 import { toApiOrder } from "../services/serializers.js";
 import { requireAdmin } from "../auth/middleware.js";
+import { calculateOrderTotals } from "../../../Shared/shipping.js";
 
 const router = Router();
 
@@ -116,6 +117,8 @@ router.post("/", async (request, response, next) => {
         throw Object.assign(new Error("Er zijn geen geldige orderregels aangeleverd."), { status: 400 });
       }
 
+      const totals = calculateOrderTotals(subtotal);
+
       const insertedOrder = await run(
         `INSERT INTO orders (
           number, status, payment_status, is_test_order, stock_restored_at, delivery_method, notes,
@@ -130,8 +133,8 @@ router.post("/", async (request, response, next) => {
           null,
           deliveryMethod,
           notes,
-          subtotal,
-          subtotal,
+          totals.subtotal,
+          totals.total,
           JSON.stringify(customer),
           nowIso,
           nowIso,

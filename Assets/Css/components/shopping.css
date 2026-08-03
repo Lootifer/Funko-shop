@@ -700,3 +700,28 @@
     width: 100%;
   }
 }
+
+/* LOOTIFER SHIPPING TOTALS */
+.shipping-threshold-note {
+  margin: 0.8rem 0 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 0.75rem;
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.shipping-threshold-note.is-free {
+  color: var(--accent);
+  border-color: rgba(212, 175, 55, 0.38);
+  background: rgba(212, 175, 55, 0.12);
+}
+
+.drawer-summary-total {
+  margin-top: 0.35rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+}

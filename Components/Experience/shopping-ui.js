@@ -4,6 +4,7 @@ import { createImageAttributes } from "../../Products/product-media.js";
 import { formatCurrency, formatQuantity } from "../../Assets/Js/formatting.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
 import { getLootiferWhatsAppUrl } from "../../Assets/Js/store-config.js";
+import { calculateOrderTotals } from "../../Shared/shipping.js";
 
 let shoppingFeedback = null;
 let shoppingFeedbackTimer = null;
@@ -224,10 +225,14 @@ export const createShoppingUi = ({ root } = {}) => {
       content.innerHTML = cart.length
         ? `
           <div class="drawer-list">${cart.map((item) => createItemMarkup(item, "cart")).join("")}</div>
-          <div class="drawer-summary">
-            <span>Subtotaal</span>
-            <strong>${formatCurrency(shoppingState.getCartSubtotal())}</strong>
-          </div>
+          ${(() => {
+            const totals = calculateOrderTotals(shoppingState.getCartSubtotal());
+            return `
+              <div class="drawer-summary"><span>Subtotaal</span><strong>${formatCurrency(totals.subtotal)}</strong></div>
+              <div class="drawer-summary"><span>Verzending</span><strong>${totals.hasFreeShipping ? "Gratis" : formatCurrency(totals.shippingCost)}</strong></div>
+              <div class="drawer-summary drawer-summary-total"><span>Totaal</span><strong>${formatCurrency(totals.total)}</strong></div>
+            `;
+          })()}
         `
         : `
           <div class="drawer-empty-state">
@@ -285,8 +290,9 @@ export const createShoppingUi = ({ root } = {}) => {
 
   whatsappButton?.addEventListener("click", () => {
     const cart = shoppingState.getCart();
+    const totals = calculateOrderTotals(shoppingState.getCartSubtotal());
     const message = cart.length
-      ? `Hallo Lootifer! Ik wil graag bestellen: ${cart.map((item) => `${item.name} x${item.quantity}`).join(", ")}`
+      ? `Hallo Lootifer! Ik heb interesse in: ${cart.map((item) => `${item.name} x${item.quantity}`).join(", ")}. Totaal inclusief verzending: ${formatCurrency(totals.total)}.`
       : "Hallo Lootifer! Ik wil graag een bestelling plaatsen.";
     window.open(getLootiferWhatsAppUrl(message), "_blank", "noopener,noreferrer");
   });
