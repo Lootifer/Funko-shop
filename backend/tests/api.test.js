@@ -3,6 +3,7 @@ import fs from "node:fs";
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
+import { calculateOrderTotals } from "../../Shared/shipping.js";
 
 const testDbPath = path.resolve(process.cwd(), "backend", "tests", "tmp", "lootifer-test.sqlite");
 
@@ -112,6 +113,25 @@ test("POST/PUT/PATCH product routes beheren catalogus via API", async () => {
   assert.equal(archived.body.product.archived, true);
 });
 
+
+test("Verzendkosten zijn €6,95 en gratis vanaf €75", () => {
+  assert.deepEqual(calculateOrderTotals(12.95), {
+    subtotal: 12.95,
+    shippingCost: 6.95,
+    total: 19.9,
+    amountUntilFreeShipping: 62.05,
+    hasFreeShipping: false,
+  });
+
+  assert.deepEqual(calculateOrderTotals(75), {
+    subtotal: 75,
+    shippingCost: 0,
+    total: 75,
+    amountUntilFreeShipping: 0,
+    hasFreeShipping: true,
+  });
+});
+
 test("POST /api/orders creates order and decreases stock", async () => {
   const productsResponse = await request(app).get("/api/products").expect(200);
   const firstProduct = productsResponse.body.products.find((item) => Number(item.stock) > 0);
@@ -134,6 +154,11 @@ test("POST /api/orders creates order and decreases stock", async () => {
 
   const createResponse = await request(app).post("/api/orders").send(orderPayload).expect(201);
   assert.equal(createResponse.body.order.customer.name, "Test Collector");
+
+  const expectedTotals = calculateOrderTotals(firstProduct.sellingPrice || firstProduct.price);
+  assert.equal(createResponse.body.order.subtotal, expectedTotals.subtotal);
+  assert.equal(createResponse.body.order.shippingCost, expectedTotals.shippingCost);
+  assert.equal(createResponse.body.order.total, expectedTotals.total);
 
   const updatedProductResponse = await request(app).get(`/api/products/${firstProduct.id}`).expect(200);
   assert.equal(updatedProductResponse.body.product.stock, firstProduct.stock - 1);

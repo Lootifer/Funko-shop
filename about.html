@@ -4,23 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Over ons | Lootifer Collectibles</title>
+    <meta
+      name="description"
+      content="Lees hoe Lootifer Collectibles is ontstaan uit een particuliere Funko Pop-verzameling."
+    />
     <link rel="stylesheet" href="Assets/Css/main.css" />
   </head>
   <body>
     <div id="headerRoot"></div>
-    <main class="product-page reveal">
-      <section class="section-heading">
+
+    <main class="info-page reveal visible">
+      <section class="info-hero">
         <p class="eyebrow">Over Lootifer</p>
-        <h1>Luxueus verzamelen, zorgvuldig gecureerd.</h1>
-        <p class="hero-text">We bouwen een premium bestemming voor verzamelaars die zoeken naar zeldzame edities, gecontroleerde staat en een uitzonderlijke presentatie.</p>
+        <h1>Van mijn privécollectie naar die van jou.</h1>
+      </section>
+
+      <section class="info-card">
+        <h2>Mijn verzameling</h2>
+        <p>
+          Lootifer Collectibles is ontstaan uit mijn eigen privécollectie Funko Pops. Ik ga mijn verzameling hier stap voor stap aanbieden, met duidelijke foto's en eerlijke informatie over de staat van ieder item.
+        </p>
+        <p>
+          Omdat het om exemplaren uit mijn eigen collectie gaat, geldt nadrukkelijk: op is op. Veel items zijn maar één keer beschikbaar en worden niet automatisch opnieuw aangevuld.
+        </p>
+        <p>
+          In de toekomst wil ik mogelijk ook andere collecties aanbieden, waaronder Pokémon en Star Wars. Zo kan Lootifer Collectibles langzaam uitgroeien tot een plek voor verschillende soorten verzamelaars, terwijl het persoonlijke karakter behouden blijft.
+        </p>
       </section>
     </main>
+
     <div id="footerRoot"></div>
+
     <script type="module">
       import { createHeader } from "./Components/Header.js";
       import { createFooter } from "./Components/Footer.js";
+
       document.getElementById("headerRoot").innerHTML = createHeader("about");
       document.getElementById("footerRoot").innerHTML = createFooter();
+      document.querySelectorAll(".reveal").forEach((element) => element.classList.add("visible"));
     </script>
   </body>
 </html>

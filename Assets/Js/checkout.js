@@ -7,6 +7,7 @@ import { createImageAttributes } from "../../Products/product-media.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
 import { addOrder, synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
 import { getLootiferWhatsAppUrl } from "./store-config.js";
+import { calculateOrderTotals } from "../../Shared/shipping.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -51,6 +52,7 @@ const validateForm = (values, cart) => {
 const renderSummary = () => {
   const cart = shoppingState.getCart();
   const subtotal = shoppingState.getCartSubtotal();
+  const totals = calculateOrderTotals(subtotal);
   const quantity = shoppingState.getCartQuantity();
 
   if (checkoutMeta) {
@@ -82,9 +84,10 @@ const renderSummary = () => {
           `
         )
         .join("")}
-      <div class="summary-line"><span>Subtotaal</span><strong>${formatCurrency(subtotal)}</strong></div>
-      <div class="summary-line"><span>Verzendkosten</span><strong>Via WhatsApp</strong></div>
-      <div class="summary-total"><span>Totaal excl. verzending</span><strong>${formatCurrency(subtotal)}</strong></div>
+      <div class="summary-line"><span>Subtotaal</span><strong>${formatCurrency(totals.subtotal)}</strong></div>
+      <div class="summary-line"><span>Verzendkosten Nederland</span><strong>${totals.hasFreeShipping ? "Gratis" : formatCurrency(totals.shippingCost)}</strong></div>
+      <div class="summary-total"><span>Totaal</span><strong>${formatCurrency(totals.total)}</strong></div>
+      <p class="shipping-threshold-note ${totals.hasFreeShipping ? "is-free" : ""}">${totals.hasFreeShipping ? "Je bestelling wordt gratis verzonden." : `Nog ${formatCurrency(totals.amountUntilFreeShipping)} voor gratis verzending.`}</p>
     </div>
   `;
 };
@@ -121,13 +124,14 @@ const buildWhatsAppMessage = (order) => {
   return [
     "Hallo Lootifer Collectibles!",
     "",
-    `Ik heb bestelling ${order.number} geplaatst en wil de betaling en verzending afronden.`,
+    `Ik heb bestelling ${order.number} geplaatst en wil de betaling afronden.`,
     "",
     "Producten:",
     itemLines,
     "",
-    `Totaal excl. verzending: ${formatCurrency(order.total)}`,
-    "Verzendkosten: nog te bevestigen",
+    `Subtotaal: ${formatCurrency(order.subtotal)}`,
+    `Verzendkosten: ${Number(order.shippingCost) > 0 ? formatCurrency(order.shippingCost) : "Gratis"}`,
+    `Totaal: ${formatCurrency(order.total)}`,
     "",
     `Naam: ${customer.name || ""}`,
     `E-mail: ${customer.email || ""}`,
@@ -150,11 +154,13 @@ const showConfirmation = (order, whatsappUrl, whatsappOpened) => {
   checkoutConfirmation.innerHTML = `
     <p class="order-number">Bestelling ${escapeHtml(order.number)}</p>
     <h2>Je bestelling is opgeslagen.</h2>
-    <p>${whatsappOpened ? "WhatsApp is geopend om de betaling en verzendkosten af te stemmen." : "Open WhatsApp om de betaling en verzendkosten af te stemmen."}</p>
+    <p>${whatsappOpened ? "WhatsApp is geopend om de betaling af te ronden." : "Open WhatsApp om de betaling af te ronden."}</p>
     <div class="confirmation-note confirmation-grid" style="margin-top: 1rem; text-align: left;">
-      <div><strong>Levering:</strong><br />Verzending</div>
+      <div><strong>Levering:</strong><br />Verzending binnen Nederland</div>
       <div><strong>Status:</strong><br />${escapeHtml(order.status)}</div>
-      <div><strong>Totaal excl. verzending:</strong><br />${formatCurrency(order.total)}</div>
+      <div><strong>Subtotaal:</strong><br />${formatCurrency(order.subtotal)}</div>
+      <div><strong>Verzendkosten:</strong><br />${Number(order.shippingCost) > 0 ? formatCurrency(order.shippingCost) : "Gratis"}</div>
+      <div><strong>Totaal:</strong><br />${formatCurrency(order.total)}</div>
       <div><strong>Betaling:</strong><br />Via WhatsApp af te stemmen</div>
       <div><strong>Klant:</strong><br />${escapeHtml(order.customer.name)}<br />${escapeHtml(order.customer.email)}<br />${escapeHtml(order.customer.phone)}</div>
       <div><strong>Bezorgadres:</strong><br />${escapeHtml(deliveryAddress)}</div>
@@ -214,14 +220,16 @@ checkoutForm?.addEventListener("submit", (event) => {
       }
 
       const subtotal = shoppingState.getCartSubtotal();
+      const totals = calculateOrderTotals(subtotal);
       const order = {
         status: "Nieuw",
         paymentStatus: "Via WhatsApp af te stemmen",
         isTestOrder: false,
         stockRestoredAt: null,
-        deliveryMethod: "Verzending",
-        total: subtotal,
-        subtotal,
+        deliveryMethod: "Verzending binnen Nederland",
+        shippingCost: totals.shippingCost,
+        total: totals.total,
+        subtotal: totals.subtotal,
         customer: {
           name: values.name.trim(),
           email: values.email.trim(),

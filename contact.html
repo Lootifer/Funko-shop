@@ -4,23 +4,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contact | Lootifer Collectibles</title>
+    <meta
+      name="description"
+      content="Neem telefonisch of via WhatsApp contact op met Lootifer Collectibles."
+    />
     <link rel="stylesheet" href="Assets/Css/main.css" />
   </head>
   <body>
     <div id="headerRoot"></div>
-    <main class="product-page reveal">
-      <section class="section-heading">
+
+    <main class="info-page reveal visible">
+      <section class="info-hero">
         <p class="eyebrow">Contact</p>
-        <h1>Neem contact op met de collector concierge.</h1>
-        <p class="hero-text">Mail ons voor private sourcing, grotere bestellingen of hulp bij het vinden van een specifiek item.</p>
+        <h1>Contact met Lootifer Collectibles</h1>
+        <p class="hero-text">
+          Heb je een vraag over een product, bestelling of de staat van een verzamelitem? Neem dan telefonisch of via WhatsApp contact op.
+        </p>
+      </section>
+
+      <section class="info-card">
+        <h2>Contactgegevens</h2>
+        <p>
+          Lootifer Collectibles is de naam waaronder ik als particulier items uit mijn privécollectie aanbied. Er is geen fysieke winkel en afhalen is niet mogelijk.
+        </p>
+
+        <div class="contact-list">
+          <div class="contact-row">
+            <strong>Naam</strong>
+            <span>Lootifer Collectibles</span>
+          </div>
+          <div class="contact-row">
+            <strong>Verkoopvorm</strong>
+            <span>Particuliere verkoop uit eigen collectie</span>
+          </div>
+          <div class="contact-row">
+            <strong>Telefoon / WhatsApp</strong>
+            <a href="https://wa.me/31683691784" target="_blank" rel="noopener noreferrer">+31 6 83691784</a>
+          </div>
+        </div>
       </section>
     </main>
+
     <div id="footerRoot"></div>
+
     <script type="module">
       import { createHeader } from "./Components/Header.js";
       import { createFooter } from "./Components/Footer.js";
+
       document.getElementById("headerRoot").innerHTML = createHeader("contact");
       document.getElementById("footerRoot").innerHTML = createFooter();
+      document.querySelectorAll(".reveal").forEach((element) => element.classList.add("visible"));
     </script>
   </body>
 </html>

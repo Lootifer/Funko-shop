@@ -60,6 +60,9 @@ export const toApiProduct = (row = {}) => {
 
 export const toApiOrder = (orderRow = {}, itemRows = []) => {
   const customer = safeJsonParse(orderRow.customer_json, {});
+  const subtotal = Number(orderRow.subtotal) || 0;
+  const total = Number(orderRow.total) || 0;
+  const shippingCost = Math.max(0, Math.round((total - subtotal) * 100) / 100);
 
   return {
     id: Number(orderRow.id) || 0,
@@ -71,8 +74,9 @@ export const toApiOrder = (orderRow = {}, itemRows = []) => {
     isTestOrder: Boolean(Number(orderRow.is_test_order)),
     stockRestoredAt: orderRow.stock_restored_at,
     deliveryMethod: orderRow.delivery_method || "",
-    total: Number(orderRow.total) || 0,
-    subtotal: Number(orderRow.subtotal) || 0,
+    total,
+    subtotal,
+    shippingCost,
     customer,
     notes: orderRow.notes || "",
     items: itemRows.map((item) => ({
