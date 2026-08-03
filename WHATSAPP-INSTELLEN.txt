@@ -1,0 +1,11 @@
+WHATSAPP-NUMMER INSTELLEN
+
+De afrekenpagina gebruikt nu WhatsApp nadat een bestelling succesvol in SQLite is opgeslagen.
+
+Het huidige testnummer staat in:
+Assets/Js/store-config.js
+
+Vervang daar 31612345678 door het zakelijke WhatsApp-nummer van Lootifer.
+Gebruik alleen cijfers met landcode, dus bijvoorbeeld 31612345678 en niet +31 6 12345678.
+
+Afhalen is verwijderd. De enige leveringsmethode is Verzending.

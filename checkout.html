@@ -15,67 +15,91 @@
     <main class="checkout-page">
       <section class="section-heading">
         <p class="eyebrow">Afrekenen</p>
-        <h1>Plaats een orderaanvraag.</h1>
-        <p class="hero-text">Online betaling is nog niet actief. Vul je gegevens in om een professionele testorder te versturen.</p>
+        <h1>Bestel veilig via WhatsApp.</h1>
+        <p class="hero-text">Vul je gegevens in. Na een voorraadcontrole wordt je bestelling opgeslagen en opent WhatsApp met een compleet besteloverzicht.</p>
       </section>
 
       <section class="checkout-layout">
         <article class="checkout-panel">
-          <div class="checkout-notice">Dit is een orderaanvraag totdat er een betaalprovider is aangesloten. Er wordt nu nog geen echte betaling verwerkt.</div>
+          <div class="checkout-notice">
+            <strong>Zo werkt het</strong>
+            <ul>
+              <li>Je bestelling wordt eerst veilig opgeslagen.</li>
+              <li>Daarna bespreek je betaling en verzendkosten via WhatsApp.</li>
+              <li>Er is geen afhaalmogelijkheid; alle bestellingen worden verzonden.</li>
+            </ul>
+          </div>
+
           <form class="checkout-form" id="checkoutForm" novalidate>
             <div class="checkout-form-grid">
               <label>
                 Naam
-                <input id="checkoutName" name="name" type="text" required />
+                <input id="checkoutName" name="name" type="text" autocomplete="name" required />
               </label>
               <label>
                 E-mail
-                <input id="checkoutEmail" name="email" type="email" required />
+                <input id="checkoutEmail" name="email" type="email" autocomplete="email" required />
               </label>
               <label>
                 Telefoon
-                <input id="checkoutPhone" name="phone" type="tel" required />
+                <input id="checkoutPhone" name="phone" type="tel" autocomplete="tel" required />
               </label>
               <label>
                 Straat
-                <input id="checkoutStreet" name="street" type="text" required />
+                <input id="checkoutStreet" name="street" type="text" autocomplete="address-line1" required />
               </label>
               <label>
                 Huisnummer
-                <input id="checkoutHouseNumber" name="houseNumber" type="text" required />
+                <input id="checkoutHouseNumber" name="houseNumber" type="text" autocomplete="address-line2" required />
               </label>
               <label>
                 Postcode
-                <input id="checkoutPostalCode" name="postalCode" type="text" placeholder="1234 AB" required />
+                <input id="checkoutPostalCode" name="postalCode" type="text" placeholder="1234 AB" autocomplete="postal-code" required />
               </label>
               <label>
                 Plaats
-                <input id="checkoutCity" name="city" type="text" required />
+                <input id="checkoutCity" name="city" type="text" autocomplete="address-level2" required />
               </label>
               <label>
                 Land
-                <input id="checkoutCountry" name="country" type="text" value="Nederland" required />
+                <input id="checkoutCountry" name="country" type="text" value="Nederland" autocomplete="country-name" required />
               </label>
-              <label class="full-span">
-                Leveringsmethode
-                <select id="checkoutDeliveryMethod" name="deliveryMethod" required>
-                  <option value="">Kies een leveringsmethode</option>
-                  <option value="Standard">Standaard levering</option>
-                  <option value="Express">Spoedlevering</option>
-                  <option value="Pickup">Afhalen in de winkel</option>
-                </select>
-              </label>
+
+              <div class="full-span checkout-delivery-card" role="group" aria-labelledby="deliveryHeading">
+                <span class="checkout-delivery-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M3 6h11v10H3z"></path>
+                    <path d="M14 9h3l4 4v3h-7z"></path>
+                    <circle cx="7" cy="18" r="2"></circle>
+                    <circle cx="18" cy="18" r="2"></circle>
+                  </svg>
+                </span>
+                <span>
+                  <strong id="deliveryHeading">Verzending</strong>
+                  <small>Je bestelling wordt verzonden. De verzendkosten en betaalwijze worden via WhatsApp bevestigd.</small>
+                </span>
+                <span class="checkout-delivery-status">Enige optie</span>
+                <input id="checkoutDeliveryMethod" name="deliveryMethod" type="hidden" value="Verzending" />
+              </div>
+
               <label class="full-span">
                 Opmerkingen bij de bestelling
-                <textarea id="checkoutNotes" name="notes" placeholder="Bijvoorbeeld: bel aan bij de achteringang."></textarea>
+                <textarea id="checkoutNotes" name="notes" placeholder="Bijvoorbeeld: graag niet bij de buren bezorgen."></textarea>
               </label>
             </div>
 
             <div id="checkoutErrors" class="admin-error" style="display: none;"></div>
             <div class="checkout-actions">
-              <button class="button primary" type="submit">Bestelling aanvragen</button>
+              <button class="button primary whatsapp-checkout-button" type="submit" id="checkoutSubmitButton">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.4L3 20.4l1.3-4.7A8.5 8.5 0 1 1 20.5 11.7Z"></path>
+                  <path d="M8.3 7.6c.2-.4.4-.4.7-.4h.4c.2 0 .4.1.5.4l.8 1.8c.1.3.1.5-.1.7l-.6.8c-.2.2-.2.4 0 .7.5 1 1.3 1.8 2.3 2.3.3.2.5.1.7-.1l.8-1c.2-.2.4-.3.7-.2l1.9.9c.3.1.4.3.4.6 0 .4-.2 1.2-.8 1.7-.6.5-1.4.8-2.3.6-1.2-.2-2.7-.8-4.4-2.3-1.4-1.3-2.4-2.8-2.8-4-.4-1.1 0-2 .4-2.5Z"></path>
+                </svg>
+                <span>Bestelling plaatsen via WhatsApp</span>
+              </button>
               <a class="button secondary" href="cart.html">Terug naar winkelwagen</a>
             </div>
+            <p class="checkout-submit-note">Je winkelwagen wordt pas geleegd nadat de bestelling succesvol is opgeslagen.</p>
           </form>
         </article>
 

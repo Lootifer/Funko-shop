@@ -6,6 +6,7 @@ import { formatCurrency, formatQuantity } from "./formatting.js";
 import { createImageAttributes } from "../../Products/product-media.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
 import { addOrder, synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
+import { getLootiferWhatsAppUrl } from "./store-config.js";
 
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
@@ -14,6 +15,7 @@ const checkoutSummary = document.getElementById("checkoutSummary");
 const checkoutMeta = document.getElementById("checkoutMeta");
 const checkoutErrors = document.getElementById("checkoutErrors");
 const checkoutConfirmation = document.getElementById("checkoutConfirmation");
+const checkoutSubmitButton = document.getElementById("checkoutSubmitButton");
 
 if (headerRoot) headerRoot.innerHTML = createHeader("checkout");
 if (footerRoot) footerRoot.innerHTML = createFooter();
@@ -38,7 +40,7 @@ const validateForm = (values, cart) => {
   if (!values.postalCode?.trim() || !postalCodePattern.test(values.postalCode.trim())) errors.push("Postcode moet een geldig Nederlands formaat hebben.");
   if (!values.city?.trim()) errors.push("Plaats is verplicht.");
   if (!values.country?.trim()) errors.push("Land is verplicht.");
-  if (!values.deliveryMethod?.trim()) errors.push("Kies een leveringsmethode.");
+
   if (checkoutForm && !checkoutForm.checkValidity()) {
     checkoutForm.reportValidity();
   }
@@ -81,8 +83,8 @@ const renderSummary = () => {
         )
         .join("")}
       <div class="summary-line"><span>Subtotaal</span><strong>${formatCurrency(subtotal)}</strong></div>
-      <div class="summary-line"><span>Verzending</span><strong>Nader te bepalen</strong></div>
-      <div class="summary-total"><span>Totaal</span><strong>${formatCurrency(subtotal)}</strong></div>
+      <div class="summary-line"><span>Verzendkosten</span><strong>Via WhatsApp</strong></div>
+      <div class="summary-total"><span>Totaal excl. verzending</span><strong>${formatCurrency(subtotal)}</strong></div>
     </div>
   `;
 };
@@ -99,111 +101,179 @@ const showErrors = (errors = []) => {
   checkoutErrors.innerHTML = `<ul>${errors.map((error) => `<li>${error}</li>`).join("")}</ul>`;
 };
 
-const showConfirmation = (order) => {
+const escapeHtml = (value = "") => String(value)
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;")
+  .replace(/'/g, "&#039;");
+
+const buildWhatsAppMessage = (order) => {
+  const itemLines = (order.items || [])
+    .map((item) => `- ${item.name} x${formatQuantity(item.quantity)} (${formatCurrency((Number(item.price) || 0) * (Number(item.quantity) || 0))})`)
+    .join("\n");
+
+  const customer = order.customer || {};
+  const address = `${customer.street || ""} ${customer.houseNumber || ""}, ${customer.postalCode || ""} ${customer.city || ""}, ${customer.country || ""}`
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return [
+    "Hallo Lootifer Collectibles!",
+    "",
+    `Ik heb bestelling ${order.number} geplaatst en wil de betaling en verzending afronden.`,
+    "",
+    "Producten:",
+    itemLines,
+    "",
+    `Totaal excl. verzending: ${formatCurrency(order.total)}`,
+    "Verzendkosten: nog te bevestigen",
+    "",
+    `Naam: ${customer.name || ""}`,
+    `E-mail: ${customer.email || ""}`,
+    `Telefoon: ${customer.phone || ""}`,
+    `Bezorgadres: ${address}`,
+    order.notes ? `Opmerking: ${order.notes}` : "",
+  ].filter(Boolean).join("\n");
+};
+
+const showConfirmation = (order, whatsappUrl, whatsappOpened) => {
   if (!checkoutConfirmation) return;
 
   const itemRows = (order.items || [])
-    .map((item) => `<li>${item.name} × ${formatQuantity(item.quantity)} - ${formatCurrency((Number(item.price) || 0) * (Number(item.quantity) || 0))}</li>`)
+    .map((item) => `<li>${escapeHtml(item.name)} × ${formatQuantity(item.quantity)} - ${formatCurrency((Number(item.price) || 0) * (Number(item.quantity) || 0))}</li>`)
     .join("");
 
   const deliveryAddress = `${order.customer.street} ${order.customer.houseNumber}, ${order.customer.postalCode} ${order.customer.city}, ${order.customer.country}`;
 
   checkoutConfirmation.hidden = false;
   checkoutConfirmation.innerHTML = `
-    <p class="order-number">Orderbevestiging ${order.number}</p>
-    <h2>Bedankt, ${order.customer.name}.</h2>
-    <p>Je orderaanvraag is ontvangen en wordt nu klaargezet voor handmatige afhandeling.</p>
-    <p class="confirmation-note">Dit is een professionele testorder, geen online betaling. Een betaalprovider kan later worden toegevoegd zonder deze flow te wijzigen.</p>
+    <p class="order-number">Bestelling ${escapeHtml(order.number)}</p>
+    <h2>Je bestelling is opgeslagen.</h2>
+    <p>${whatsappOpened ? "WhatsApp is geopend om de betaling en verzendkosten af te stemmen." : "Open WhatsApp om de betaling en verzendkosten af te stemmen."}</p>
     <div class="confirmation-note confirmation-grid" style="margin-top: 1rem; text-align: left;">
-      <div><strong>Leveringsmethode:</strong><br />${order.deliveryMethod}</div>
-      <div><strong>Status:</strong><br />${order.status}</div>
-      <div><strong>Totaal:</strong><br />${formatCurrency(order.total)}</div>
-      <div><strong>Testorder:</strong><br />Ja (lokaal opgeslagen)</div>
-      <div><strong>Klant:</strong><br />${order.customer.name}<br />${order.customer.email}<br />${order.customer.phone}</div>
-      <div><strong>Bezorgadres:</strong><br />${deliveryAddress}</div>
-      ${order.notes ? `<div class="full-span"><strong>Notities:</strong><br />${order.notes}</div>` : ""}
+      <div><strong>Levering:</strong><br />Verzending</div>
+      <div><strong>Status:</strong><br />${escapeHtml(order.status)}</div>
+      <div><strong>Totaal excl. verzending:</strong><br />${formatCurrency(order.total)}</div>
+      <div><strong>Betaling:</strong><br />Via WhatsApp af te stemmen</div>
+      <div><strong>Klant:</strong><br />${escapeHtml(order.customer.name)}<br />${escapeHtml(order.customer.email)}<br />${escapeHtml(order.customer.phone)}</div>
+      <div><strong>Bezorgadres:</strong><br />${escapeHtml(deliveryAddress)}</div>
+      ${order.notes ? `<div class="full-span"><strong>Notities:</strong><br />${escapeHtml(order.notes)}</div>` : ""}
       <div class="full-span"><strong>Producten:</strong><ul class="confirmation-items">${itemRows}</ul></div>
     </div>
-    <div class="checkout-actions" style="justify-content: center;">
+    <div class="checkout-actions confirmation-actions">
+      <a class="button primary whatsapp-checkout-button" href="${whatsappUrl}" target="_blank" rel="noopener noreferrer">
+        <span>Open WhatsApp</span>
+      </a>
       <button class="button secondary" type="button" id="printConfirmationButton">Print bevestiging</button>
-      <a class="button primary" href="shop.html">Terug naar winkel</a>
-      <a class="button secondary" href="cart.html">Bekijk winkelwagen</a>
+      <a class="button secondary" href="shop.html">Terug naar winkel</a>
     </div>
   `;
 
-  const printButton = document.getElementById("printConfirmationButton");
-  printButton?.addEventListener("click", () => {
-    window.print();
-  });
+  document.getElementById("printConfirmationButton")?.addEventListener("click", () => window.print());
+};
+
+const setSubmitting = (submitting) => {
+  if (!checkoutSubmitButton) return;
+  checkoutSubmitButton.disabled = submitting;
+  checkoutSubmitButton.classList.toggle("is-loading", submitting);
+  const label = checkoutSubmitButton.querySelector("span");
+  if (label) label.textContent = submitting ? "Bestelling opslaan…" : "Bestelling plaatsen via WhatsApp";
 };
 
 checkoutForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+
   const run = async () => {
-    const sync = await synchronizeCartWithInventory();
-    const cart = sync.cart;
-
-    if (sync.warnings.length) {
-      showErrors(["Voorraad is bijgewerkt voordat je bestelde:", ...sync.warnings]);
-      renderSummary();
-      return;
-    }
-
     const values = getFormValues();
-    const errors = validateForm(values, cart);
+    const initialCart = shoppingState.getCart();
+    const initialErrors = validateForm(values, initialCart);
 
-    if (errors.length) {
-      showErrors(errors);
+    if (initialErrors.length) {
+      showErrors(initialErrors);
       return;
     }
 
     showErrors([]);
+    setSubmitting(true);
 
-    const subtotal = shoppingState.getCartSubtotal();
-    const deliveryMethodSelect = checkoutForm?.elements?.deliveryMethod;
-    const deliveryMethodLabel = deliveryMethodSelect?.selectedOptions?.[0]?.textContent || values.deliveryMethod || "";
-    const order = {
-      status: "Nieuw",
-      paymentStatus: "Nog geen online betaling",
-      isTestOrder: true,
-      stockRestoredAt: null,
-      deliveryMethod: deliveryMethodLabel,
-      total: subtotal,
-      subtotal,
-      customer: {
-        name: values.name.trim(),
-        email: values.email.trim(),
-        phone: values.phone.trim(),
-        street: values.street.trim(),
-        houseNumber: values.houseNumber.trim(),
-        postalCode: values.postalCode.trim(),
-        city: values.city.trim(),
-        country: values.country.trim(),
-      },
-      notes: values.notes?.trim() || "",
-      items: cart.map((item) => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image,
-      })),
-    };
+    // Open direct vanuit de klikactie een leeg tabblad. Zo blokkeert de browser
+    // WhatsApp niet nadat de servercontrole is afgerond.
+    const whatsappWindow = window.open("about:blank", "lootifer-whatsapp");
 
-    const persistedOrder = await addOrder(order);
-    shoppingState.clearCart();
-    showConfirmation(persistedOrder);
-    checkoutForm.reset();
-    renderSummary();
-    syncHeaderCounters();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    try {
+      const sync = await synchronizeCartWithInventory();
+      const cart = sync.cart;
+
+      if (sync.warnings.length) {
+        whatsappWindow?.close();
+        showErrors(["Voorraad is bijgewerkt voordat je bestelde:", ...sync.warnings]);
+        renderSummary();
+        return;
+      }
+
+      const errors = validateForm(values, cart);
+      if (errors.length) {
+        whatsappWindow?.close();
+        showErrors(errors);
+        return;
+      }
+
+      const subtotal = shoppingState.getCartSubtotal();
+      const order = {
+        status: "Nieuw",
+        paymentStatus: "Via WhatsApp af te stemmen",
+        isTestOrder: true,
+        stockRestoredAt: null,
+        deliveryMethod: "Verzending",
+        total: subtotal,
+        subtotal,
+        customer: {
+          name: values.name.trim(),
+          email: values.email.trim(),
+          phone: values.phone.trim(),
+          street: values.street.trim(),
+          houseNumber: values.houseNumber.trim(),
+          postalCode: values.postalCode.trim(),
+          city: values.city.trim(),
+          country: values.country.trim(),
+        },
+        notes: values.notes?.trim() || "",
+        items: cart.map((item) => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+        })),
+      };
+
+      // Eerst de order en voorraadwijziging in SQLite vastleggen.
+      const persistedOrder = await addOrder(order);
+      const whatsappUrl = getLootiferWhatsAppUrl(buildWhatsAppMessage(persistedOrder));
+      let whatsappOpened = false;
+
+      if (whatsappWindow && !whatsappWindow.closed) {
+        whatsappWindow.location.replace(whatsappUrl);
+        whatsappOpened = true;
+      }
+
+      shoppingState.clearCart();
+      showConfirmation(persistedOrder, whatsappUrl, whatsappOpened);
+      checkoutForm.reset();
+      renderSummary();
+      syncHeaderCounters();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+      whatsappWindow?.close();
+      console.error("Afrekenen mislukt:", error);
+      showErrors([error?.message || "Er ging iets mis bij het verwerken van de bestelling."]);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  event.preventDefault();
-
-  run().catch((error) => {
-    console.error("Afrekenen mislukt:", error);
-    showErrors([error?.message || "Er ging iets mis bij het verwerken van de bestelling."]);
-  });
+  run();
 });
 
 const initializeCheckout = async () => {

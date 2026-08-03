@@ -3,6 +3,7 @@ import { createQuickView } from "../Collector/collector-experience.js";
 import { createImageAttributes } from "../../Products/product-media.js";
 import { formatCurrency, formatQuantity } from "../../Assets/Js/formatting.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
+import { getLootiferWhatsAppUrl } from "../../Assets/Js/store-config.js";
 
 let shoppingFeedback = null;
 let shoppingFeedbackTimer = null;
@@ -287,7 +288,7 @@ export const createShoppingUi = ({ root } = {}) => {
     const message = cart.length
       ? `Hallo Lootifer! Ik wil graag bestellen: ${cart.map((item) => `${item.name} x${item.quantity}`).join(", ")}`
       : "Hallo Lootifer! Ik wil graag een bestelling plaatsen.";
-    window.open(`https://wa.me/31612345678?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+    window.open(getLootiferWhatsAppUrl(message), "_blank", "noopener,noreferrer");
   });
 
   content.addEventListener("click", (event) => {
