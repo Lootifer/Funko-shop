@@ -17,7 +17,7 @@ export const loadRuntimeCatalog = async () => {
     const apiProducts = await fetchProductsFromApi();
     if (apiProducts.length) {
       return {
-        products: normalizeProductCatalog(apiProducts).filter((product) => !product.archived),
+        products: normalizeProductCatalog(apiProducts),
         source: "api",
       };
     }
@@ -26,7 +26,7 @@ export const loadRuntimeCatalog = async () => {
   }
 
   return {
-    products: (await loadFileCatalog()).filter((product) => !product.archived),
+    products: await loadFileCatalog(),
     source: "file",
   };
 };

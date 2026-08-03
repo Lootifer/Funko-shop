@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { all, exec, get, run } from "../db/connection.js";
 import { toApiOrder } from "../services/serializers.js";
+import { requireAdmin } from "../auth/middleware.js";
 
 const router = Router();
 
@@ -25,7 +26,7 @@ const buildOrderResponse = async (orderRow) => {
   return toApiOrder(orderRow, itemRows);
 };
 
-router.get("/", async (request, response, next) => {
+router.get("/", requireAdmin, async (request, response, next) => {
   try {
     const rows = await all("SELECT * FROM orders ORDER BY created_at DESC, id DESC");
     const orders = [];
@@ -40,7 +41,7 @@ router.get("/", async (request, response, next) => {
   }
 });
 
-router.get("/:orderNumber", async (request, response, next) => {
+router.get("/:orderNumber", requireAdmin, async (request, response, next) => {
   try {
     const orderNumber = String(request.params.orderNumber || "").trim();
     if (!orderNumber) return response.status(400).json({ error: "Ongeldig ordernummer." });
@@ -172,7 +173,7 @@ router.post("/", async (request, response, next) => {
   }
 });
 
-router.patch("/:orderNumber/status", async (request, response, next) => {
+router.patch("/:orderNumber/status", requireAdmin, async (request, response, next) => {
   try {
     const orderNumber = String(request.params.orderNumber || "").trim();
     const nextStatus = String(request.body?.status || "").trim();
@@ -234,7 +235,7 @@ router.patch("/:orderNumber/status", async (request, response, next) => {
   }
 });
 
-router.delete("/:orderNumber", async (request, response, next) => {
+router.delete("/:orderNumber", requireAdmin, async (request, response, next) => {
   try {
     const orderNumber = String(request.params.orderNumber || "").trim();
     if (!orderNumber) return response.status(400).json({ error: "Ongeldig ordernummer." });

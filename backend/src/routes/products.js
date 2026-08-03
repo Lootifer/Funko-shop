@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { all, get, run } from "../db/connection.js";
 import { toApiProduct } from "../services/serializers.js";
+import { requireAdmin } from "../auth/middleware.js";
 
 const router = Router();
 
@@ -212,7 +213,7 @@ router.get("/:idOrSlug", async (request, response, next) => {
   }
 });
 
-router.post("/", async (request, response, next) => {
+router.post("/", requireAdmin, async (request, response, next) => {
   try {
     const payload = request.body || {};
     const validation = await validateProductPayload(payload, null);
@@ -228,7 +229,7 @@ router.post("/", async (request, response, next) => {
   }
 });
 
-router.put("/:id", async (request, response, next) => {
+router.put("/:id", requireAdmin, async (request, response, next) => {
   try {
     const id = Number(request.params.id);
     if (!id) return response.status(400).json({ error: "Ongeldig product-id." });
@@ -250,7 +251,7 @@ router.put("/:id", async (request, response, next) => {
   }
 });
 
-router.patch("/:id/stock", async (request, response, next) => {
+router.patch("/:id/stock", requireAdmin, async (request, response, next) => {
   try {
     const id = Number(request.params.id);
     const stock = Math.max(0, asNumber(request.body?.stock, NaN));
@@ -268,7 +269,7 @@ router.patch("/:id/stock", async (request, response, next) => {
   }
 });
 
-router.patch("/:id/archive", async (request, response, next) => {
+router.patch("/:id/archive", requireAdmin, async (request, response, next) => {
   try {
     const id = Number(request.params.id);
     if (!id) return response.status(400).json({ error: "Ongeldig product-id." });

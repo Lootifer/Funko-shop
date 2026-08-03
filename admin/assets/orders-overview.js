@@ -21,7 +21,7 @@ const renderOrders = () => {
   root.innerHTML = `
     <div class="admin-card">
       <h3>Testbestellingen</h3>
-      <p class="admin-detail">Bestellingen uit de database, zonder authenticatie.</p>
+      <p class="admin-detail">Bestellingen uit de beveiligde databaseomgeving.</p>
       <table class="admin-table">
         <thead>
           <tr>

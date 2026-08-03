@@ -18,6 +18,7 @@ const requestJson = async (path, options = {}) => {
   let response;
   try {
     response = await fetch(`${API_BASE}${path}`, {
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         ...(options.headers || {}),
@@ -52,6 +53,16 @@ export const isApiReachable = async () => {
     return false;
   }
 };
+
+
+export const fetchAdminAuthStatus = async () => requestJson("/auth/status", { method: "GET" });
+
+export const loginAdmin = async (username, password) => requestJson("/auth/login", {
+  method: "POST",
+  body: JSON.stringify({ username, password }),
+});
+
+export const logoutAdmin = async () => requestJson("/auth/logout", { method: "POST", body: "{}" });
 
 export const fetchProductsFromApi = async () => {
   const payload = await requestJson("/products", { method: "GET" });

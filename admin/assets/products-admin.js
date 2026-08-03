@@ -1,4 +1,5 @@
 import { createAdminSidebar, createAdminTopbar } from "../components/layout.js";
+import { requireAdminSession, wireAdminTopbar } from "./admin-auth.js";
 import { createProductCard } from "../../Components/ProductCard.js";
 import { normalizeProductCatalog } from "../../Products/product-schema.js";
 import {
@@ -842,8 +843,12 @@ const bindFormInteractions = () => {
 };
 
 const init = async () => {
+  const user = await requireAdminSession();
+  if (!user) return;
+
   if (root.sidebar) root.sidebar.innerHTML = createAdminSidebar("products");
   if (root.topbar) root.topbar.innerHTML = createAdminTopbar("Producten");
+  wireAdminTopbar(user);
 
   bindFormInteractions();
 

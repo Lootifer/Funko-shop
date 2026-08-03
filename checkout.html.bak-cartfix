@@ -12,7 +12,7 @@
   <body>
     <div id="headerRoot"></div>
 
-    <main class="checkout-page reveal visible">
+    <main class="checkout-page reveal">
       <section class="section-heading">
         <p class="eyebrow">Afrekenen</p>
         <h1>Plaats een orderaanvraag.</h1>

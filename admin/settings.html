@@ -22,34 +22,6 @@
       </main>
     </div>
 
-    <script type="module">
-      import { createAdminSidebar, createAdminTopbar, createFormCard } from './components/layout.js';
-      document.getElementById('adminSidebar').innerHTML = createAdminSidebar('settings');
-      document.getElementById('adminTopbar').innerHTML = createAdminTopbar('Instellingen');
-      document.getElementById('productForm').innerHTML = createFormCard(
-        'Winkelinstellingen',
-        `
-          <label>
-            Winkelnaam
-            <input value="Lootifer Collectibles" />
-          </label>
-          <label>
-            Dropmodus
-            <select>
-              <option>Ingeschakeld</option>
-              <option>Gepauzeerd</option>
-            </select>
-          </label>
-          <label>
-            Welkomstbericht
-            <textarea rows="4">Premium verzamelervaring, klaar voor de volgende fase.</textarea>
-          </label>
-          <label>
-            Standaardvaluta
-            <input value="EUR" />
-          </label>
-        `
-      );
-    </script>
+    <script type="module" src="assets/settings-admin.js"></script>
   </body>
 </html>

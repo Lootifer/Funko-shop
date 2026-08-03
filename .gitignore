@@ -1,4 +1,6 @@
 node_modules/
-server/data/lootifer.db
-server/data/*.db-journal
+Data/lootifer.sqlite
+Data/*.sqlite-journal
+Data/admin-auth.json
+backend/tests/tmp/
 .env

@@ -9,6 +9,7 @@ const testDbPath = path.resolve(process.cwd(), "backend", "tests", "tmp", "looti
 let app;
 let migrateDatabase;
 let closeDb;
+let adminAgent;
 
 before(async () => {
   fs.mkdirSync(path.dirname(testDbPath), { recursive: true });
@@ -16,6 +17,9 @@ before(async () => {
 
   process.env.LOOTIFER_DB_PATH = testDbPath;
   process.env.NODE_ENV = "test";
+  process.env.LOOTIFER_ADMIN_USER = "admin";
+  process.env.LOOTIFER_ADMIN_PASSWORD = "test-password-123";
+  process.env.LOOTIFER_SESSION_SECRET = "test-session-secret-123456789";
 
   ({ default: app } = await import("../src/app.js"));
   ({ migrateDatabase } = await import("../src/db/migrate.js"));
@@ -24,6 +28,12 @@ before(async () => {
   await migrateDatabase({
     productsFilePath: path.resolve(process.cwd(), "Data", "products.json"),
   });
+
+  adminAgent = request.agent(app);
+  await adminAgent
+    .post("/api/auth/login")
+    .send({ username: "admin", password: "test-password-123" })
+    .expect(200);
 });
 
 after(async () => {
@@ -34,6 +44,16 @@ test("GET /api/products returns seeded products", async () => {
   const response = await request(app).get("/api/products").expect(200);
   assert.ok(Array.isArray(response.body.products));
   assert.ok(response.body.products.length > 0);
+});
+
+test("Admin routes require authentication", async () => {
+  await request(app).post("/api/products").send({}).expect(401);
+  await request(app).get("/api/orders").expect(401);
+  await request(app).get("/api/stock/transactions").expect(401);
+
+  const status = await adminAgent.get("/api/auth/status").expect(200);
+  assert.equal(status.body.authenticated, true);
+  assert.equal(status.body.user.username, "admin");
 });
 
 test("POST/PUT/PATCH product routes beheren catalogus via API", async () => {
@@ -66,7 +86,7 @@ test("POST/PUT/PATCH product routes beheren catalogus via API", async () => {
     archived: false,
   };
 
-  const created = await request(app).post("/api/products").send(createPayload).expect(201);
+  const created = await adminAgent.post("/api/products").send(createPayload).expect(201);
   assert.equal(created.body.product.id, createPayload.id);
   assert.equal(created.body.product.name, createPayload.name);
 
@@ -75,17 +95,17 @@ test("POST/PUT/PATCH product routes beheren catalogus via API", async () => {
     name: "Phase 2 Test Product Updated",
     sellingPrice: 30,
   };
-  const updated = await request(app).put(`/api/products/${createPayload.id}`).send(updatedPayload).expect(200);
+  const updated = await adminAgent.put(`/api/products/${createPayload.id}`).send(updatedPayload).expect(200);
   assert.equal(updated.body.product.name, "Phase 2 Test Product Updated");
   assert.equal(updated.body.product.sellingPrice, 30);
 
-  const stockPatched = await request(app)
+  const stockPatched = await adminAgent
     .patch(`/api/products/${createPayload.id}/stock`)
     .send({ stock: 1 })
     .expect(200);
   assert.equal(stockPatched.body.product.stock, 1);
 
-  const archived = await request(app)
+  const archived = await adminAgent
     .patch(`/api/products/${createPayload.id}/archive`)
     .send({ archived: true })
     .expect(200);
@@ -120,13 +140,13 @@ test("POST /api/orders creates order and decreases stock", async () => {
 });
 
 test("PATCH /api/orders/:id/status cancels order and restores stock", async () => {
-  const ordersResponse = await request(app).get("/api/orders").expect(200);
+  const ordersResponse = await adminAgent.get("/api/orders").expect(200);
   const latestOrder = ordersResponse.body.orders[0];
   assert.ok(latestOrder, "Expected at least one order");
 
   const productBeforeCancel = await request(app).get(`/api/products/${latestOrder.items[0].id}`).expect(200);
 
-  await request(app)
+  await adminAgent
     .patch(`/api/orders/${latestOrder.number}/status`)
     .send({ status: "Geannuleerd" })
     .expect(200);
@@ -136,11 +156,11 @@ test("PATCH /api/orders/:id/status cancels order and restores stock", async () =
 });
 
 test("GET /api/orders/:orderNumber haalt individuele bestelling op", async () => {
-  const ordersResponse = await request(app).get("/api/orders").expect(200);
+  const ordersResponse = await adminAgent.get("/api/orders").expect(200);
   const latestOrder = ordersResponse.body.orders[0];
   assert.ok(latestOrder?.number);
 
-  const orderResponse = await request(app).get(`/api/orders/${latestOrder.number}`).expect(200);
+  const orderResponse = await adminAgent.get(`/api/orders/${latestOrder.number}`).expect(200);
   assert.equal(orderResponse.body.order.number, latestOrder.number);
 });
 
@@ -159,18 +179,18 @@ test("DELETE /api/orders/:orderNumber verwijdert testorder", async () => {
     })
     .expect(201);
 
-  await request(app).delete(`/api/orders/${createResponse.body.order.number}`).expect(200);
-  await request(app).get(`/api/orders/${createResponse.body.order.number}`).expect(404);
+  await adminAgent.delete(`/api/orders/${createResponse.body.order.number}`).expect(200);
+  await adminAgent.get(`/api/orders/${createResponse.body.order.number}`).expect(404);
 });
 
 test("GET /api/stock/transactions returns stock journal entries", async () => {
-  const response = await request(app).get("/api/stock/transactions").expect(200);
+  const response = await adminAgent.get("/api/stock/transactions").expect(200);
   assert.ok(Array.isArray(response.body.transactions));
   assert.ok(response.body.transactions.length > 0);
 });
 
 test("API validatiefouten geven nette fouten terug", async () => {
-  const invalidProduct = await request(app)
+  const invalidProduct = await adminAgent
     .post("/api/products")
     .send({ id: 0, name: "", slug: "", sku: "", sellingPrice: 0, stock: -1 })
     .expect(400);

@@ -1,0 +1,20 @@
+LOOTIFER ADMIN-LOGIN - EENMALIGE STAPPEN
+
+1. Pak deze ZIP uit en vervang je bestaande Funko-shop-map.
+2. Open de nieuwe Funko-shop-map in VS Code.
+3. Open Terminal en voer uit:
+
+   npm install
+   npm run setup-admin
+
+4. Kies een gebruikersnaam en een wachtwoord van minimaal 10 tekens.
+5. Start daarna de server:
+
+   npm start
+
+6. Start Live Server via index.html.
+7. Open de admin-login:
+
+   http://127.0.0.1:5500/admin/login.html
+
+De winkel blijft openbaar. Producten wijzigen, voorraadbeheer en bestellingen bekijken zijn nu beveiligd met een admin-login.

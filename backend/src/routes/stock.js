@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { all, exec, get, run } from "../db/connection.js";
 import { toApiProduct } from "../services/serializers.js";
+import { requireAdmin } from "../auth/middleware.js";
 
 const router = Router();
+router.use(requireAdmin);
 
 const normalizeAdjustItems = (items = []) => {
   if (!Array.isArray(items)) return [];

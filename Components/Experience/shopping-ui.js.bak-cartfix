@@ -33,10 +33,10 @@ const createItemMarkup = (item, type) => `
     </div>
     <div class="drawer-item-body">
       <strong>${item.name}</strong>
-      <p>${getProductPriceLabel(item, formatCurrency)}${type === "cart" ? ` Ã¢â‚¬Â¢ Aantal ${formatQuantity(item.quantity)}` : ""}</p>
+      <p>${getProductPriceLabel(item, formatCurrency)}${type === "cart" ? ` • Aantal ${formatQuantity(item.quantity)}` : ""}</p>
       ${type === "cart" ? `
         <div class="drawer-quantity-controls">
-          <button class="quantity-btn" type="button" data-cart-decrement="${item.id}" aria-label="Verlaag aantal van ${item.name}">Ã¢Ë†â€™</button>
+          <button class="quantity-btn" type="button" data-cart-decrement="${item.id}" aria-label="Verlaag aantal van ${item.name}">−</button>
           <span class="quantity-value">${formatQuantity(item.quantity)}</span>
           <button class="quantity-btn" type="button" data-cart-increment="${item.id}" aria-label="Verhoog aantal van ${item.name}">+</button>
         </div>
@@ -66,12 +66,7 @@ export const syncHeaderCounters = () => {
   document.querySelectorAll("[data-header-wishlist-count]").forEach((element) => {
     element.textContent = shoppingState.getWishlist().length;
   });
-
   document.querySelectorAll("[data-header-cart-count]").forEach((element) => {
-    element.textContent = shoppingState.getCartQuantity();
-  });
-
-  document.querySelectorAll("[data-shopping-trigger-count]").forEach((element) => {
     element.textContent = shoppingState.getCartQuantity();
   });
 };
@@ -84,7 +79,7 @@ export const createShoppingUi = ({ root, product }) => {
   drawer.innerHTML = `
     <div class="drawer-header">
       <h3>Winkelwagen</h3>
-      <button class="drawer-close" type="button">Ãƒâ€”</button>
+      <button class="drawer-close" type="button">×</button>
     </div>
     <div class="drawer-tabs">
       <button class="drawer-tab active" data-view="cart">Winkelwagen</button>
@@ -94,24 +89,15 @@ export const createShoppingUi = ({ root, product }) => {
     </div>
     <div class="drawer-content" id="drawerContent"></div>
     <div class="drawer-actions">
-      <a class="button primary drawer-checkout-button" href="checkout.html">Naar afrekenen</a>
-      <a class="button secondary" href="cart.html">Volledige winkelwagen</a>
-      <button class="button secondary drawer-whatsapp-button" id="whatsappButton" type="button">WhatsApp</button>
+      <button class="button secondary" id="notifyButton" type="button">Meld mij</button>
+      <a class="button secondary" href="cart.html">Open winkelwagen</a>
+      <button class="button primary" id="whatsappButton" type="button">WhatsApp afrekenen</button>
     </div>
   `;
   const trigger = document.createElement("button");
   trigger.className = "shopping-trigger";
   trigger.type = "button";
-  trigger.setAttribute("aria-label", "Winkelwagen openen");
-  trigger.setAttribute("aria-expanded", "false");
-  trigger.innerHTML = `
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M3 3h2l2.2 10.1a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20.5 7H7"></path>
-      <circle cx="10" cy="19" r="1.5"></circle>
-      <circle cx="17" cy="19" r="1.5"></circle>
-    </svg>
-    <span class="shopping-trigger-count" data-shopping-trigger-count>${shoppingState.getCartQuantity()}</span>
-  `;
+  trigger.textContent = "🛍️ Winkelwagen";
   root.appendChild(trigger);
   root.appendChild(drawer);
 
@@ -159,7 +145,7 @@ export const createShoppingUi = ({ root, product }) => {
         ? `
           <div class="drawer-list">${cart.map((item) => createItemMarkup(item, "cart")).join("")}</div>
           <p class="drawer-summary">Subtotaal: ${formatCurrency(shoppingState.getCartSubtotal())}</p>
-          
+          <a class="button secondary drawer-link" href="cart.html">Naar volledige winkelwagen</a>
         `
         : '<p class="card-empty">Je winkelwagen is leeg.</p>';
     } else if (activeView === "wishlist") {
@@ -190,19 +176,14 @@ export const createShoppingUi = ({ root, product }) => {
   });
 
   trigger.addEventListener("click", () => {
-    const isOpen = drawer.classList.toggle("drawer-open");
-    trigger.classList.toggle("is-hidden", isOpen);
-    trigger.setAttribute("aria-expanded", String(isOpen));
-
-    if (isOpen) {
+    drawer.classList.toggle("drawer-open");
+    if (drawer.classList.contains("drawer-open")) {
       render();
     }
   });
 
   closeButton?.addEventListener("click", () => {
     drawer.classList.remove("drawer-open");
-    trigger.classList.remove("is-hidden");
-    trigger.setAttribute("aria-expanded", "false");
   });
 
   notifyButton?.addEventListener("click", () => {
@@ -301,7 +282,7 @@ export const bindShoppingActions = (product, trigger) => {
       shoppingState.toggleWishlist(payload);
       const isActive = shoppingState.isWishlisted(payload.id);
       trigger.classList.toggle("active", isActive);
-      trigger.innerHTML = isActive ? "Ã¢â„¢Â¥" : "Ã¢â„¢Â¡";
+      trigger.innerHTML = isActive ? "♥" : "♡";
       showShoppingFeedback(isActive ? "Toegevoegd aan verlanglijst." : "Verwijderd uit verlanglijst.", "accent");
     }
 

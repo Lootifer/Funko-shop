@@ -1,4 +1,5 @@
 import { createAdminSidebar, createAdminTopbar } from "../components/layout.js";
+import { requireAdminSession, wireAdminTopbar } from "./admin-auth.js";
 import {
   backupLegacyLocalOrders,
   deleteOrderByNumber,
@@ -431,12 +432,16 @@ const render = () => {
 };
 
 const initialize = async () => {
+  const user = await requireAdminSession();
+  if (!user) return;
+
   if (root.sidebar) {
     root.sidebar.innerHTML = createAdminSidebar("orders");
   }
   if (root.topbar) {
     root.topbar.innerHTML = createAdminTopbar("Bestellingen");
   }
+  wireAdminTopbar(user);
 
   renderStatusOptions();
   bindToolbarActions();

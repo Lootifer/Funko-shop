@@ -21,8 +21,9 @@ export const createAdminTopbar = (title = "Dashboard") => `
   <header class="admin-topbar">
     <h1>${title}</h1>
     <div class="admin-topbar-actions">
-      <span class="admin-pill">Collector-beheer</span>
+      <span class="admin-pill" data-admin-user>Beheerder</span>
       <a class="button secondary" href="../index.html">Bekijk winkel</a>
+      <button class="button secondary" type="button" data-admin-logout>Uitloggen</button>
     </div>
   </header>
 `;
