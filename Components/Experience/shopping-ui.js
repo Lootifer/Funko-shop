@@ -27,23 +27,28 @@ const showShoppingFeedback = (message, tone = "accent") => {
 };
 
 const createItemMarkup = (item, type) => `
-  <div class="drawer-item">
+  <article class="drawer-item">
     <div class="drawer-item-media">
       <img ${createImageAttributes({ src: item.image, alt: item.name })} />
     </div>
     <div class="drawer-item-body">
       <strong>${item.name}</strong>
-      <p>${getProductPriceLabel(item, formatCurrency)}${type === "cart" ? ` Ã¢â‚¬Â¢ Aantal ${formatQuantity(item.quantity)}` : ""}</p>
+      <p class="drawer-item-meta">
+        ${getProductPriceLabel(item, formatCurrency)}
+        ${type === "cart" ? `<span aria-hidden="true">&bull;</span> Aantal ${formatQuantity(item.quantity)}` : ""}
+      </p>
       ${type === "cart" ? `
-        <div class="drawer-quantity-controls">
-          <button class="quantity-btn" type="button" data-cart-decrement="${item.id}" aria-label="Verlaag aantal van ${item.name}">Ã¢Ë†â€™</button>
-          <span class="quantity-value">${formatQuantity(item.quantity)}</span>
-          <button class="quantity-btn" type="button" data-cart-increment="${item.id}" aria-label="Verhoog aantal van ${item.name}">+</button>
+        <div class="drawer-item-controls">
+          <div class="drawer-quantity-controls" aria-label="Aantal aanpassen">
+            <button class="quantity-btn" type="button" data-cart-decrement="${item.id}" aria-label="Verlaag aantal van ${item.name}">&minus;</button>
+            <span class="quantity-value">${formatQuantity(item.quantity)}</span>
+            <button class="quantity-btn" type="button" data-cart-increment="${item.id}" aria-label="Verhoog aantal van ${item.name}">+</button>
+          </div>
+          <button class="text-link" type="button" data-cart-remove="${item.id}">Verwijderen</button>
         </div>
-        <button class="text-link" data-cart-remove="${item.id}">Verwijderen</button>
       ` : ""}
     </div>
-  </div>
+  </article>
 `;
 
 const getProductFromTrigger = (trigger) => {
@@ -63,89 +68,148 @@ const getProductFromTrigger = (trigger) => {
 };
 
 export const syncHeaderCounters = () => {
+  const wishlistQuantity = shoppingState.getWishlist().length;
+  const cartQuantity = shoppingState.getCartQuantity();
+
   document.querySelectorAll("[data-header-wishlist-count]").forEach((element) => {
-    element.textContent = shoppingState.getWishlist().length;
+    element.textContent = wishlistQuantity;
   });
 
   document.querySelectorAll("[data-header-cart-count]").forEach((element) => {
-    element.textContent = shoppingState.getCartQuantity();
+    element.textContent = cartQuantity;
   });
 
   document.querySelectorAll("[data-shopping-trigger-count]").forEach((element) => {
-    element.textContent = shoppingState.getCartQuantity();
+    element.textContent = cartQuantity;
+    element.classList.toggle("is-empty", cartQuantity <= 0);
   });
 };
 
-export const createShoppingUi = ({ root, product }) => {
+export const createShoppingUi = ({ root } = {}) => {
   if (!root) return;
+
+  const backdrop = document.createElement("button");
+  backdrop.className = "drawer-backdrop";
+  backdrop.type = "button";
+  backdrop.setAttribute("aria-label", "Winkelwagen sluiten");
+  backdrop.tabIndex = -1;
 
   const drawer = document.createElement("aside");
   drawer.className = "side-drawer";
+  drawer.id = "lootiferShoppingDrawer";
+  drawer.setAttribute("role", "dialog");
+  drawer.setAttribute("aria-modal", "true");
+  drawer.setAttribute("aria-hidden", "true");
+  drawer.setAttribute("aria-labelledby", "shoppingDrawerTitle");
   drawer.innerHTML = `
     <div class="drawer-header">
-      <h3>Winkelwagen</h3>
-      <button class="drawer-close" type="button">Ãƒâ€”</button>
+      <div>
+        <p class="drawer-eyebrow">Lootifer Collectibles</p>
+        <h3 id="shoppingDrawerTitle">Winkelwagen</h3>
+      </div>
+      <button class="drawer-close" type="button" aria-label="Winkelwagen sluiten">&times;</button>
     </div>
-    <div class="drawer-tabs">
-      <button class="drawer-tab active" data-view="cart">Winkelwagen</button>
-      <button class="drawer-tab" data-view="wishlist">Verlanglijst</button>
-      <button class="drawer-tab" data-view="compare">Vergelijken</button>
-      <button class="drawer-tab" data-view="recent">Recent bekeken</button>
+    <div class="drawer-tabs" role="tablist" aria-label="Winkeloverzicht">
+      <button class="drawer-tab active" type="button" role="tab" aria-selected="true" data-view="cart">Winkelwagen</button>
+      <button class="drawer-tab" type="button" role="tab" aria-selected="false" data-view="wishlist">Verlanglijst</button>
+      <button class="drawer-tab" type="button" role="tab" aria-selected="false" data-view="compare">Vergelijken</button>
+      <button class="drawer-tab" type="button" role="tab" aria-selected="false" data-view="recent">Recent bekeken</button>
     </div>
     <div class="drawer-content" id="drawerContent"></div>
     <div class="drawer-actions">
-      <a class="button primary drawer-checkout-button" href="checkout.html">Naar afrekenen</a>
-      <a class="button secondary" href="cart.html">Volledige winkelwagen</a>
-      <button class="button secondary drawer-whatsapp-button" id="whatsappButton" type="button">WhatsApp</button>
+      <a class="button primary drawer-primary-action" id="drawerPrimaryAction" href="checkout.html">Naar afrekenen</a>
+      <a class="button secondary drawer-secondary-action" id="drawerSecondaryAction" href="cart.html">Volledige winkelwagen</a>
+      <button class="button secondary drawer-whatsapp-action" id="whatsappButton" type="button">WhatsApp</button>
     </div>
   `;
+
   const trigger = document.createElement("button");
   trigger.className = "shopping-trigger";
   trigger.type = "button";
   trigger.setAttribute("aria-label", "Winkelwagen openen");
+  trigger.setAttribute("aria-controls", drawer.id);
   trigger.setAttribute("aria-expanded", "false");
   trigger.innerHTML = `
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M3 3h2l2.2 10.1a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20.5 7H7"></path>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M3 3h2l2.15 9.75a2 2 0 0 0 1.95 1.57h7.72a2 2 0 0 0 1.95-1.57L20.35 7H6.1"></path>
       <circle cx="10" cy="19" r="1.5"></circle>
       <circle cx="17" cy="19" r="1.5"></circle>
     </svg>
     <span class="shopping-trigger-count" data-shopping-trigger-count>${shoppingState.getCartQuantity()}</span>
   `;
+
+  root.appendChild(backdrop);
   root.appendChild(trigger);
   root.appendChild(drawer);
 
   const content = drawer.querySelector("#drawerContent");
+  const tabs = drawer.querySelectorAll(".drawer-tab");
+  const closeButton = drawer.querySelector(".drawer-close");
+  const drawerTitle = drawer.querySelector("#shoppingDrawerTitle");
+  const primaryAction = drawer.querySelector("#drawerPrimaryAction");
+  const secondaryAction = drawer.querySelector("#drawerSecondaryAction");
+  const whatsappButton = drawer.querySelector("#whatsappButton");
+
   const overlay = document.createElement("div");
   overlay.className = "quick-view-overlay";
   overlay.id = "lootiferQuickViewOverlay";
   overlay.innerHTML = '<div class="quick-view-card-shell"></div>';
   document.body.appendChild(overlay);
-  const tabs = drawer.querySelectorAll(".drawer-tab");
-  const closeButton = drawer.querySelector(".drawer-close");
-  const notifyButton = drawer.querySelector("#notifyButton");
-  const whatsappButton = drawer.querySelector("#whatsappButton");
+
   let activeView = "cart";
 
-  const refreshDrawer = () => {
-    if (drawer.classList.contains("drawer-open")) {
+  const setDrawerOpen = (open) => {
+    drawer.classList.toggle("drawer-open", open);
+    backdrop.classList.toggle("drawer-backdrop-open", open);
+    trigger.setAttribute("aria-expanded", String(open));
+    drawer.setAttribute("aria-hidden", String(!open));
+    document.body.classList.toggle("shopping-drawer-open", open);
+
+    if (open) {
       render();
+      window.setTimeout(() => closeButton?.focus(), 50);
     }
   };
 
-  const openQuickView = (item) => {
-    const shell = overlay.querySelector(".quick-view-card-shell");
-    if (!shell) return;
-    shell.innerHTML = createQuickView(item);
-    shell.querySelectorAll("[data-action]").forEach((trigger) => {
-      bindShoppingActions(undefined, trigger);
-    });
-    overlay.classList.add("open");
+  const refreshDrawer = () => {
+    if (drawer.classList.contains("drawer-open")) render();
   };
 
   const closeQuickView = () => {
     overlay.classList.remove("open");
-    overlay.querySelector(".quick-view-card-shell").innerHTML = "";
+    const shell = overlay.querySelector(".quick-view-card-shell");
+    if (shell) shell.innerHTML = "";
+  };
+
+  const updateDrawerActions = (cartLength) => {
+    const isCart = activeView === "cart";
+    const isWishlist = activeView === "wishlist";
+
+    if (primaryAction) {
+      primaryAction.hidden = !isCart || cartLength <= 0;
+    }
+
+    if (whatsappButton) {
+      whatsappButton.hidden = !isCart || cartLength <= 0;
+    }
+
+    if (secondaryAction) {
+      if (isCart) {
+        secondaryAction.href = "cart.html";
+        secondaryAction.textContent = "Volledige winkelwagen";
+      } else if (isWishlist) {
+        secondaryAction.href = "wishlist.html";
+        secondaryAction.textContent = "Open verlanglijst";
+      } else {
+        secondaryAction.href = "shop.html";
+        secondaryAction.textContent = "Naar de winkel";
+      }
+    }
+
+    const visibleActionCount = [primaryAction, secondaryAction, whatsappButton]
+      .filter((element) => element && !element.hidden)
+      .length;
+    drawer.querySelector(".drawer-actions")?.classList.toggle("single-action", visibleActionCount === 1);
   };
 
   const render = () => {
@@ -155,26 +219,40 @@ export const createShoppingUi = ({ root, product }) => {
     const recent = shoppingState.getRecent();
 
     if (activeView === "cart") {
+      if (drawerTitle) drawerTitle.textContent = "Winkelwagen";
       content.innerHTML = cart.length
         ? `
           <div class="drawer-list">${cart.map((item) => createItemMarkup(item, "cart")).join("")}</div>
-          <p class="drawer-summary">Subtotaal: ${formatCurrency(shoppingState.getCartSubtotal())}</p>
-          
+          <div class="drawer-summary">
+            <span>Subtotaal</span>
+            <strong>${formatCurrency(shoppingState.getCartSubtotal())}</strong>
+          </div>
         `
-        : '<p class="card-empty">Je winkelwagen is leeg.</p>';
+        : `
+          <div class="drawer-empty-state">
+            <strong>Je winkelwagen is leeg.</strong>
+            <p>Voeg een product toe vanuit de winkel.</p>
+          </div>
+        `;
     } else if (activeView === "wishlist") {
+      if (drawerTitle) drawerTitle.textContent = "Verlanglijst";
       content.innerHTML = wishlist.length
         ? `<div class="drawer-list">${wishlist.map((item) => createItemMarkup(item, "wishlist")).join("")}</div>`
-        : '<p class="card-empty">Je verlanglijst is leeg.</p>';
+        : '<div class="drawer-empty-state"><strong>Je verlanglijst is leeg.</strong><p>Sla een product op met het hartje.</p></div>';
     } else if (activeView === "compare") {
+      if (drawerTitle) drawerTitle.textContent = "Vergelijken";
       content.innerHTML = compare.length
         ? `<div class="drawer-list">${compare.map((item) => createItemMarkup(item, "compare")).join("")}</div>`
-        : '<p class="card-empty">Vergelijk tot drie producten.</p>';
+        : '<div class="drawer-empty-state"><strong>Nog niets om te vergelijken.</strong><p>Voeg maximaal drie producten toe.</p></div>';
     } else {
+      if (drawerTitle) drawerTitle.textContent = "Recent bekeken";
       content.innerHTML = recent.length
         ? `<div class="drawer-list">${recent.map((item) => createItemMarkup(item, "recent")).join("")}</div>`
-        : '<p class="card-empty">Recent bekeken items verschijnen hier.</p>';
+        : '<div class="drawer-empty-state"><strong>Nog geen recente producten.</strong><p>Bekeken items verschijnen hier.</p></div>';
     }
+
+    updateDrawerActions(cart.length);
+    syncHeaderCounters();
   };
 
   overlay.addEventListener("click", (event) => {
@@ -183,32 +261,24 @@ export const createShoppingUi = ({ root, product }) => {
 
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      activeView = tab.dataset.view;
-      tabs.forEach((item) => item.classList.toggle("active", item === tab));
+      activeView = tab.dataset.view || "cart";
+      tabs.forEach((item) => {
+        const isActive = item === tab;
+        item.classList.toggle("active", isActive);
+        item.setAttribute("aria-selected", String(isActive));
+      });
       render();
     });
   });
 
-  trigger.addEventListener("click", () => {
-    const isOpen = drawer.classList.toggle("drawer-open");
-    trigger.classList.toggle("is-hidden", isOpen);
-    trigger.setAttribute("aria-expanded", String(isOpen));
+  trigger.addEventListener("click", () => setDrawerOpen(true));
+  closeButton?.addEventListener("click", () => setDrawerOpen(false));
+  backdrop.addEventListener("click", () => setDrawerOpen(false));
 
-    if (isOpen) {
-      render();
-    }
-  });
-
-  closeButton?.addEventListener("click", () => {
-    drawer.classList.remove("drawer-open");
-    trigger.classList.remove("is-hidden");
-    trigger.setAttribute("aria-expanded", "false");
-  });
-
-  notifyButton?.addEventListener("click", () => {
-    if (product) {
-      shoppingState.addNotification(product);
-      content.innerHTML = '<p class="card-empty">Je ontvangt een melding zodra dit item terug op voorraad is.</p>';
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && drawer.classList.contains("drawer-open")) {
+      setDrawerOpen(false);
+      trigger.focus();
     }
   });
 
@@ -229,11 +299,10 @@ export const createShoppingUi = ({ root, product }) => {
       shoppingState.incrementCartQuantity(productId);
       const afterItem = shoppingState.getCart().find((item) => item.id === productId);
       const afterQuantity = Number(afterItem?.quantity) || 0;
-      if (afterQuantity === beforeQuantity) {
-        showShoppingFeedback("De maximale voorraad is bereikt.", "warning");
-      } else {
-        showShoppingFeedback("Aantal bijgewerkt.", "accent");
-      }
+      showShoppingFeedback(
+        afterQuantity === beforeQuantity ? "De maximale voorraad is bereikt." : "Aantal bijgewerkt.",
+        afterQuantity === beforeQuantity ? "warning" : "accent"
+      );
       render();
       return;
     }
@@ -258,6 +327,7 @@ export const createShoppingUi = ({ root, product }) => {
     syncHeaderCounters();
     refreshDrawer();
   });
+
   syncHeaderCounters();
   render();
 };
@@ -301,7 +371,7 @@ export const bindShoppingActions = (product, trigger) => {
       shoppingState.toggleWishlist(payload);
       const isActive = shoppingState.isWishlisted(payload.id);
       trigger.classList.toggle("active", isActive);
-      trigger.innerHTML = isActive ? "Ã¢â„¢Â¥" : "Ã¢â„¢Â¡";
+      trigger.innerHTML = isActive ? "&#9829;" : "&#9825;";
       showShoppingFeedback(isActive ? "Toegevoegd aan verlanglijst." : "Verwijderd uit verlanglijst.", "accent");
     }
 
@@ -327,9 +397,10 @@ export const bindShoppingActions = (product, trigger) => {
       const overlay = document.getElementById("lootiferQuickViewOverlay");
       if (overlay) {
         const shell = overlay.querySelector(".quick-view-card-shell");
+        if (!shell) return;
         shell.innerHTML = createQuickView(payload);
-        shell.querySelectorAll("[data-action]").forEach((trigger) => {
-          bindShoppingActions(payload, trigger);
+        shell.querySelectorAll("[data-action]").forEach((actionTrigger) => {
+          bindShoppingActions(payload, actionTrigger);
         });
         overlay.classList.add("open");
       }

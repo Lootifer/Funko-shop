@@ -12,7 +12,7 @@
   <body>
     <div id="headerRoot"></div>
 
-    <main class="cart-page">
+    <main class="cart-page reveal">
       <section class="section-heading">
         <p class="eyebrow">Winkelwagen</p>
         <h1>Controleer je selectie.</h1>

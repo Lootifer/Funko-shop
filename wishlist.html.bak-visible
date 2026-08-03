@@ -12,7 +12,7 @@
   <body>
     <div id="headerRoot"></div>
 
-    <main class="product-page">
+    <main class="product-page reveal">
       <section class="section-heading">
         <p class="eyebrow">Verlanglijst</p>
         <h1>Je opgeslagen grails.</h1>

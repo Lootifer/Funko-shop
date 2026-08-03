@@ -48,6 +48,7 @@ const renderWishlist = async () => {
     bindShoppingActions(product, trigger);
   });
   attachProductCardInteractions(wishlistGrid);
+  wishlistGrid.querySelectorAll(".reveal").forEach((card) => card.classList.add("visible"));
   syncHeaderCounters();
 };
 

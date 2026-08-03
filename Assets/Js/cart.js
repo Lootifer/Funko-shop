@@ -66,9 +66,9 @@ const renderCart = () => {
               <div class="cart-item-body">
                 <p class="card-meta">${item.universe || "Collector"}</p>
                 <h3>${item.name}</h3>
-                <p class="cart-item-meta">Prijs ${getProductPriceLabel(item, formatCurrency)} · Totaal ${formatCurrency((Number(item.price) || 0) * (Number(item.quantity) || 0))}</p>
+                <p class="cart-item-meta">Prijs ${getProductPriceLabel(item, formatCurrency)} &middot; Totaal ${formatCurrency((Number(item.price) || 0) * (Number(item.quantity) || 0))}</p>
                 <div class="cart-item-actions">
-                  <button class="quantity-btn" type="button" data-cart-decrement="${item.id}" aria-label="Verlaag aantal">−</button>
+                  <button class="quantity-btn" type="button" data-cart-decrement="${item.id}" aria-label="Verlaag aantal">&minus;</button>
                   <span class="quantity-value">${formatQuantity(item.quantity)}</span>
                   <button class="quantity-btn" type="button" data-cart-increment="${item.id}" aria-label="Verhoog aantal">+</button>
                   <button class="text-link" type="button" data-cart-remove="${item.id}">Verwijderen</button>

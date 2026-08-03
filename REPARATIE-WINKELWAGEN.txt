@@ -1,0 +1,17 @@
+Lootifer reparatie - 3 augustus 2026
+
+Gerepareerd:
+- Winkelwagenpagina toont de inhoud direct.
+- Verlanglijstpagina toont opgeslagen producten direct.
+- Afrekenpagina blijft direct zichtbaar.
+- Winkelwagen-zijpaneel heeft een rond winkelkar-icoon met teller.
+- Zijpaneel sluit via kruisje, buitenzijde of Escape.
+- Verkeerd weergegeven tekens in het winkelwagenpaneel zijn verwijderd.
+- Gearchiveerde producten blijven verborgen in de winkel.
+
+Starten:
+1. Open deze Funko-shop-map in VS Code.
+2. Open de terminal.
+3. Voer npm start uit.
+4. Start Live Server.
+5. Gebruik localhost in het webadres.
