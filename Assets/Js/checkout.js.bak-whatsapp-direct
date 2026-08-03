@@ -197,11 +197,16 @@ checkoutForm?.addEventListener("submit", (event) => {
     showErrors([]);
     setSubmitting(true);
 
+    // Open direct vanuit de klikactie een leeg tabblad. Zo blokkeert de browser
+    // WhatsApp niet nadat de servercontrole is afgerond.
+    const whatsappWindow = window.open("about:blank", "lootifer-whatsapp");
+
     try {
       const sync = await synchronizeCartWithInventory();
       const cart = sync.cart;
 
       if (sync.warnings.length) {
+        whatsappWindow?.close();
         showErrors(["Voorraad is bijgewerkt voordat je bestelde:", ...sync.warnings]);
         renderSummary();
         return;
@@ -209,6 +214,7 @@ checkoutForm?.addEventListener("submit", (event) => {
 
       const errors = validateForm(values, cart);
       if (errors.length) {
+        whatsappWindow?.close();
         showErrors(errors);
         return;
       }
@@ -245,16 +251,21 @@ checkoutForm?.addEventListener("submit", (event) => {
       // Eerst de order en voorraadwijziging in SQLite vastleggen.
       const persistedOrder = await addOrder(order);
       const whatsappUrl = getLootiferWhatsAppUrl(buildWhatsAppMessage(persistedOrder));
+      let whatsappOpened = false;
+
+      if (whatsappWindow && !whatsappWindow.closed) {
+        whatsappWindow.location.replace(whatsappUrl);
+        whatsappOpened = true;
+      }
 
       shoppingState.clearCart();
+      showConfirmation(persistedOrder, whatsappUrl, whatsappOpened);
       checkoutForm.reset();
       renderSummary();
       syncHeaderCounters();
-
-      // Ga rechtstreeks in hetzelfde tabblad naar WhatsApp.
-      window.location.href = whatsappUrl;
-      return;
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
+      whatsappWindow?.close();
       console.error("Afrekenen mislukt:", error);
       showErrors([error?.message || "Er ging iets mis bij het verwerken van de bestelling."]);
     } finally {
