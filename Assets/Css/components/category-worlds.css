@@ -304,3 +304,8 @@ html[data-theme="light"] .category-product-grid .collectible-card { background:l
 @media (prefers-reduced-motion: reduce) {
   .category-world *, .category-world *::before, .category-world *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
 }
+.category-world .category-hero-chips,
+.category-world .category-shelf-text,
+.category-world .shop-count {
+  display: none !important;
+}

@@ -62,8 +62,8 @@ const SHOP_PAGE_COPY = {
 
 const CATEGORY_GRID_COPY = {
   en: {
-    common: { spots: "16 display spots", admin: "Filled automatically from Admin", sort: "Arrange the shelf" },
-    lego: { kicker: "THE BUILDER'S SHELF", title: "Ready to build your collection?", text: "A clear 4 × 4 display with every product added from Admin." },
+    common: { spots: "", admin: "", sort: "Arrange the shelf" },
+    lego: { kicker: "THE BUILDER'S SHELF", title: "Ready to build your collection?", text: "" },
     pokemon: { kicker: "CREATURE COLLECTION", title: "Choose your next discovery.", text: "Sixteen showcase positions for figures, cards and special finds from Admin." },
     "star-wars": { kicker: "THE GALACTIC ARCHIVE", title: "Signals from the collection.", text: "A cinematic 4 × 4 display for every item assigned to Star Wars in Admin." },
     "harry-potter": { kicker: "THE ENCHANTED CABINET", title: "Every shelf holds a new story.", text: "A magical 4 × 4 display for products assigned to Harry Potter in Admin." },
