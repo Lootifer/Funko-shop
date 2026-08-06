@@ -1,0 +1,15 @@
+LOOTIFER COLLECTIBLES — V15 CATEGORY WORLDS
+
+Aangepast:
+- LEGO, Pokémon, Star Wars, Harry Potter en Sale hebben ieder een eigen levendig thema.
+- De filters zijn op deze vijf pagina's verwijderd.
+- Producten staan in een 4 x 4 raster op desktop (16 producten per pagina).
+- Foto, prijs, voorraad en productinformatie blijven automatisch vanuit Admin komen.
+- De bestaande paginagegevens en Engelse/Nederlandse taalwissel blijven werken.
+- Animaties respecteren de instelling voor verminderde beweging.
+
+Testen:
+1. npm install
+2. npm start
+3. index.html openen met Live Server
+4. Ctrl + F5

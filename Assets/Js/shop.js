@@ -31,8 +31,8 @@ let shopSort = null;
 
 const getShopLanguage = () => window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en";
 const shopCopy = () => getShopLanguage() === "nl"
-  ? { products: "producten gevonden", product: "product gevonden", active: "Actieve filters", none: "geen", search: "Zoekterm", category: "Categorie", universe: "Universum", brand: "Merk", price: "Prijs", exclusive: "Exclusief", chase: "Chase", vaulted: "Gewaardeerd", stock: "Op voorraad", until: "Tot", empty: "Er passen geen verzamelitems bij de huidige filters.", unavailable: "De productcatalogus is momenteel niet beschikbaar.", loading: "Producten worden geladen…" }
-  : { products: "products found", product: "product found", active: "Active filters", none: "none", search: "Search", category: "Category", universe: "Universe", brand: "Brand", price: "Price", exclusive: "Exclusive", chase: "Chase", vaulted: "Vaulted", stock: "In stock", until: "Up to", empty: "No collectibles match the current filters.", unavailable: "The product catalogue is currently unavailable.", loading: "Products are loading…" };
+  ? { products: "producten gevonden", product: "product gevonden", active: "Actieve filters", none: "geen", search: "Zoekterm", category: "Categorie", universe: "Universum", brand: "Merk", price: "Prijs", exclusive: "Exclusief", chase: "Chase", vaulted: "Gewaardeerd", stock: "Op voorraad", until: "Tot", empty: "Er passen geen verzamelitems bij de huidige filters.", emptyCurated: "Er zijn nog geen verzamelitems aan deze collectie toegevoegd.", unavailable: "De productcatalogus is momenteel niet beschikbaar.", loading: "Producten worden geladen…" }
+  : { products: "products found", product: "product found", active: "Active filters", none: "none", search: "Search", category: "Category", universe: "Universe", brand: "Brand", price: "Price", exclusive: "Exclusive", chase: "Chase", vaulted: "Vaulted", stock: "In stock", until: "Up to", empty: "No collectibles match the current filters.", emptyCurated: "No collectibles have been added to this collection yet.", unavailable: "The product catalogue is currently unavailable.", loading: "Products are loading…" };
 
 
 const SHOP_PAGE_COPY = {
@@ -57,6 +57,25 @@ const SHOP_PAGE_COPY = {
     sale: { eyebrow: "Sale", title: "Verzamelitems voor een lagere prijs.", text: "Bekijk producten met een geldige kortingsprijs." },
     sort: ["Nieuwste", "Prijs laag naar hoog", "Prijs hoog naar laag", "Alfabetisch"],
     backFunko: "← Terug naar alle Funko-lijnen",
+  },
+};
+
+const CATEGORY_GRID_COPY = {
+  en: {
+    common: { spots: "16 display spots", admin: "Filled automatically from Admin", sort: "Arrange the shelf" },
+    lego: { kicker: "THE BUILDER'S SHELF", title: "Ready to build your collection?", text: "A clear 4 × 4 display with every product added from Admin." },
+    pokemon: { kicker: "CREATURE COLLECTION", title: "Choose your next discovery.", text: "Sixteen showcase positions for figures, cards and special finds from Admin." },
+    "star-wars": { kicker: "THE GALACTIC ARCHIVE", title: "Signals from the collection.", text: "A cinematic 4 × 4 display for every item assigned to Star Wars in Admin." },
+    "harry-potter": { kicker: "THE ENCHANTED CABINET", title: "Every shelf holds a new story.", text: "A magical 4 × 4 display for products assigned to Harry Potter in Admin." },
+    sale: { kicker: "THE GOLDEN DROP", title: "Limited offers. Lasting stories.", text: "Sixteen clear positions for every product with a valid discount price." },
+  },
+  nl: {
+    common: { spots: "16 presentatieplekken", admin: "Automatisch gevuld vanuit Admin", sort: "Rangschik de collectie" },
+    lego: { kicker: "DE BOUWERSPLANK", title: "Klaar om je collectie te bouwen?", text: "Een helder 4 × 4-overzicht met elk product dat via Admin wordt toegevoegd." },
+    pokemon: { kicker: "WEZENSCOLLECTIE", title: "Kies je volgende ontdekking.", text: "Zestien presentatieplekken voor figuren, kaarten en bijzondere vondsten uit Admin." },
+    "star-wars": { kicker: "HET GALACTISCHE ARCHIEF", title: "Signalen uit de collectie.", text: "Een filmisch 4 × 4-overzicht voor elk item dat in Admin aan Star Wars is gekoppeld." },
+    "harry-potter": { kicker: "DE BETOVERDE KAST", title: "Elke plank bewaart een nieuw verhaal.", text: "Een magisch 4 × 4-overzicht voor producten die in Admin aan Harry Potter zijn gekoppeld." },
+    sale: { kicker: "DE GOUDEN DROP", title: "Tijdelijke deals. Blijvende verhalen.", text: "Zestien heldere plekken voor elk product met een geldige kortingsprijs." },
   },
 };
 
@@ -102,10 +121,32 @@ const applyShopPageLanguage = (language = getShopLanguage()) => {
       if (dictionary.sort[index]) option.textContent = dictionary.sort[index];
     });
   }
+
+  if (IS_CURATED_COLLECTION) {
+    const categoryCopy = CATEGORY_GRID_COPY[locale]?.[COLLECTION_KEY];
+    const commonCopy = CATEGORY_GRID_COPY[locale]?.common;
+    if (categoryCopy) {
+      const kicker = document.getElementById("categoryShelfKicker");
+      const shelfTitle = document.getElementById("categoryShelfTitle");
+      const shelfText = document.getElementById("categoryShelfText");
+      if (kicker) kicker.textContent = categoryCopy.kicker;
+      if (shelfTitle) shelfTitle.textContent = categoryCopy.title;
+      if (shelfText) shelfText.textContent = categoryCopy.text;
+    }
+    if (commonCopy) {
+      const spots = document.getElementById("categorySpotLabel");
+      const admin = document.getElementById("categoryAdminLabel");
+      const sortLabel = document.getElementById("categorySortLabel");
+      if (spots) spots.textContent = commonCopy.spots;
+      if (admin) admin.textContent = commonCopy.admin;
+      if (sortLabel) sortLabel.textContent = commonCopy.sort;
+    }
+  }
 };
 
-const PRODUCTS_PER_PAGE = 24;
 const COLLECTION_KEY = document.body.dataset.collectionKey || "";
+const IS_CURATED_COLLECTION = document.body.dataset.curatedGrid === "true";
+const PRODUCTS_PER_PAGE = IS_CURATED_COLLECTION ? 16 : 24;
 const FIXED_CATEGORY = document.body.dataset.fixedCategory || "";
 const normalizeCollectionValue = (value = "") => String(value).trim().toLowerCase();
 const belongsToCollection = (product) => {
@@ -261,7 +302,7 @@ const getFilteredProducts = () => {
   const category = FIXED_CATEGORY || shopCategory?.value || "";
   const universe = shopUniverse?.value || "";
   const brand = shopBrand?.value || "";
-  const maxPrice = Number(shopPrice?.value || 300);
+  const maxPrice = shopPrice ? Number(shopPrice.value || 300) : Number.POSITIVE_INFINITY;
   const onlyExclusive = shopExclusive?.checked || false;
   const onlyChase = shopChase?.checked || false;
   const onlyVaulted = shopVaulted?.checked || false;
@@ -327,7 +368,7 @@ const renderProducts = (items) => {
 
   shopGrid.innerHTML = renderedCards.length
     ? renderedCards.join("")
-    : `<p class="card-empty">${shopCopy().empty}</p>`;
+    : `<p class="card-empty">${IS_CURATED_COLLECTION ? shopCopy().emptyCurated : shopCopy().empty}</p>`;
 
   attachPremiumFallback(shopGrid);
 
@@ -365,9 +406,11 @@ const renderPagination = (items) => {
 };
 
 const updateCount = (items) => {
-  if (!shopCount || !shopActiveFilters) return;
   const copy = shopCopy();
-  shopCount.textContent = `${items.length} ${items.length === 1 ? copy.product : copy.products}`;
+  if (shopCount) {
+    shopCount.textContent = `${items.length} ${items.length === 1 ? copy.product : copy.products}`;
+  }
+  if (!shopActiveFilters) return;
 
   const activeFilters = [];
   if (shopSearch?.value.trim()) activeFilters.push(`${copy.search}: ${shopSearch.value.trim()}`);
