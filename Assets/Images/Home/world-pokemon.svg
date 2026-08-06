@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Original abstract yellow and blue creature-collecting background">
+<defs>
+  <linearGradient id="bg" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#102746"/><stop offset=".5" stop-color="#2a69a1"/><stop offset="1" stop-color="#f1c93c"/></linearGradient>
+  <radialGradient id="orb"><stop stop-color="#fff9c2"/><stop offset=".35" stop-color="#ffd64d"/><stop offset="1" stop-color="#ffd64d" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1200" height="700" fill="url(#bg)"/>
+<circle cx="910" cy="170" r="260" fill="url(#orb)" opacity=".7"/>
+<g fill="none" stroke="#e6f4ff" stroke-opacity=".38"><circle cx="330" cy="370" r="180" stroke-width="7"/><circle cx="330" cy="370" r="110" stroke-width="3"/><path d="M150 370h360M330 190v360" stroke-width="2"/></g>
+<g fill="#fff6a8">
+  <path d="m810 390 18 42 45 4-34 29 10 44-39-23-39 23 10-44-34-29 45-4z"/>
+  <path d="m1040 410 10 24 26 2-20 17 6 25-22-13-22 13 6-25-20-17 26-2z" opacity=".78"/>
+  <circle cx="680" cy="160" r="10"/><circle cx="740" cy="110" r="6"/><circle cx="1090" cy="130" r="8"/>
+</g>
+<path d="M0 590c220-90 390-40 560 35s400 70 640-40v115H0z" fill="#071523" opacity=".42"/>
+</svg>

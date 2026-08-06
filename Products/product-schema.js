@@ -11,6 +11,10 @@ export const PRODUCT_CATEGORIES = [
   "Funko Heroes",
   "Funko Tee",
   "Funko Animation",
+  "LEGO",
+  "Pokémon",
+  "Star Wars",
+  "Harry Potter",
   // Bestaande/legacy waarden blijven geldig totdat producten via admin zijn ingedeeld.
   "Funko Pop",
   "Funko Pop! Disney",

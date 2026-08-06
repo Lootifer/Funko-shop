@@ -6,6 +6,7 @@ import {
   archiveProduct,
   changeProductStock,
   createProduct,
+  deleteProduct,
   loadFileProductCatalog,
   loadProductCatalog,
   saveProduct,
@@ -562,6 +563,7 @@ const renderTable = () => {
             <button class="button secondary" type="button" data-edit-id="${product.id}">Bewerken</button>
             <button class="button secondary" type="button" data-duplicate-id="${product.id}">Dupliceren</button>
             <button class="button secondary" type="button" data-archive-id="${product.id}" data-archive-state="${product.archived ? "0" : "1"}">${product.archived ? "Herstellen" : "Archiveren"}</button>
+            <button class="button danger" type="button" data-delete-id="${product.id}">Verwijderen</button>
           </div>
         </td>
       </tr>
@@ -625,6 +627,33 @@ const renderTable = () => {
         if (product) {
           setStatus(`${product.name} is ${archiveNext ? "gearchiveerd" : "hersteld"}.`, "accent");
         }
+      } catch (error) {
+        setErrors([error.message]);
+        setStatus(error.message, "error");
+      }
+    });
+  });
+
+  root.table.querySelectorAll("[data-delete-id]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const id = Number(button.dataset.deleteId || 0);
+      const product = state.products.find((item) => Number(item.id) === id);
+      if (!product) return;
+
+      const confirmed = window.confirm(
+        `Weet je zeker dat je “${product.name}” definitief wilt verwijderen?\n\nDit kan niet ongedaan worden gemaakt.`
+      );
+      if (!confirmed) return;
+
+      try {
+        const result = await deleteProduct(id);
+        await refreshProducts();
+        if (state.editingId === id) resetForm();
+        const historyNote = result.detachedOrderItems
+          ? ` ${result.detachedOrderItems} historische orderregel(s) zijn bewaard.`
+          : "";
+        setErrors([]);
+        setStatus(`${product.name} is definitief verwijderd.${historyNote}`, "accent");
       } catch (error) {
         setErrors([error.message]);
         setStatus(error.message, "error");

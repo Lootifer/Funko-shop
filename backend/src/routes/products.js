@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { all, get, run } from "../db/connection.js";
+import { all, exec, get, run } from "../db/connection.js";
 import { toApiProduct } from "../services/serializers.js";
 import { requireAdmin } from "../auth/middleware.js";
 
@@ -158,7 +158,7 @@ router.get("/", async (request, response, next) => {
     const universe = String(request.query.universe || "").trim();
     const inStockOnly = String(request.query.inStock || "").trim() === "1";
 
-    const where = [];
+    const where = ["id > 0"];
     const params = [];
 
     if (search) {
@@ -281,6 +281,56 @@ router.patch("/:id/archive", requireAdmin, async (request, response, next) => {
     await run("UPDATE products SET archived = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", [archived, id]);
     const row = await get("SELECT * FROM products WHERE id = ?", [id]);
     return response.json({ product: toApiProduct(row), source: "database" });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+
+router.delete("/:id", requireAdmin, async (request, response, next) => {
+  try {
+    const id = Number(request.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      return response.status(400).json({ error: "Ongeldig product-id." });
+    }
+
+    const existingRow = await get("SELECT * FROM products WHERE id = ?", [id]);
+    if (!existingRow) return response.status(404).json({ error: "Product niet gevonden." });
+
+    const placeholderId = -999999;
+    await exec("BEGIN IMMEDIATE");
+    try {
+      // Historical order lines keep their own product name, price and image. They are linked
+      // to one hidden placeholder before the original product is removed.
+      await run(
+        `INSERT OR IGNORE INTO products (
+          id, slug, sku, category, brand, name, stock, selling_price, archived,
+          thumbnail, images_json, description, tags_json
+        ) VALUES (?, ?, ?, ?, ?, ?, 0, 0, 1, '', '[]', ?, '[]')`,
+        [
+          placeholderId,
+          "deleted-product-placeholder",
+          "DELETED-PRODUCT",
+          "System",
+          "System",
+          "Verwijderd product",
+          "Verborgen placeholder voor historische bestellingen.",
+        ]
+      );
+
+      const linked = await get("SELECT COUNT(*) AS count FROM order_items WHERE product_id = ?", [id]);
+      const detachedOrderItems = Number(linked?.count) || 0;
+      if (detachedOrderItems > 0) {
+        await run("UPDATE order_items SET product_id = ? WHERE product_id = ?", [placeholderId, id]);
+      }
+
+      await run("DELETE FROM products WHERE id = ?", [id]);
+      await exec("COMMIT");
+      return response.json({ deleted: true, productId: id, detachedOrderItems });
+    } catch (error) {
+      await exec("ROLLBACK");
+      throw error;
+    }
   } catch (error) {
     return next(error);
   }

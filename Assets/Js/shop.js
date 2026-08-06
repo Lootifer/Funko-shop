@@ -28,8 +28,85 @@ let shopVaulted = null;
 let shopInStock = null;
 let shopSort = null;
 
+
+const getShopLanguage = () => window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en";
+const shopCopy = () => getShopLanguage() === "nl"
+  ? { products: "producten gevonden", product: "product gevonden", active: "Actieve filters", none: "geen", search: "Zoekterm", category: "Categorie", universe: "Universum", brand: "Merk", price: "Prijs", exclusive: "Exclusief", chase: "Chase", vaulted: "Gewaardeerd", stock: "Op voorraad", until: "Tot", empty: "Er passen geen verzamelitems bij de huidige filters.", unavailable: "De productcatalogus is momenteel niet beschikbaar.", loading: "Producten worden geladen…" }
+  : { products: "products found", product: "product found", active: "Active filters", none: "none", search: "Search", category: "Category", universe: "Universe", brand: "Brand", price: "Price", exclusive: "Exclusive", chase: "Chase", vaulted: "Vaulted", stock: "In stock", until: "Up to", empty: "No collectibles match the current filters.", unavailable: "The product catalogue is currently unavailable.", loading: "Products are loading…" };
+
+
+const SHOP_PAGE_COPY = {
+  en: {
+    all: { eyebrow: "All products", title: "Search the complete vault.", text: "Use the filters to browse every available collectible." },
+    funko: { eyebrow: "Funko", title: "All Funko lines together.", text: "From Movies and Television to Heroes, Games, Pins, Bitty Pop and Tee." },
+    lego: { eyebrow: "LEGO", title: "Build, play and collect.", text: "Discover LEGO collectibles from the private collection." },
+    pokemon: { eyebrow: "Pokémon", title: "For trainers and collectors.", text: "Discover Pokémon collectibles from the private collection." },
+    "star-wars": { eyebrow: "Star Wars", title: "From a galaxy far, far away.", text: "Discover Star Wars collectibles from the private collection." },
+    "harry-potter": { eyebrow: "Harry Potter", title: "A magical collection.", text: "Discover Harry Potter collectibles from the private collection." },
+    sale: { eyebrow: "Sale", title: "Collectibles at a lower price.", text: "Browse products with a valid reduced price." },
+    sort: ["Newest", "Price low to high", "Price high to low", "Alphabetical"],
+    backFunko: "← Back to all Funko lines",
+  },
+  nl: {
+    all: { eyebrow: "Alle producten", title: "Doorzoek de volledige kluis.", text: "Gebruik de filters om alle beschikbare verzamelitems te doorzoeken." },
+    funko: { eyebrow: "Funko", title: "Alle Funko-lijnen bij elkaar.", text: "Van Movies en Television tot Heroes, Games, Pins, Bitty Pop en Tee." },
+    lego: { eyebrow: "LEGO", title: "Bouwen, spelen en verzamelen.", text: "Ontdek LEGO-verzamelstukken uit de privécollectie." },
+    pokemon: { eyebrow: "Pokémon", title: "Voor trainers en verzamelaars.", text: "Ontdek Pokémon-verzamelstukken uit de privécollectie." },
+    "star-wars": { eyebrow: "Star Wars", title: "Uit een sterrenstelsel ver, ver weg.", text: "Ontdek Star Wars-verzamelstukken uit de privécollectie." },
+    "harry-potter": { eyebrow: "Harry Potter", title: "Een magische verzameling.", text: "Ontdek Harry Potter-verzamelstukken uit de privécollectie." },
+    sale: { eyebrow: "Sale", title: "Verzamelitems voor een lagere prijs.", text: "Bekijk producten met een geldige kortingsprijs." },
+    sort: ["Nieuwste", "Prijs laag naar hoog", "Prijs hoog naar laag", "Alfabetisch"],
+    backFunko: "← Terug naar alle Funko-lijnen",
+  },
+};
+
+const FIXED_PAGE_COPY = {
+  "Funko Movies": { en: ["Funko • Movies", "Funko from movies.", "Browse Funko collectibles from movies."], nl: ["Funko • Movies", "Funko uit films.", "Bekijk Funko-verzamelstukken uit films."] },
+  "Funko Television": { en: ["Funko • Television", "Funko from television.", "Browse Funko collectibles from television."], nl: ["Funko • Television", "Funko uit televisie.", "Bekijk Funko-verzamelstukken uit televisie."] },
+  "Funko Animation": { en: ["Funko • Animation", "Animated worlds in Funko form.", "Browse Funko collectibles from animation."], nl: ["Funko • Animation", "Animatiewerelden als Funko.", "Bekijk Funko-verzamelstukken uit animatie."] },
+  "Funko Games": { en: ["Funko • Games", "Gaming characters to collect.", "Browse Funko collectibles from games."], nl: ["Funko • Games", "Gamepersonages om te verzamelen.", "Bekijk Funko-verzamelstukken uit games."] },
+  "Funko Heroes": { en: ["Funko • Heroes", "Heroes and villains together.", "Browse Funko Heroes collectibles."], nl: ["Funko • Heroes", "Helden en schurken bij elkaar.", "Bekijk Funko Heroes-verzamelstukken."] },
+  "Funko Pin": { en: ["Funko • Pin", "Small collectibles with character.", "Browse Funko pins."], nl: ["Funko • Pin", "Kleine verzamelitems met karakter.", "Bekijk Funko-pins."] },
+  "Funko Bitty Pop": { en: ["Funko • Bitty Pop", "Tiny figures, big collection.", "Browse Funko Bitty Pop collectibles."], nl: ["Funko • Bitty Pop", "Kleine figuren, grote collectie.", "Bekijk Funko Bitty Pop-verzamelstukken."] },
+  "Funko Tee": { en: ["Funko • Tee", "Collectible shirts and sets.", "Browse Funko Tee products."], nl: ["Funko • Tee", "Verzamelshirts en sets.", "Bekijk Funko Tee-producten."] },
+};
+
+const applyShopPageLanguage = (language = getShopLanguage()) => {
+  const locale = language === "nl" ? "nl" : "en";
+  const dictionary = SHOP_PAGE_COPY[locale];
+  document.documentElement.lang = locale;
+
+  const heading = document.querySelector(".section-heading");
+  if (heading) {
+    let pageCopy;
+    if (FIXED_CATEGORY && FIXED_PAGE_COPY[FIXED_CATEGORY]) {
+      const [eyebrow, title, text] = FIXED_PAGE_COPY[FIXED_CATEGORY][locale];
+      pageCopy = { eyebrow, title, text };
+    } else {
+      pageCopy = dictionary[COLLECTION_KEY || "all"] || dictionary.all;
+    }
+
+    const eyebrow = heading.querySelector(".eyebrow");
+    const title = heading.querySelector("h1");
+    const text = heading.querySelector(".hero-text");
+    const backLink = heading.querySelector(".text-link");
+    if (eyebrow) eyebrow.textContent = pageCopy.eyebrow;
+    if (title) title.textContent = pageCopy.title;
+    if (text) text.textContent = pageCopy.text;
+    if (backLink) backLink.textContent = dictionary.backFunko;
+  }
+
+  const sort = document.getElementById("shopSort");
+  if (sort) {
+    [...sort.options].forEach((option, index) => {
+      if (dictionary.sort[index]) option.textContent = dictionary.sort[index];
+    });
+  }
+};
+
 const PRODUCTS_PER_PAGE = 24;
 const COLLECTION_KEY = document.body.dataset.collectionKey || "";
+const FIXED_CATEGORY = document.body.dataset.fixedCategory || "";
 const normalizeCollectionValue = (value = "") => String(value).trim().toLowerCase();
 const belongsToCollection = (product) => {
   const haystack = [product?.brand, product?.category, product?.universe, product?.franchise, ...(Array.isArray(product?.tags) ? product.tags : [])].map(normalizeCollectionValue).join(" ");
@@ -76,6 +153,7 @@ const getProducts = async () => {
 const populateFilters = () => {
   const collectionProducts = products.filter(belongsToCollection);
   const categories = [...new Set(collectionProducts.map((product) => product.category).filter(Boolean))].sort();
+  if (FIXED_CATEGORY && !categories.includes(FIXED_CATEGORY)) categories.unshift(FIXED_CATEGORY);
   const universes = [...new Set(collectionProducts.map((product) => product.universe).filter(Boolean))].sort();
   const brands = [...new Set(collectionProducts.map((product) => product.brand).filter(Boolean))].sort();
 
@@ -96,13 +174,19 @@ const populateFilters = () => {
   shopSort = document.getElementById("shopSort");
 
   const urlFilters = new URLSearchParams(window.location.search);
-  const requestedCategory = urlFilters.get("category") || "";
+  const requestedCategory = FIXED_CATEGORY || urlFilters.get("category") || "";
   const requestedUniverse = urlFilters.get("universe") || "";
   const requestedSearch = urlFilters.get("search") || "";
   const requestedBrand = urlFilters.get("brand") || "";
+  const requestedInStock = urlFilters.get("inStock") === "1";
 
   if (shopCategory && requestedCategory && [...shopCategory.options].some((option) => option.value === requestedCategory)) {
     shopCategory.value = requestedCategory;
+  }
+  if (shopCategory && FIXED_CATEGORY) {
+    shopCategory.value = FIXED_CATEGORY;
+    shopCategory.disabled = true;
+    shopCategory.title = `Deze pagina toont alleen ${FIXED_CATEGORY}`;
   }
   if (shopUniverse && requestedUniverse) {
     const normalizedRequestedUniverse = requestedUniverse.toLowerCase();
@@ -111,6 +195,7 @@ const populateFilters = () => {
   }
   if (shopSearch && requestedSearch) shopSearch.value = requestedSearch;
   if (shopBrand && requestedBrand) { const matchingBrand = [...shopBrand.options].find((option) => option.value.toLowerCase() === requestedBrand.toLowerCase()); if (matchingBrand) shopBrand.value = matchingBrand.value; }
+  if (shopInStock && requestedInStock) shopInStock.checked = true;
 
   const elements = [shopSearch, shopCategory, shopUniverse, shopBrand, shopPrice, shopExclusive, shopChase, shopVaulted, shopInStock, shopSort].filter(Boolean);
   elements.forEach((element) => {
@@ -120,7 +205,8 @@ const populateFilters = () => {
 
   if (shopPrice && shopPriceValue) {
     shopPrice.addEventListener("input", () => {
-      shopPriceValue.textContent = shopPrice.value === "300" ? "Tot €300" : `Tot ${formatCurrency(shopPrice.value)}`;
+      const copy = shopCopy();
+      shopPriceValue.textContent = shopPrice.value === "300" ? `${copy.until} €300` : `${copy.until} ${formatCurrency(shopPrice.value)}`;
       applyFilters();
     });
   }
@@ -128,11 +214,11 @@ const populateFilters = () => {
   const resetButton = document.getElementById("shopReset");
   resetButton?.addEventListener("click", () => {
     if (shopSearch) shopSearch.value = "";
-    if (shopCategory) shopCategory.value = "";
+    if (shopCategory) shopCategory.value = FIXED_CATEGORY || "";
     if (shopUniverse) shopUniverse.value = "";
     if (shopBrand) shopBrand.value = "";
     if (shopPrice) shopPrice.value = "300";
-    if (shopPriceValue) shopPriceValue.textContent = "Tot €300";
+    if (shopPriceValue) shopPriceValue.textContent = `${shopCopy().until} €300`;
     if (shopExclusive) shopExclusive.checked = false;
     if (shopChase) shopChase.checked = false;
     if (shopVaulted) shopVaulted.checked = false;
@@ -172,7 +258,7 @@ const sortProducts = (items) => {
 
 const getFilteredProducts = () => {
   const query = shopSearch?.value.trim().toLowerCase() || "";
-  const category = shopCategory?.value || "";
+  const category = FIXED_CATEGORY || shopCategory?.value || "";
   const universe = shopUniverse?.value || "";
   const brand = shopBrand?.value || "";
   const maxPrice = Number(shopPrice?.value || 300);
@@ -241,7 +327,7 @@ const renderProducts = (items) => {
 
   shopGrid.innerHTML = renderedCards.length
     ? renderedCards.join("")
-    : '<p class="card-empty">Er passen geen verzamelitems bij de huidige filters.</p>';
+    : `<p class="card-empty">${shopCopy().empty}</p>`;
 
   attachPremiumFallback(shopGrid);
 
@@ -280,20 +366,21 @@ const renderPagination = (items) => {
 
 const updateCount = (items) => {
   if (!shopCount || !shopActiveFilters) return;
-  shopCount.textContent = `${items.length} product${items.length === 1 ? "" : "en"} gevonden`;
+  const copy = shopCopy();
+  shopCount.textContent = `${items.length} ${items.length === 1 ? copy.product : copy.products}`;
 
   const activeFilters = [];
-  if (shopSearch?.value.trim()) activeFilters.push(`Zoekterm: ${shopSearch.value.trim()}`);
-  if (shopCategory?.value) activeFilters.push(`Categorie: ${shopCategory.value}`);
-  if (shopUniverse?.value) activeFilters.push(`Universum: ${shopUniverse.value}`);
-  if (shopBrand?.value) activeFilters.push(`Merk: ${shopBrand.value}`);
-  if (shopPrice?.value !== "300") activeFilters.push(`Prijs: ≤ ${formatCurrency(shopPrice.value)}`);
-  if (shopExclusive?.checked) activeFilters.push("Exclusief");
-  if (shopChase?.checked) activeFilters.push("Chase");
-  if (shopVaulted?.checked) activeFilters.push("Gewaardeerd");
-  if (shopInStock?.checked) activeFilters.push("Op voorraad");
+  if (shopSearch?.value.trim()) activeFilters.push(`${copy.search}: ${shopSearch.value.trim()}`);
+  if (FIXED_CATEGORY || shopCategory?.value) activeFilters.push(`${copy.category}: ${FIXED_CATEGORY || shopCategory.value}`);
+  if (shopUniverse?.value) activeFilters.push(`${copy.universe}: ${shopUniverse.value}`);
+  if (shopBrand?.value) activeFilters.push(`${copy.brand}: ${shopBrand.value}`);
+  if (shopPrice?.value !== "300") activeFilters.push(`${copy.price}: ≤ ${formatCurrency(shopPrice.value)}`);
+  if (shopExclusive?.checked) activeFilters.push(copy.exclusive);
+  if (shopChase?.checked) activeFilters.push(copy.chase);
+  if (shopVaulted?.checked) activeFilters.push(copy.vaulted);
+  if (shopInStock?.checked) activeFilters.push(copy.stock);
 
-  shopActiveFilters.textContent = activeFilters.length ? `Actieve filters: ${activeFilters.join(" • ")}` : "Actieve filters: geen";
+  shopActiveFilters.textContent = activeFilters.length ? `${copy.active}: ${activeFilters.join(" • ")}` : `${copy.active}: ${copy.none}`;
 };
 
 const applyFilters = () => {
@@ -306,20 +393,22 @@ const applyFilters = () => {
 
 if (headerRoot) headerRoot.innerHTML = createHeader("shop");
 if (footerRoot) footerRoot.innerHTML = createFooter();
+applyShopPageLanguage();
 syncHeaderCounters();
 window.addEventListener("lootifer:state-updated", syncHeaderCounters);
 
 const showLoadError = () => {
   if (shopGrid) {
-    shopGrid.innerHTML = '<p class="card-empty">De productcatalogus is momenteel niet beschikbaar.</p>';
+    shopGrid.innerHTML = `<p class="card-empty">${shopCopy().unavailable}</p>`;
   }
 
   if (shopCount) {
-    shopCount.textContent = "0 producten gevonden";
+    shopCount.textContent = `0 ${shopCopy().products}`;
   }
 
   if (shopActiveFilters) {
-    shopActiveFilters.textContent = "Actieve filters: geen";
+    const copy = shopCopy();
+    shopActiveFilters.textContent = `${copy.active}: ${copy.none}`;
   }
 };
 
@@ -334,6 +423,11 @@ const initializeShop = async () => {
 
 initializeShop();
 window.addEventListener("lootifer:inventory-updated", initializeShop);
+window.addEventListener("lootifer:language-change", (event) => {
+  applyShopPageLanguage(event.detail?.language || "en");
+  populateFilters();
+  applyFilters();
+});
 const revealItems = document.querySelectorAll(".reveal");
 
 if (revealItems.length) {

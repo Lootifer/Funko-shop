@@ -527,3 +527,40 @@ tr.is-archived td {
     flex-wrap: wrap;
   }
 }
+
+/* Native Windows dropdowns open on a light background. */
+.admin-body select option,
+.admin-body select optgroup {
+  color: #11151a;
+  background: #ffffff;
+}
+
+/* V13: readable native dropdowns on Windows/Chrome. */
+.admin-body select,
+.admin-body .admin-form-grid select,
+.admin-body .admin-filters-grid select,
+.admin-body .admin-inline-select {
+  color-scheme: light !important;
+  background: #ffffff !important;
+  color: #101820 !important;
+  border-color: rgba(255, 210, 90, .72) !important;
+  font-weight: 600;
+}
+
+.admin-body select option,
+.admin-body select optgroup {
+  color: #101820 !important;
+  background: #ffffff !important;
+}
+
+.button.danger {
+  border: 1px solid rgba(255, 103, 103, .7);
+  background: linear-gradient(135deg, #8f2020, #c93c3c);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(117, 19, 19, .25);
+}
+
+.button.danger:hover {
+  background: linear-gradient(135deg, #a42626, #df4b4b);
+  color: #ffffff;
+}

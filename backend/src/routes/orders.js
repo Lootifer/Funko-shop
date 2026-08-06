@@ -247,12 +247,37 @@ router.delete("/:orderNumber", requireAdmin, async (request, response, next) => 
     const order = await get("SELECT * FROM orders WHERE number = ?", [orderNumber]);
     if (!order) return response.status(404).json({ error: "Bestelling niet gevonden." });
 
-    if (Number(order.is_test_order) === 0) {
-      return response.status(403).json({ error: "Alleen testorders mogen worden verwijderd." });
+    const items = await all("SELECT * FROM order_items WHERE order_id = ?", [order.id]);
+    const shouldRestoreStock = order.status !== "Geannuleerd" && !order.stock_restored_at;
+
+    await exec("BEGIN IMMEDIATE");
+    try {
+      if (shouldRestoreStock) {
+        for (const item of items) {
+          const productId = Number(item.product_id) || 0;
+          const quantity = Math.max(0, Number(item.quantity) || 0);
+          if (productId <= 0 || quantity <= 0) continue;
+
+          await run(
+            "UPDATE products SET stock = stock + ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+            [quantity, productId]
+          );
+          await run(
+            `INSERT INTO stock_transactions (product_id, order_id, quantity, mode, reason, note)
+             VALUES (?, ?, ?, 'increase', 'order-deleted', ?)`,
+            [productId, order.id, quantity, `Order ${order.number} deleted by admin`]
+          );
+        }
+      }
+
+      await run("DELETE FROM orders WHERE id = ?", [order.id]);
+      await exec("COMMIT");
+    } catch (error) {
+      await exec("ROLLBACK");
+      throw error;
     }
 
-    await run("DELETE FROM orders WHERE id = ?", [order.id]);
-    return response.json({ deleted: true, orderNumber });
+    return response.json({ deleted: true, orderNumber, stockRestored: shouldRestoreStock });
   } catch (error) {
     return next(error);
   }

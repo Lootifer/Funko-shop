@@ -1,0 +1,355 @@
+/* LOOTIFER SHOP LANDING V14 */
+.shop-choice-page {
+  width: min(100% - 2rem, 1260px);
+  margin-inline: auto;
+  padding-top: clamp(2rem, 5vw, 4.8rem);
+  padding-bottom: 4rem;
+}
+
+.shop-choice-hero-v13 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+  gap: clamp(1.3rem, 4vw, 3.5rem);
+  align-items: center;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+}
+
+.shop-choice-hero-copy h1 {
+  max-width: 780px;
+  margin: 0 0 .9rem;
+  font-size: clamp(2.7rem, 6vw, 5.4rem);
+  line-height: .98;
+  letter-spacing: -.055em;
+}
+
+.shop-choice-hero-copy .hero-text {
+  max-width: 720px;
+  margin-bottom: 1.25rem;
+}
+
+.shop-choice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+/* The dark stock shortcut must remain readable before hover. */
+.shop-in-stock-link,
+.shop-in-stock-link:visited {
+  border: 1px solid #111820 !important;
+  background: #111820 !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 24px rgba(17, 24, 32, .18);
+}
+.shop-in-stock-link:hover,
+.shop-in-stock-link:focus-visible {
+  border-color: #b98600 !important;
+  background: #f0bd2f !important;
+  color: #151000 !important;
+}
+
+.shop-quick-search {
+  padding: clamp(1.15rem, 3vw, 1.7rem);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+}
+
+.shop-quick-search label {
+  display: block;
+  margin-bottom: .7rem;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.shop-quick-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .65rem;
+}
+
+.shop-quick-search input {
+  min-width: 0;
+  border: 1px solid var(--border-gold);
+  border-radius: 999px;
+  padding: .85rem 1rem;
+  background: #fff;
+  color: #101820;
+  font: inherit;
+  box-shadow: inset 0 1px 3px rgba(25, 35, 44, .1);
+}
+
+.shop-quick-search p {
+  margin: .7rem 0 0;
+  color: var(--muted);
+  font-size: .82rem;
+}
+
+.shop-navigation-section,
+.shop-universe-section {
+  margin-top: clamp(2rem, 5vw, 4rem);
+}
+
+.shop-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.15rem;
+}
+
+.shop-section-heading h2 {
+  margin: .15rem 0 0;
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  line-height: 1.05;
+}
+
+.shop-section-heading > a {
+  flex: 0 0 auto;
+  color: var(--accent-deep);
+  font-weight: 750;
+}
+
+.shop-category-dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.shop-dashboard-card {
+  position: relative;
+  min-height: 235px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 1.35rem;
+  background: #111820;
+  color: #fff;
+  box-shadow: 0 18px 38px rgba(21, 30, 38, .18);
+  isolation: isolate;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+
+.shop-dashboard-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-gold);
+  box-shadow: 0 25px 46px rgba(21, 30, 38, .26);
+}
+
+.shop-dashboard-image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-position: center;
+  background-size: cover;
+  transform: scale(1.02);
+  transition: transform .45s ease;
+}
+
+.shop-dashboard-card:hover .shop-dashboard-image { transform: scale(1.075); }
+
+.shop-dashboard-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(6, 9, 13, .08) 10%, rgba(6, 9, 13, .9) 92%);
+}
+
+.shop-dashboard-funko .shop-dashboard-image { background-image: url("../../Images/Home/category-funko.webp"); }
+.shop-dashboard-lego .shop-dashboard-image { background-image: url("../../Images/Home/category-lego-v8.webp"); }
+.shop-dashboard-pokemon .shop-dashboard-image { background-image: url("../../Images/Home/world-pokemon.svg"); }
+.shop-dashboard-starwars .shop-dashboard-image { background-image: url("../../Images/Home/world-star-wars.svg"); }
+.shop-dashboard-harry .shop-dashboard-image { background-image: url("../../Images/Home/world-harry.svg"); }
+.shop-dashboard-sale .shop-dashboard-image { background-image: url("../../Images/Home/category-sale.svg"); background-color: #3c2905; }
+
+.shop-dashboard-content {
+  position: absolute;
+  inset: auto 0 0;
+  display: grid;
+  gap: .24rem;
+  padding: 1.15rem;
+}
+
+.shop-dashboard-content > span {
+  color: rgba(255,255,255,.72);
+  font-size: .76rem;
+  font-weight: 650;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.shop-dashboard-content strong {
+  color: #fff;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1;
+}
+
+.shop-dashboard-content small {
+  color: rgba(255,255,255,.78);
+}
+
+.shop-dashboard-content small b { color: #ffd25a; }
+.shop-dashboard-content i {
+  position: absolute;
+  right: 1.1rem;
+  bottom: 1.1rem;
+  display: grid;
+  width: 2.3rem;
+  height: 2.3rem;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.32);
+  border-radius: 50%;
+  background: rgba(0,0,0,.26);
+  color: #fff;
+  font-style: normal;
+}
+
+.shop-universe-section {
+  padding: clamp(1rem, 3vw, 1.55rem);
+  border-radius: 1.6rem;
+}
+
+.shop-universe-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .85rem;
+}
+
+.shop-universe-card {
+  position: relative;
+  min-height: 145px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: .3rem;
+  overflow: hidden;
+  padding: 1rem;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 1.1rem;
+  color: #fff;
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 12px 24px rgba(20, 28, 36, .2);
+  isolation: isolate;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.shop-universe-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.88));
+}
+
+.shop-universe-card:hover { transform: translateY(-4px); box-shadow: 0 20px 32px rgba(20, 28, 36, .3); }
+.shop-universe-card span { font-size: 1.15rem; font-weight: 800; }
+.shop-universe-card small { color: rgba(255,255,255,.82); }
+.universe-dc { background-image: url("../../Images/Home/world-dc.svg"); }
+.universe-marvel { background-image: url("../../Images/Home/world-marvel.svg"); }
+.universe-pokemon { background-image: url("../../Images/Home/world-pokemon.svg"); }
+.universe-starwars { background-image: url("../../Images/Home/world-star-wars.svg"); }
+.universe-harry { background-image: url("../../Images/Home/world-harry.svg"); }
+
+.shop-funko-section {
+  margin-top: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1rem, 2.4vw, 1.5rem);
+  border-radius: 1.6rem;
+}
+
+.shop-funko-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.shop-funko-heading h2 {
+  margin: 0 0 .35rem;
+  font-size: clamp(1.65rem, 3vw, 2.55rem);
+}
+
+.shop-funko-heading p:last-child { margin: 0; color: var(--muted); }
+.shop-funko-heading > a { flex: 0 0 auto; color: var(--accent-deep); font-weight: 750; }
+.shop-funko-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* Strong contrast for the Funko submenu in both themes. */
+.funko-subcategory-card {
+  color: #f7f9fb !important;
+  border-color: rgba(255, 210, 90, .38) !important;
+  background: linear-gradient(145deg, #151c25, #090d12) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 12px 24px rgba(0,0,0,.24) !important;
+}
+.funko-subcategory-card strong { color: #fff !important; }
+.funko-subcategory-card > span,
+.funko-subcategory-card > i,
+.funko-subcategory-card small b { color: #ffd25a !important; }
+.funko-subcategory-card small { color: #c9d0d7 !important; }
+
+/* Native Windows menus: a deliberately light control prevents white-on-white option text. */
+.filter-group select,
+.shop-toolbar select,
+.shop-sidebar select,
+.checkout-form select {
+  color-scheme: light !important;
+  background: #ffffff !important;
+  color: #101820 !important;
+  border-color: rgba(16, 24, 32, .28) !important;
+  font-weight: 600;
+}
+.filter-group select option,
+.shop-toolbar select option,
+.shop-sidebar select option,
+.checkout-form select option,
+.filter-group select optgroup,
+.shop-toolbar select optgroup,
+.shop-sidebar select optgroup,
+.checkout-form select optgroup {
+  color: #101820 !important;
+  background: #ffffff !important;
+}
+
+.filter-panel-title {
+  margin: 0 0 .15rem;
+  padding: .2rem .2rem .5rem;
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.filter-group h3 { color: var(--accent-deep); font-weight: 800; }
+html:not([data-theme="light"]) .filter-group h3 { color: #ffd25a; }
+
+.checkout-back-link {
+  border: 2px solid #6f5200 !important;
+  background: #fff7d8 !important;
+  color: #2b2100 !important;
+  box-shadow: 0 8px 18px rgba(62, 47, 0, .12);
+}
+.checkout-back-link:hover { background: #ffe99a !important; color: #161000 !important; }
+
+@media (max-width: 1080px) {
+  .shop-category-dashboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shop-universe-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .shop-funko-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 820px) {
+  .shop-choice-hero-v13 { grid-template-columns: 1fr; }
+  .shop-section-heading,
+  .shop-funko-heading { align-items: flex-start; flex-direction: column; }
+}
+
+@media (max-width: 620px) {
+  .shop-choice-page { width: min(100% - 1.2rem, 1260px); padding-top: 1.5rem; }
+  .shop-category-dashboard,
+  .shop-universe-grid,
+  .shop-funko-grid { grid-template-columns: 1fr; }
+  .shop-dashboard-card { min-height: 210px; }
+  .shop-quick-search-row { grid-template-columns: 1fr; }
+}

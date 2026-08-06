@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Original abstract blue and gold collector background">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#091420"/><stop offset=".55" stop-color="#15324b"/><stop offset="1" stop-color="#05090e"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#ffd45d" stop-opacity=".9"/><stop offset="1" stop-color="#ffd45d" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M64 0H0V64" fill="none" stroke="#7fc7ff" stroke-opacity=".12"/></pattern>
+</defs>
+<rect width="1200" height="700" fill="url(#bg)"/>
+<rect width="1200" height="700" fill="url(#grid)"/>
+<circle cx="905" cy="180" r="260" fill="url(#glow)" opacity=".36"/>
+<path d="M150 590 455 120l110 210 160-190-130 450z" fill="#f5c84c" opacity=".82"/>
+<path d="M265 590 490 238l74 142 88-105-88 315z" fill="#eaf6ff" opacity=".22"/>
+<g fill="none" stroke="#b9e2ff" stroke-opacity=".3" stroke-width="3"><circle cx="930" cy="190" r="74"/><circle cx="930" cy="190" r="122"/><path d="M760 190h340M930 20v340"/></g>
+</svg>

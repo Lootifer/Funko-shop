@@ -1,0 +1,19 @@
+LOOTIFER FRONTPAGE V11 – FUNKO SUBCATEGORIEPAGINA'S
+
+Aangepast:
+- Elke Funko-subcategorie opent nu een eigen winkelpagina.
+- Movies, Television, Animation, Games, Heroes, Pin, Bitty Pop en Tee hebben elk een eigen URL.
+- Iedere pagina gebruikt een vaste categoriefilter, zodat bezoekers niet per ongeluk in een andere Funko-lijn terechtkomen.
+- De bestaande V10-vormgeving, het Funko-submenu en de gele e-mailrand zijn behouden.
+
+Nieuwe pagina's:
+- funko-movies.html
+- funko-television.html
+- funko-animation.html
+- funko-games.html
+- funko-heroes.html
+- funko-pin.html
+- funko-bitty-pop.html
+- funko-tee.html
+
+Producten moeten in admin de bijpassende categorie krijgen om op de juiste pagina te verschijnen.

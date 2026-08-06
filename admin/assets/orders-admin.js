@@ -139,7 +139,7 @@ const renderOrderDetails = () => {
       <button class="button secondary" type="button" data-mark-shipped="${escapeHtml(order.number)}">Markeer als verzonden</button>
       <button class="button secondary" type="button" data-cancel-order="${escapeHtml(order.number)}">Annuleer order</button>
       <button class="button secondary" type="button" data-export-order="${escapeHtml(order.number)}">Exporteer order (JSON)</button>
-      <button class="button secondary" type="button" data-delete-order="${escapeHtml(order.number)}">Verwijder testorder</button>
+      <button class="button danger" type="button" data-delete-order="${escapeHtml(order.number)}">Bestelling verwijderen</button>
     </div>
 
     <div class="admin-order-detail-grid">
@@ -234,12 +234,14 @@ const renderOrderDetails = () => {
   });
 
   root.detailCard.querySelector("[data-delete-order]")?.addEventListener("click", async () => {
-    const confirmed = window.confirm("Weet je zeker dat je deze testorder wilt verwijderen?");
+    const confirmed = window.confirm(
+      `Weet je zeker dat je bestelling ${order.number} definitief wilt verwijderen?\n\nDe voorraad wordt automatisch hersteld wanneer dat nog niet is gebeurd.`
+    );
     if (!confirmed) return;
     try {
       await deleteOrderByNumber(order.number);
       state.selectedOrderNumber = null;
-      setStatus("Testorder verwijderd.", "accent");
+      setStatus("Bestelling definitief verwijderd.", "accent");
       render();
     } catch (error) {
       setStatus(error.message, "error");
@@ -278,7 +280,10 @@ const renderTable = () => {
         </td>
         <td>${order.isTestOrder === false ? "WhatsApp-bestelling" : "Testorder (lokaal)"}</td>
         <td>
-          <button class="button secondary" type="button" data-open-order="${escapeHtml(order.number || "")}">Openen</button>
+          <div class="admin-row-actions">
+            <button class="button secondary" type="button" data-open-order="${escapeHtml(order.number || "")}">Openen</button>
+            <button class="button danger" type="button" data-delete-row-order="${escapeHtml(order.number || "")}">Verwijderen</button>
+          </div>
         </td>
       </tr>
     `).join("")
@@ -293,6 +298,26 @@ const renderTable = () => {
         state.selectedOrderNumber = orderNumber;
         renderOrderDetails();
         root.detailCard?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
+    });
+  });
+
+  root.tableBody.querySelectorAll("[data-delete-row-order]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const orderNumber = String(button.dataset.deleteRowOrder || "");
+      if (!orderNumber) return;
+      const confirmed = window.confirm(
+        `Weet je zeker dat je bestelling ${orderNumber} definitief wilt verwijderen?\n\nDe voorraad wordt automatisch hersteld wanneer dat nog niet is gebeurd.`
+      );
+      if (!confirmed) return;
+
+      try {
+        await deleteOrderByNumber(orderNumber);
+        if (state.selectedOrderNumber === orderNumber) state.selectedOrderNumber = null;
+        setStatus("Bestelling definitief verwijderd.", "accent");
+        render();
       } catch (error) {
         setStatus(error.message, "error");
       }

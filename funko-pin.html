@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="Assets/Js/bootstrap-preferences.js"></script>
+  <title>Pin winkel | Lootifer Collectibles</title>
+  <meta name="description" content="Bekijk Funko-pins uit de privécollectie.">
+  <link rel="stylesheet" href="Assets/Css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-collection-key="funko" data-fixed-category="Funko Pin">
+  <div id="headerRoot"></div>
+  <main class="product-page reveal">
+    <section class="section-heading">
+      <p class="eyebrow">Funko • Pin</p>
+      <h1>Verzamelbare Funko-pins.</h1>
+      <p class="hero-text">Bekijk Funko-pins uit de privécollectie.</p>
+      <p><a class="text-link" href="funko.html">← Terug naar alle Funko-lijnen</a></p>
+    </section>
+    <section class="shop-layout">
+      <div id="filtersRoot"></div>
+      <div class="shop-main">
+        <div class="shop-toolbar">
+          <div>
+            <p class="shop-count" id="shopCount">Producten worden geladen…</p>
+            <p class="shop-active-filters" id="shopActiveFilters">Actieve filters: Funko Pin</p>
+          </div>
+          <select id="shopSort">
+            <option value="newest">Nieuwste</option>
+            <option value="price-asc">Prijs laag naar hoog</option>
+            <option value="price-desc">Prijs hoog naar laag</option>
+            <option value="alpha">Alfabetisch</option>
+          </select>
+        </div>
+        <div class="card-grid" id="shopGrid"></div>
+        <div class="pagination" id="shopPagination"></div>
+      </div>
+    </section>
+  </main>
+  <div id="footerRoot"></div>
+  <script type="module" src="Assets/Js/shop.js"></script>
+</body>
+</html>

@@ -410,27 +410,27 @@
 
 .category-dc {
   --category-accent: #f0c63c;
-  --category-image: url("../../Images/Home/universe-dc.webp");
+  --category-image: url("../../Images/Home/world-dc.svg");
 }
 
 .category-marvel {
   --category-accent: #ff4a43;
-  --category-image: url("../../Images/Home/universe-marvel.webp");
+  --category-image: url("../../Images/Home/world-marvel.svg");
 }
 
 .category-pokemon {
   --category-accent: #ffd629;
-  --category-image: url("../../Images/Home/universe-pokemon.webp");
+  --category-image: url("../../Images/Home/world-pokemon.svg");
 }
 
 .category-star-wars {
   --category-accent: #5ebdff;
-  --category-image: url("../../Images/Home/universe-star-wars.webp");
+  --category-image: url("../../Images/Home/world-star-wars.svg");
 }
 
 .category-harry-potter {
   --category-accent: #d8ad55;
-  --category-image: url("../../Images/Home/universe-harry-potter.webp");
+  --category-image: url("../../Images/Home/world-harry.svg");
 }
 
 .funko-category-panel {

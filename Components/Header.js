@@ -30,14 +30,26 @@ const copy = {
   },
 };
 
+const PREFERENCE_VERSION = "v13-english-light";
+
+const ensureDefaultPreferences = () => {
+  if (typeof window === "undefined") return;
+  if (window.localStorage.getItem("lootifer-preference-version") === PREFERENCE_VERSION) return;
+
+  // V13 starts in English and light mode once. Afterwards the visitor's own choice is remembered.
+  window.localStorage.setItem("lootifer-language", "en");
+  window.localStorage.setItem("lootifer-theme", "light");
+  window.localStorage.setItem("lootifer-preference-version", PREFERENCE_VERSION);
+};
+
 const getStoredTheme = () => {
-  if (typeof window === "undefined") return "dark";
-  return window.localStorage.getItem("lootifer-theme") === "light" ? "light" : "dark";
+  if (typeof window === "undefined") return "light";
+  return window.localStorage.getItem("lootifer-theme") === "dark" ? "dark" : "light";
 };
 
 const getStoredLanguage = () => {
-  if (typeof window === "undefined") return "nl";
-  return window.localStorage.getItem("lootifer-language") === "en" ? "en" : "nl";
+  if (typeof window === "undefined") return "en";
+  return window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en";
 };
 
 const applyTheme = (theme) => {
@@ -74,6 +86,7 @@ const updateThemeControl = (theme) => {
 export const initHeaderPreferences = () => {
   if (typeof document === "undefined") return;
 
+  ensureDefaultPreferences();
   const theme = getStoredTheme();
   const language = getStoredLanguage();
   applyTheme(theme);
@@ -107,6 +120,7 @@ export const initHeaderPreferences = () => {
 };
 
 if (typeof document !== "undefined") {
+  ensureDefaultPreferences();
   applyTheme(getStoredTheme());
 }
 

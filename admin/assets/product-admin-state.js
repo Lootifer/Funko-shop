@@ -1,6 +1,7 @@
 import { normalizeProductCatalog } from "../../Products/product-schema.js";
 import {
   createProductInApi,
+  deleteProductInApi,
   fetchProductsFromApi,
   SERVER_UNREACHABLE_MESSAGE,
   updateProductArchiveInApi,
@@ -90,6 +91,16 @@ export const archiveProduct = async (id, archived) => {
     const updated = await updateProductArchiveInApi(id, archived);
     emitInventoryEvents();
     return updated;
+  } catch (error) {
+    throw asFriendlyError(error);
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    const result = await deleteProductInApi(id);
+    emitInventoryEvents();
+    return result;
   } catch (error) {
     throw asFriendlyError(error);
   }

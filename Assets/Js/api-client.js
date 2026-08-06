@@ -106,6 +106,16 @@ export const updateProductArchiveInApi = async (productId, archived) => {
   return payload?.product || null;
 };
 
+export const deleteProductInApi = async (productId) => {
+  const payload = await requestJson(`/products/${encodeURIComponent(String(productId))}`, {
+    method: "DELETE",
+  });
+  return {
+    deleted: Boolean(payload?.deleted),
+    detachedOrderItems: Number(payload?.detachedOrderItems) || 0,
+  };
+};
+
 export const fetchOrdersFromApi = async () => {
   const payload = await requestJson("/orders", { method: "GET" });
   return Array.isArray(payload?.orders) ? payload.orders : [];

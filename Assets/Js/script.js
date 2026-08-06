@@ -52,7 +52,10 @@ clubForm?.addEventListener("submit", (event) => {
   if (!clubEmail?.value) return;
   shoppingState.subscribeToClub(clubEmail.value);
   if (clubMessage) {
-    clubMessage.textContent = "Je staat op de meldlijst. Nieuwe toevoegingen kunnen hier later worden gedeeld.";
+    const language = window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en";
+    clubMessage.textContent = language === "nl"
+      ? "Je staat op de meldlijst. Nieuwe toevoegingen kunnen hier later worden gedeeld."
+      : "You are on the alert list. New additions can be shared here later.";
   }
   clubForm.reset();
 });
@@ -130,18 +133,39 @@ const getHighlightProducts = () => {
     .slice(0, 6);
 };
 
-const renderHighlightPlaceholder = (index) => `
+const getPageLanguage = () =>
+  window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en";
+
+const highlightPlaceholderCopy = {
+  en: {
+    label: "Coming soon",
+    title: "A new collectible will take its place here.",
+    link: "Explore the collection",
+    priceRequest: "Price on request",
+  },
+  nl: {
+    label: "Binnenkort",
+    title: "Een nieuwe vondst krijgt hier een plek.",
+    link: "Ontdek de collectie",
+    priceRequest: "Prijs op aanvraag",
+  },
+};
+
+const renderHighlightPlaceholder = (index) => {
+  const copy = highlightPlaceholderCopy[getPageLanguage()];
+  return `
   <a class="highlight-card highlight-card-placeholder" href="shop.html" style="--highlight-accent:${getHighlightAccent({}, index)}">
     <div class="highlight-media highlight-placeholder-media">
       <span class="highlight-slot-number">0${index + 1}</span>
       <span class="highlight-placeholder-box"><i></i></span>
     </div>
     <div class="highlight-copy">
-      <small>Binnenkort</small>
-      <h3>Een nieuwe vondst krijgt hier een plek.</h3>
-      <div class="highlight-card-footer"><span class="highlight-price">Ontdek de collectie</span><span class="highlight-open" aria-hidden="true">→</span></div>
+      <small>${copy.label}</small>
+      <h3>${copy.title}</h3>
+      <div class="highlight-card-footer"><span class="highlight-price">${copy.link}</span><span class="highlight-open" aria-hidden="true">→</span></div>
     </div>
   </a>`;
+};
 
 const renderHighlights = () => {
   if (!highlightGrid) return;
@@ -168,7 +192,7 @@ const renderHighlights = () => {
           <small>${label}</small>
           <h3>${product.name || "Collectible"}</h3>
           <div class="highlight-card-footer">
-            <span class="highlight-price">${discount !== null ? `<del>${formatCurrency(selling)}</del>` : ""}${selling > 0 ? formatCurrency(displayPrice) : "Prijs op aanvraag"}</span>
+            <span class="highlight-price">${discount !== null ? `<del>${formatCurrency(selling)}</del>` : ""}${selling > 0 ? formatCurrency(displayPrice) : highlightPlaceholderCopy[getPageLanguage()].priceRequest}</span>
             <span class="highlight-open" aria-hidden="true">→</span>
           </div>
         </div>
@@ -318,9 +342,35 @@ const translations = {
     "categories.eyebrow": "Kies jouw wereld",
     "categories.title": "Zes collecties. Eén plek.",
     "categories.all": "Bekijk alles",
+    "card.funko.kicker": "Hoofdcategorie",
+    "card.lego.kicker": "Bouwen & verzamelen",
+    "card.pokemon.kicker": "Creature collecting",
+    "card.starwars.kicker": "Een ver sterrenstelsel",
+    "card.harry.kicker": "Magische wereld",
+    "card.sale.kicker": "Tijdelijk voordeliger",
+    "card.explore": "Ontdek",
+    "card.sale.explore": "Ontdek de sale",
+    "funko.eyebrow": "Funko collectie",
+    "funko.title": "Kies jouw Funko-lijn.",
+    "funko.text": "Van films en televisie tot games, pins en Bitty Pop.",
     "highlights.eyebrow": "Uitgelicht",
     "highlights.title": "Highlights uit de collectie.",
     "highlights.all": "Alles bekijken",
+    "highlights.intro": "Zes opvallende vondsten, compact gepresenteerd. Nieuwe producten kunnen hier automatisch verschijnen.",
+    "benefit.private.title": "Privécollectie",
+    "benefit.private.text": "Van mijn verzameling naar die van jou.",
+    "benefit.checked.title": "Zorgvuldig bekeken",
+    "benefit.checked.text": "Foto’s en staat worden zo duidelijk mogelijk getoond.",
+    "benefit.packed.title": "Goed verpakt",
+    "benefit.packed.text": "Beschermd verzonden met Track & Trace.",
+    "benefit.collectors.title": "Voor verzamelaars",
+    "benefit.collectors.text": "Gemaakt vanuit dezelfde passie voor verzamelen.",
+    "club.eyebrow": "Lootifer meldlijst",
+    "club.title": "Mis een nieuwe toevoeging niet.",
+    "club.text": "Bewaar je e-mailadres lokaal in je browser voor toekomstige meldingen over nieuwe collectibles en beperkte beschikbaarheid.",
+    "club.placeholder": "Jouw e-mailadres",
+    "club.button": "Aanmelden",
+    "club.note": "Geen spam — alleen updates voor verzamelaars.",
   },
   en: {
     "hero.eyebrow": "Private collection • new and pre-owned",
@@ -333,24 +383,55 @@ const translations = {
     "categories.eyebrow": "Choose your world",
     "categories.title": "Six collections. One place.",
     "categories.all": "View all",
+    "card.funko.kicker": "Main category",
+    "card.lego.kicker": "Build & collect",
+    "card.pokemon.kicker": "Creature collecting",
+    "card.starwars.kicker": "A galaxy far away",
+    "card.harry.kicker": "Wizarding world",
+    "card.sale.kicker": "Limited-time savings",
+    "card.explore": "Explore",
+    "card.sale.explore": "Explore sale",
+    "funko.eyebrow": "Funko collection",
+    "funko.title": "Choose your Funko line.",
+    "funko.text": "From movies and television to games, pins and Bitty Pop.",
     "highlights.eyebrow": "Featured",
     "highlights.title": "Highlights from the collection.",
     "highlights.all": "View all",
+    "highlights.intro": "Six standout finds, presented clearly. New products can appear here automatically.",
+    "benefit.private.title": "Private collection",
+    "benefit.private.text": "From my collection to yours.",
+    "benefit.checked.title": "Carefully checked",
+    "benefit.checked.text": "Photos and condition are shown as clearly as possible.",
+    "benefit.packed.title": "Carefully packed",
+    "benefit.packed.text": "Protected shipping with Track & Trace.",
+    "benefit.collectors.title": "For collectors",
+    "benefit.collectors.text": "Built from the same passion for collecting.",
+    "club.eyebrow": "Lootifer alerts",
+    "club.title": "Never miss a new addition.",
+    "club.text": "Save your email address locally in your browser for future alerts about new collectibles and limited availability.",
+    "club.placeholder": "Your email address",
+    "club.button": "Sign up",
+    "club.note": "No spam — only collector updates.",
   },
 };
 
-const applyPageLanguage = (language = "nl") => {
-  const dictionary = translations[language] || translations.nl;
+const applyPageLanguage = (language = "en") => {
+  const dictionary = translations[language] || translations.en;
   document.documentElement.lang = language;
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     const value = dictionary[element.dataset.i18n];
     if (value) element.textContent = value;
   });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    const value = dictionary[element.dataset.i18nPlaceholder];
+    if (value) element.setAttribute("placeholder", value);
+  });
 };
 
-applyPageLanguage(window.localStorage.getItem("lootifer-language") === "en" ? "en" : "nl");
+applyPageLanguage(window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en");
 window.addEventListener("lootifer:language-change", (event) => {
-  applyPageLanguage(event.detail?.language || "nl");
+  applyPageLanguage(event.detail?.language || "en");
+  renderHighlights();
 });
 
 if (!prefersReducedMotion) {

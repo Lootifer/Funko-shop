@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Original abstract crimson comic-style collector background">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#24070b"/><stop offset=".55" stop-color="#8f1f2d"/><stop offset="1" stop-color="#1a0813"/></linearGradient>
+  <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="2.6" fill="#ffd8a8" opacity=".18"/></pattern>
+</defs>
+<rect width="1200" height="700" fill="url(#bg)"/>
+<rect width="1200" height="700" fill="url(#dots)"/>
+<g transform="translate(795 250)" fill="#ffd06a" opacity=".72">
+  <path d="M0-210 40-72 160-150 86-28 230 0 86 32 160 150 38 74 0 220-38 74-160 150-86 30-230 0-86-30-160-150-40-72z"/>
+</g>
+<path d="M-80 610 370 80h210L130 610z" fill="#f1f5f7" opacity=".1"/>
+<path d="M220 700 725 0h170L390 700z" fill="#ffd06a" opacity=".12"/>
+<path d="M580 700 1040 60h240L820 700z" fill="#0a1019" opacity=".36"/>
+</svg>
