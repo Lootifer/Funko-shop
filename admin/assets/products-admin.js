@@ -385,7 +385,7 @@ const applyFormValues = (product) => {
   fields.slug.value = product.slug || "";
   fields.sku.value = product.sku || "";
   fields.barcode.value = product.barcode || "";
-  fields.category.value = product.category || "Funko Pop";
+  fields.category.value = product.category || "Funko Heroes";
   fields.brand.value = product.brand || "";
   fields.universe.value = product.universe || "";
   fields.franchise.value = product.franchise || "";
@@ -419,7 +419,7 @@ const resetForm = () => {
   if (fields.purchasePrice) fields.purchasePrice.value = "0";
   if (fields.reserved) fields.reserved.value = "0";
   if (fields.slug) fields.slug.value = "";
-  if (fields.category) fields.category.value = "Funko Pop";
+  if (fields.category) fields.category.value = "Funko Heroes";
   if (fields.brand) fields.brand.value = "Funko";
   if (fields.condition) fields.condition.value = "Mint";
   if (fields.boxCondition) fields.boxCondition.value = "Mint";

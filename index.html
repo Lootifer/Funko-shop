@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lootifer Collectibles</title>
+    <title>Lootifer Collectibles | Particuliere collectie</title>
     <meta
       name="description"
-      content="Lootifer Collectibles biedt premium, limited-edition figures en collectible drops met een luxe, moderne ervaring."
+      content="Ontdek nieuwe en tweedehands verzamelobjecten uit de privécollectie van Lootifer Collectibles. Op is op."
     />
     <link rel="stylesheet" href="Assets/Css/main.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,258 +16,161 @@
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body class="home-page home-page-v3">
+    <div class="site-parallax-bg" aria-hidden="true"><div class="site-parallax-grid"></div></div>
     <div id="headerRoot"></div>
 
-    <main id="home">
-      <section class="hero reveal">
+    <main id="home" class="home-main">
+      <section class="hero hero-premium hero-v3 reveal" aria-labelledby="heroTitle">
         <div class="hero-copy">
-          <p class="eyebrow">Gecureerde drops • Limited edition</p>
-          <h1>Elke collectie vertelt een verhaal.</h1>
-          <p class="hero-text">
-            Ontdek zeldzame Funko Pops, exclusives, grails en premium verzamelstukken.
+          <p class="eyebrow" data-i18n="hero.eyebrow">Particuliere collectie • nieuw en tweedehands</p>
+          <h1 id="heroTitle" data-i18n="hero.title">Elke collectie vertelt een verhaal.</h1>
+          <p class="hero-kicker" data-i18n="hero.kicker">Begin jouw volgende hoofdstuk.</p>
+          <p class="hero-text" data-i18n="hero.text">
+            Nieuw en tweedehands verzamelobjecten uit mijn privécollectie. Elk item wordt zo
+            duidelijk mogelijk gefotografeerd en beschreven.
           </p>
 
-          <div class="hero-actions">
-            <a class="button primary" href="#featured">Bekijk collectie</a>
-            <a class="button secondary" href="#featured">Scoor de jouwe →</a>
+          <div class="hero-actions hero-actions-v3">
+            <a class="button primary button-raised hero-action hero-action-primary" href="shop.html">
+              <span data-i18n="hero.shop">Bekijk de collectie</span>
+              <span class="hero-action-arrow" aria-hidden="true">→</span>
+            </a>
+            <a class="button secondary button-inset hero-action hero-action-secondary" href="#categories">
+              <span data-i18n="hero.categories">Bekijk categorieën</span>
+              <span class="hero-action-arrow" aria-hidden="true">↓</span>
+            </a>
           </div>
 
-          <ul class="hero-highlights">
-            <li>Gecontroleerde authenticiteit</li>
-            <li>Exclusieve drops</li>
-            <li>Snelle premium levering</li>
-          </ul>
+          <div class="hero-note">
+            <span class="hero-note-dot" aria-hidden="true"></span>
+            <span data-i18n="hero.note">Van mijn verzameling naar die van jou</span>
+          </div>
         </div>
 
-        <div class="hero-visual" aria-label="Sfeervolle Funko Pops placeholder">
-          <div class="hero-visual-glow"></div>
-          <div class="hero-visual-card">
-            <div class="hero-visual-top">Collector kluis</div>
-            <div class="hero-figure">
-              <div class="figure-head"></div>
-              <div class="figure-body"></div>
+        <div
+          class="hero-stage hero-stage-clean depth-card"
+          id="heroStage"
+          aria-label="Geanimeerde Lootifer display"
+        >
+          <div class="stage-ambient" aria-hidden="true"></div>
+          <div class="display-light display-light-one" aria-hidden="true"></div>
+          <div class="display-light display-light-two" aria-hidden="true"></div>
+          <div class="display-shelf display-shelf-top" aria-hidden="true"></div>
+          <div class="display-cases" aria-hidden="true">
+            <div class="display-case display-case-small">
+              <div class="display-glass"></div>
+              <div class="display-placeholder"><span>01</span></div>
+              <div class="display-base"></div>
             </div>
-            <div class="hero-visual-caption">
-              <p>Gelimiteerde release</p>
-              <strong>Funko Pop Series</strong>
+            <div class="display-case display-case-featured">
+              <div class="display-glass"></div>
+              <div class="display-placeholder display-placeholder-featured"><span>L</span></div>
+              <div class="display-base"></div>
             </div>
+            <div class="display-case display-case-small">
+              <div class="display-glass"></div>
+              <div class="display-placeholder"><span>03</span></div>
+              <div class="display-base"></div>
+            </div>
+          </div>
+          <div class="display-shelf display-shelf-bottom" aria-hidden="true"></div>
+          <div class="display-plaque" aria-hidden="true">
+            <span>Lootifer</span>
+            <small>Collectibles</small>
           </div>
         </div>
       </section>
 
-      <section class="section reveal">
-        <div class="new-this-week-card">
-          <div class="new-this-week-header">
-            <div>
-              <p class="eyebrow">Nieuw deze week</p>
-              <h2>Verse drops zijn in de kluis geland.</h2>
-            </div>
-            <a class="button secondary" href="shop.html">Bekijk drops</a>
-          </div>
-
-          <div class="new-this-week-grid">
-            <div class="new-this-week-pill">🦇 12 nieuwe Batman Pops</div>
-            <div class="new-this-week-pill">⭐ 4 nieuwe Chase-edities</div>
-            <div class="new-this-week-pill">🎁 2 exclusives vandaag toegevoegd</div>
-            <div class="new-this-week-pill">📦 8 items bijna uitverkocht</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section reveal">
-        <div class="section-heading">
-          <p class="eyebrow">🔥 Holy grails</p>
-          <h2>Favorieten voor verzamelaars, alles in één spotlight.</h2>
-        </div>
-
-        <div class="holy-grails-grid">
-          <a class="holy-grail-card" href="shop.html">
-            <span class="holy-grail-label">Meest gezocht</span>
-            <strong>Jaag op de heetste drops.</strong>
-          </a>
-          <a class="holy-grail-card" href="shop.html">
-            <span class="holy-grail-label">Meest zeldzaam</span>
-            <strong>Schaarse edities en verborgen parels.</strong>
-          </a>
-          <a class="holy-grail-card" href="shop.html">
-            <span class="holy-grail-label">Nieuwste binnenkomst</span>
-            <strong>Verse stukken uit de nieuwste golf.</strong>
-          </a>
-          <a class="holy-grail-card" href="shop.html">
-            <span class="holy-grail-label">Snel weg</span>
-            <strong>Laatste kans voordat ze verdwijnen.</strong>
-          </a>
-        </div>
-      </section>
-
-      <section class="section reveal">
-        <div class="notify-me-card">
+      <section id="categories" class="section category-hub-section reveal" aria-labelledby="categoryTitle">
+        <div class="section-heading premium-heading category-heading">
           <div>
-            <p class="eyebrow">Meld mij aan</p>
-            <h2>Wees als eerste terug als een grail terugkomt.</h2>
-            <p class="hero-text">Ontvang meldingen voor herbevoorrading, exclusives en beperkte dropvensters voordat ze opnieuw verdwijnen.</p>
+            <p class="eyebrow" data-i18n="categories.eyebrow">Kies jouw wereld</p>
+            <h2 id="categoryTitle" data-i18n="categories.title">Zes collecties. Eén plek.</h2>
           </div>
-          <form class="notify-me-form" id="notifyMeForm">
-            <input id="notifyEmail" type="email" placeholder="Voer je e-mail in" required />
-            <button class="button primary" type="submit">Meld mij aan</button>
-          </form>
-          <p class="club-message" id="notifyMessage">Geen spam - alleen updates voor verzamelaars.</p>
+          <a class="section-link" href="shop.html"><span data-i18n="categories.all">Bekijk alles</span> <span aria-hidden="true">→</span></a>
         </div>
+
+        <div class="category-hub-grid category-hub-grid-six" id="categoryHubGrid">
+          <button class="category-hub-card category-funko depth-card" id="funkoCategoryToggle" type="button" aria-expanded="false" aria-controls="funkoCategoryPanel" data-category-card="funko">
+            <span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span>
+            <span class="category-card-copy"><span class="category-card-kicker">Hoofdcategorie</span><strong>FUNKO</strong><span class="category-card-count"><b data-category-count="funko">0</b> verzamelstukken</span><span class="category-card-link">Ontdek <i aria-hidden="true">→</i></span></span>
+          </button>
+          <a class="category-hub-card category-lego depth-card" href="lego.html" data-category-card="lego"><span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span><span class="category-card-copy"><span class="category-card-kicker">Bouwen &amp; verzamelen</span><strong>LEGO</strong><span class="category-card-count"><b data-category-count="lego">0</b> verzamelstukken</span><span class="category-card-link">Ontdek <i aria-hidden="true">→</i></span></span></a>
+          <a class="category-hub-card category-pokemon depth-card" href="pokemon.html" data-category-card="pokemon"><span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span><span class="category-card-copy"><span class="category-card-kicker">Creature collecting</span><strong>POKÉMON</strong><span class="category-card-count"><b data-category-count="pokemon">0</b> verzamelstukken</span><span class="category-card-link">Ontdek <i aria-hidden="true">→</i></span></span></a>
+          <a class="category-hub-card category-star-wars depth-card" href="star-wars.html" data-category-card="star-wars"><span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span><span class="category-card-copy"><span class="category-card-kicker">Een ver sterrenstelsel</span><strong>STAR WARS</strong><span class="category-card-count"><b data-category-count="star-wars">0</b> verzamelstukken</span><span class="category-card-link">Ontdek <i aria-hidden="true">→</i></span></span></a>
+          <a class="category-hub-card category-harry-potter depth-card" href="harry-potter.html" data-category-card="harry-potter"><span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span><span class="category-card-copy"><span class="category-card-kicker">Magische wereld</span><strong>HARRY POTTER</strong><span class="category-card-count"><b data-category-count="harry-potter">0</b> verzamelstukken</span><span class="category-card-link">Ontdek <i aria-hidden="true">→</i></span></span></a>
+          <a class="category-hub-card category-sale depth-card" href="sale.html" data-category-card="sale"><span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span><span class="category-card-copy"><span class="category-card-kicker">Tijdelijk voordeliger</span><strong>SALE</strong><span class="category-card-count"><b data-category-count="sale">0</b> aanbiedingen</span><span class="category-card-link">Ontdek de sale <i aria-hidden="true">→</i></span></span></a>
+        </div>
+
       </section>
 
-      <section id="universes" class="section reveal">
-        <div class="section-heading">
-          <p class="eyebrow">Ontdek universums</p>
-          <h2>Vind je volgende obsessie.</h2>
-        </div>
+        <button class="funko-focus-overlay" id="funkoFocusOverlay" type="button" aria-label="Funko overzicht sluiten"></button>
 
-        <div class="universe-grid" id="universeGrid"></div>
-      </section>
+        <div class="funko-category-panel" id="funkoCategoryPanel" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="funkoPanelTitle">
+          <div class="funko-category-panel-inner depth-panel">
+            <button class="funko-panel-close" id="funkoPanelClose" type="button" aria-label="Funko overzicht sluiten">×</button>
+            <div class="funko-category-showcase">
+              <div class="funko-showcase-photo" aria-hidden="true"></div>
+              <div class="funko-showcase-overlay">
+                <p class="eyebrow">Funko collectie</p>
+                <h3 id="funkoPanelTitle">Kies jouw Funko-lijn.</h3>
+                <p>Van films en televisie tot games, pins en Bitty Pop.</p>
+              </div>
+            </div>
 
-      <div id="searchRoot"></div>
-
-      <section class="stats-section reveal" aria-label="Verzamelaarsstatistieken">
-        <div class="stat-card">
-          <span>✔</span>
-          <p>126 verzamelitems online</p>
-        </div>
-        <div class="stat-card">
-          <span>✔</span>
-          <p>Elke week nieuwe drops</p>
-        </div>
-        <div class="stat-card">
-          <span>✔</span>
-          <p>Zorgvuldig verpakt</p>
-        </div>
-        <div class="stat-card">
-          <span>✔</span>
-          <p>Goedgekeurd door verzamelaars</p>
-        </div>
-      </section>
-
-      <section id="featured" class="section reveal">
-        <div class="section-heading">
-          <p class="eyebrow">Uitgelichte verzamelitems</p>
-          <h2>Favorieten voor verzamelaars, handmatig geselecteerd.</h2>
-        </div>
-
-        <div class="filter-panel">
-          <div class="filter-group">
-            <h3>Categorie</h3>
-            <select id="categoryFilter"></select>
-          </div>
-
-          <div class="filter-group">
-            <h3>Universum</h3>
-            <div id="universeFilterGroup"></div>
-          </div>
-
-          <div class="filter-group">
-            <h3>Editie</h3>
-            <div id="editionFilterGroup"></div>
-          </div>
-
-          <div class="filter-group price-group">
-            <h3>Prijs</h3>
-            <input id="priceRange" type="range" min="0" max="300" step="10" value="300" />
-            <div class="price-range-values">
-              <span>€0</span>
-              <span id="priceRangeValue">Tot €300</span>
+            <div class="funko-subcategory-grid" aria-label="Funko subcategorieën">
+              <a href="funko.html?category=Funko%20Movies" class="funko-subcategory-card"><span>01</span><strong>Movies</strong><small><b data-funko-count="Funko Movies">0</b> items</small><i>→</i></a>
+              <a href="funko.html?category=Funko%20Television" class="funko-subcategory-card"><span>02</span><strong>Television</strong><small><b data-funko-count="Funko Television">0</b> items</small><i>→</i></a>
+              <a href="funko.html?category=Funko%20Animation" class="funko-subcategory-card"><span>03</span><strong>Animation</strong><small><b data-funko-count="Funko Animation">0</b> items</small><i>→</i></a>
+              <a href="funko.html?category=Funko%20Games" class="funko-subcategory-card"><span>04</span><strong>Games</strong><small><b data-funko-count="Funko Games">0</b> items</small><i>→</i></a>
+              <a href="funko.html?category=Funko%20Heroes" class="funko-subcategory-card"><span>05</span><strong>Heroes</strong><small><b data-funko-count="Funko Heroes">0</b> items</small><i>→</i></a>
+              <a href="funko.html?category=Funko%20Pin" class="funko-subcategory-card"><span>06</span><strong>Pin</strong><small><b data-funko-count="Funko Pin">0</b> items</small><i>→</i></a>
+              <a href="funko.html?category=Funko%20Bitty%20Pop" class="funko-subcategory-card"><span>07</span><strong>Bitty Pop</strong><small><b data-funko-count="Funko Bitty Pop">0</b> items</small><i>→</i></a>
+              <a href="funko.html?category=Funko%20Tee" class="funko-subcategory-card"><span>08</span><strong>Tee</strong><small><b data-funko-count="Funko Tee">0</b> items</small><i>→</i></a>
             </div>
           </div>
         </div>
 
-        <div class="section-actions">
-          <button class="button secondary" id="viewAllButton" type="button">Alles tonen</button>
+      <section class="section highlights-section reveal" id="highlights" aria-labelledby="highlightsTitle">
+        <div class="section-heading premium-heading">
+          <div>
+            <p class="eyebrow" data-i18n="highlights.eyebrow">Uitgelicht</p>
+            <h2 id="highlightsTitle" data-i18n="highlights.title">Highlights uit de collectie.</h2>
+          </div>
+          <a class="section-link" href="shop.html"><span data-i18n="highlights.all">Alles bekijken</span> <span aria-hidden="true">→</span></a>
         </div>
-
-        <div class="card-grid" id="productGrid"></div>
+        <p class="highlight-intro">Zes opvallende vondsten, compact gepresenteerd. Nieuwe producten kunnen hier automatisch verschijnen.</p>
+        <div class="highlight-grid highlight-grid-six" id="highlightGrid" aria-live="polite" aria-label="Zes uitgelichte verzamelstukken"></div>
       </section>
 
-      <div class="modal-backdrop" id="productModal" aria-hidden="true">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-          <button class="modal-close" id="modalClose" type="button" aria-label="Sluit productdetails">×</button>
-          <div class="modal-content">
-            <img id="modalImage" src="" alt="" />
-            <div class="modal-info">
-              <p class="card-meta" id="modalBadge">Uitgelicht</p>
-              <h3 id="modalTitle">Product</h3>
-              <p id="modalDescription"></p>
-              <div class="modal-meta-grid">
-                <div>
-                  <span class="modal-label">Franchise</span>
-                  <strong id="modalFranchise"></strong>
-                </div>
-                <div>
-                  <span class="modal-label">Editie</span>
-                  <strong id="modalEdition"></strong>
-                </div>
-                <div>
-                  <span class="modal-label">Staat</span>
-                  <strong id="modalCondition"></strong>
-                </div>
-                <div>
-                  <span class="modal-label">Voorraad</span>
-                  <strong id="modalStock"></strong>
-                </div>
-              </div>
-              <div class="modal-actions">
-                <span class="modal-price" id="modalPrice"></span>
-                <a class="button primary" href="#featured">Reserveer nu</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <section class="benefit-strip depth-panel reveal" aria-label="Waarom Lootifer">
+        <article><span class="benefit-icon" aria-hidden="true">⌂</span><div><strong>Privécollectie</strong><p>Van mijn verzameling naar die van jou.</p></div></article>
+        <article><span class="benefit-icon" aria-hidden="true">✦</span><div><strong>Zorgvuldig bekeken</strong><p>Foto’s en staat worden zo duidelijk mogelijk getoond.</p></div></article>
+        <article><span class="benefit-icon" aria-hidden="true">➤</span><div><strong>Goed verpakt</strong><p>Beschermd verzonden met Track &amp; Trace.</p></div></article>
+        <article><span class="benefit-icon" aria-hidden="true">♡</span><div><strong>Voor verzamelaars</strong><p>Gemaakt vanuit dezelfde passie voor verzamelen.</p></div></article>
+      </section>
 
-      <section class="section reveal">
-        <div class="club-card">
+      <section class="section collector-club-section reveal">
+        <div class="club-card premium-club-card depth-card">
           <div class="club-copy">
-            <p class="eyebrow">Collector Club</p>
-            <h2>Word lid van de Collector Club</h2>
-            <p>Krijg insider-toegang tot zeldzame drops, meldingen bij herbevoorrading en exclusieve Funko Pops voordat ze in de gewone catalogus verschijnen.</p>
-            <ul class="hero-highlights club-list">
-              <li>🎁 Win exclusieve Funko Pops</li>
-              <li>🔥 Vroege toegang</li>
-              <li>📦 Meldingen bij herbevoorrading</li>
-              <li>❤️ Sla je verlanglijst op</li>
-            </ul>
+            <p class="eyebrow">Lootifer meldlijst</p>
+            <h2>Mis een nieuwe toevoeging niet.</h2>
+            <p>Bewaar je e-mailadres lokaal in je browser voor toekomstige meldingen over nieuwe collectibles en beperkte beschikbaarheid.</p>
             <form class="club-form" id="clubForm">
-              <input id="clubEmail" type="email" placeholder="Voer je e-mail in" required />
-              <button class="button primary" type="submit">Gratis lid worden</button>
+              <input id="clubEmail" type="email" placeholder="Jouw e-mailadres" required />
+              <button class="button primary button-raised" type="submit">Aanmelden</button>
             </form>
-            <p class="club-message" id="clubMessage">Krijg vroege toegang en meldingen bij herbevoorrading.</p>
+            <p class="club-message" id="clubMessage">Geen spam — alleen updates voor verzamelaars.</p>
           </div>
-        </div>
-      </section>
-
-      <section id="why" class="section why-section reveal">
-        <div class="section-heading">
-          <p class="eyebrow">Waarom Lootifer</p>
-          <h2>Luxeservice voor serieuze verzamelaars.</h2>
-        </div>
-
-        <div class="why-grid">
-          <div class="why-item">
-            <h3>Authenticiteit gegarandeerd</h3>
-            <p>Elk item is gecontroleerd en gepresenteerd met detail dat klaar is voor provenance.</p>
-          </div>
-          <div class="why-item">
-            <h3>Verfijnde curatie</h3>
-            <p>We zetten stukken in de spotlight met verhaal, design en langdurige aantrekkingskracht.</p>
-          </div>
-          <div class="why-item">
-            <h3>Ervaring voor verzamelaars</h3>
-            <p>Van ontdekking tot levering voelt elke interactie premium en naadloos aan.</p>
+          <div class="club-orbit" aria-hidden="true">
+            <div class="orbit-ring orbit-ring-one"></div><div class="orbit-ring orbit-ring-two"></div><div class="orbit-core">L</div>
           </div>
         </div>
       </section>
     </main>
 
     <div id="footerRoot"></div>
-
     <script type="module" src="Assets/Js/script.js"></script>
   </body>
 </html>
-

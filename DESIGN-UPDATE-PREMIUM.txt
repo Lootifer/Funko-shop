@@ -1,0 +1,21 @@
+LOOTIFER PREMIUM DESIGN UPDATE
+
+Wat is aangepast:
+- Nieuwe luxe zwart-gouden startpagina.
+- Verhoogde en verzonken knoppen voor extra diepte.
+- 3D-display met lege plaatsen: je voegt zelf producten toe via admin.
+- Productkaarten komen omhoog en krijgen een lichtspot bij hover.
+- Universumkaarten voor DC & Batman, Marvel, Pokémon, Star Wars en Harry Potter.
+- Het vleermuissymbool beweegt bij hover.
+- Rustige scroll-, licht-, zweef- en parallaxanimaties.
+- Nieuwe hoekige Lootifer-logo-uitwerking in header en footer.
+- De bestaande shop, admin, database, winkelwagen en WhatsApp-flow zijn behouden.
+
+Starten op Windows:
+1. Open deze map in VS Code.
+2. Terminal: npm install
+3. Terminal: npm start
+4. Start Live Server.
+5. Open http://localhost:5500/index.html
+
+Eerst testen, daarna pas committen en pushen via GitHub Desktop.

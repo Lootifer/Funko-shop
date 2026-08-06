@@ -1,0 +1,24 @@
+<svg width="900" height="1100" viewBox="0 0 900 1100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lege Lootifer verzameldoos">
+<defs>
+ <linearGradient id="box" x1="130" y1="80" x2="770" y2="1020" gradientUnits="userSpaceOnUse"><stop stop-color="#17191D"/><stop offset="1" stop-color="#070809"/></linearGradient>
+ <linearGradient id="gold" x1="120" y1="80" x2="790" y2="980" gradientUnits="userSpaceOnUse"><stop stop-color="#F5D77B"/><stop offset="0.55" stop-color="#D4A52F"/><stop offset="1" stop-color="#8B6516"/></linearGradient>
+ <radialGradient id="halo" cx="0" cy="0" r="1" gradientTransform="translate(470 560) rotate(90) scale(410 350)"><stop stop-color="#E2B83F" stop-opacity=".28"/><stop offset="1" stop-color="#E2B83F" stop-opacity="0"/></radialGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="35" stdDeviation="28" flood-color="#000" flood-opacity=".65"/></filter>
+</defs>
+<ellipse cx="460" cy="1010" rx="285" ry="42" fill="#000" opacity=".42"/>
+<circle cx="470" cy="555" r="390" fill="url(#halo)"/>
+<g filter="url(#shadow)">
+ <path d="M196 120 684 82 760 160 760 930 218 982 142 910 142 198 196 120Z" fill="url(#box)" stroke="url(#gold)" stroke-width="5"/>
+ <path d="M196 120 684 82 760 160 218 198 142 198 196 120Z" fill="#202329" stroke="url(#gold)" stroke-width="4"/>
+ <path d="M218 198 760 160V930L218 982V198Z" fill="#0B0C0E"/>
+ <path d="M142 198 218 198V982L142 910V198Z" fill="#121419"/>
+ <rect x="272" y="254" width="412" height="518" rx="22" fill="#050607" stroke="#CFA334" stroke-width="4"/>
+ <rect x="300" y="286" width="356" height="454" rx="15" fill="#0F1114" stroke="#FFFFFF" stroke-opacity=".16" stroke-width="3"/>
+ <path d="M330 320 392 300 560 300 322 650" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="18" stroke-linecap="round"/>
+ <rect x="275" y="804" width="410" height="92" rx="18" fill="#171A1E" stroke="#CFA334" stroke-width="3"/>
+ <path d="M320 850H640" stroke="url(#gold)" stroke-width="3"/>
+ <circle cx="642" cy="196" r="44" fill="#14161A" stroke="#DAB549" stroke-width="4"/>
+ <text x="642" y="209" text-anchor="middle" fill="#E2B83F" font-family="Arial,sans-serif" font-weight="700" font-size="34">00</text>
+ <path d="M244 174H482" stroke="url(#gold)" stroke-width="3"/>
+</g>
+</svg>

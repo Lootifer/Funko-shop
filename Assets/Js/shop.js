@@ -29,6 +29,23 @@ let shopInStock = null;
 let shopSort = null;
 
 const PRODUCTS_PER_PAGE = 24;
+const COLLECTION_KEY = document.body.dataset.collectionKey || "";
+const normalizeCollectionValue = (value = "") => String(value).trim().toLowerCase();
+const belongsToCollection = (product) => {
+  const haystack = [product?.brand, product?.category, product?.universe, product?.franchise, ...(Array.isArray(product?.tags) ? product.tags : [])].map(normalizeCollectionValue).join(" ");
+  if (!COLLECTION_KEY) return true;
+  if (COLLECTION_KEY === "funko") return haystack.includes("funko");
+  if (COLLECTION_KEY === "lego") return haystack.includes("lego");
+  if (COLLECTION_KEY === "pokemon") return haystack.includes("pokemon") || haystack.includes("pokémon");
+  if (COLLECTION_KEY === "star-wars") return haystack.includes("star wars");
+  if (COLLECTION_KEY === "harry-potter") return haystack.includes("harry potter");
+  if (COLLECTION_KEY === "sale") {
+    const selling = Number(product?.sellingPrice || product?.price || 0);
+    const discount = Number(product?.discountPrice || 0);
+    return selling > 0 && discount > 0 && discount < selling;
+  }
+  return true;
+};
 let products = [];
 let filteredProducts = [];
 let currentPage = 1;
@@ -57,9 +74,10 @@ const getProducts = async () => {
 };
 
 const populateFilters = () => {
-  const categories = [...new Set(products.map((product) => product.category))].sort();
-  const universes = [...new Set(products.map((product) => product.universe))].sort();
-  const brands = [...new Set(products.map((product) => product.brand))].sort();
+  const collectionProducts = products.filter(belongsToCollection);
+  const categories = [...new Set(collectionProducts.map((product) => product.category).filter(Boolean))].sort();
+  const universes = [...new Set(collectionProducts.map((product) => product.universe).filter(Boolean))].sort();
+  const brands = [...new Set(collectionProducts.map((product) => product.brand).filter(Boolean))].sort();
 
   if (filtersRoot) {
     filtersRoot.innerHTML = createFilterSidebar({ categories, universes, brands, priceValue: 300 });
@@ -76,6 +94,23 @@ const populateFilters = () => {
   shopVaulted = document.getElementById("shopVaulted");
   shopInStock = document.getElementById("shopInStock");
   shopSort = document.getElementById("shopSort");
+
+  const urlFilters = new URLSearchParams(window.location.search);
+  const requestedCategory = urlFilters.get("category") || "";
+  const requestedUniverse = urlFilters.get("universe") || "";
+  const requestedSearch = urlFilters.get("search") || "";
+  const requestedBrand = urlFilters.get("brand") || "";
+
+  if (shopCategory && requestedCategory && [...shopCategory.options].some((option) => option.value === requestedCategory)) {
+    shopCategory.value = requestedCategory;
+  }
+  if (shopUniverse && requestedUniverse) {
+    const normalizedRequestedUniverse = requestedUniverse.toLowerCase();
+    const matchingOption = [...shopUniverse.options].find((option) => option.value.toLowerCase() === normalizedRequestedUniverse);
+    if (matchingOption) shopUniverse.value = matchingOption.value;
+  }
+  if (shopSearch && requestedSearch) shopSearch.value = requestedSearch;
+  if (shopBrand && requestedBrand) { const matchingBrand = [...shopBrand.options].find((option) => option.value.toLowerCase() === requestedBrand.toLowerCase()); if (matchingBrand) shopBrand.value = matchingBrand.value; }
 
   const elements = [shopSearch, shopCategory, shopUniverse, shopBrand, shopPrice, shopExclusive, shopChase, shopVaulted, shopInStock, shopSort].filter(Boolean);
   elements.forEach((element) => {
@@ -147,6 +182,7 @@ const getFilteredProducts = () => {
   const onlyInStock = shopInStock?.checked || false;
 
   return products.filter((product) => {
+    if (!belongsToCollection(product)) return false;
     try {
       const productTags = Array.isArray(product?.tags) ? product.tags : [];
       const matchesQuery = `${product?.name || ""} ${product?.universe || ""} ${product?.franchise || ""} ${product?.description || ""} ${productTags.join(" ")} ${product?.number || ""} ${product?.id || ""} ${product?.sku || ""}`.toLowerCase().includes(query);

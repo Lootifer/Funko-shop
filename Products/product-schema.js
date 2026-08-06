@@ -3,6 +3,15 @@ import { getDisplayPrice, getSellingPrice, getValidDiscountPrice, hasValidSellin
 
 export const PRODUCT_CATEGORIES = [
   "All",
+  "Funko Movies",
+  "Funko Television",
+  "Funko Pin",
+  "Funko Bitty Pop",
+  "Funko Games",
+  "Funko Heroes",
+  "Funko Tee",
+  "Funko Animation",
+  // Bestaande/legacy waarden blijven geldig totdat producten via admin zijn ingedeeld.
   "Funko Pop",
   "Funko Pop! Disney",
   "Funko Pop! Movies",
@@ -37,7 +46,7 @@ export const PRODUCT_DEFAULTS = {
   slug: "",
   sku: "",
   barcode: "",
-  category: "Funko Pop",
+  category: "Funko Heroes",
   brand: "",
   franchise: "",
   universe: "",

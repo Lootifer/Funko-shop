@@ -1,0 +1,7 @@
+LOOTIFER FRONTPAGE V7
+
+- Jedi/light mode display is now fully light.
+- Removed the playful mini-figure section and restored the previous page flow.
+- Six highlights are smaller, more compact and more playful.
+- Funko submenu opens directly beneath/near the selected Funko card.
+- Existing admin, inventory, checkout and WhatsApp functionality was not changed.

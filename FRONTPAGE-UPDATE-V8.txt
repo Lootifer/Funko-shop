@@ -1,0 +1,7 @@
+LOOTIFER FRONTPAGE V8
+
+- Funko-submenu is direct onder het Funko-vak geplaatst.
+- Het submenu wordt naar de body verplaatst zodat fixed positioning niet meer door reveal-animaties wordt verstoord.
+- LEGO gebruikt één ononderbroken aangeleverde achtergrondfoto.
+- Het L-symbool in de meldlijst is vervangen door een originele glimmende, ronddraaiende Lootifer-munt.
+- Bestaande admin-, winkelwagen-, voorraad-, checkout- en WhatsApp-functionaliteit is niet gewijzigd.

@@ -19,3 +19,7 @@
     transform: translateY(0);
   }
 }
+
+.reveal {
+  transition-delay: var(--reveal-delay, 0ms);
+}

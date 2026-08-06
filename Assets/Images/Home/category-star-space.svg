@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="nebula" cx="62%" cy="34%" r="65%">
+      <stop stop-color="#315a9d" stop-opacity=".78"/>
+      <stop offset=".35" stop-color="#182948" stop-opacity=".52"/>
+      <stop offset="1" stop-color="#02040a"/>
+    </radialGradient>
+    <linearGradient id="planet" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#dbe8f9"/>
+      <stop offset=".42" stop-color="#7898c9"/>
+      <stop offset="1" stop-color="#17253f"/>
+    </linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="34"/></filter>
+    <filter id="glow"><feGaussianBlur stdDeviation="10"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="#02040a"/>
+  <rect width="1600" height="900" fill="url(#nebula)"/>
+  <ellipse cx="1090" cy="225" rx="380" ry="135" fill="#5d88e5" opacity=".16" filter="url(#soft)" transform="rotate(-18 1090 225)"/>
+  <circle cx="1210" cy="195" r="132" fill="url(#planet)"/>
+  <ellipse cx="1210" cy="195" rx="180" ry="35" fill="none" stroke="#cbd8f4" stroke-width="11" opacity=".55" transform="rotate(-12 1210 195)"/>
+  <circle cx="1290" cy="120" r="34" fill="#e5b465" opacity=".82"/>
+  <g fill="#fff">
+    <circle cx="90" cy="105" r="2"/><circle cx="220" cy="240" r="3" opacity=".65"/><circle cx="420" cy="128" r="2"/><circle cx="570" cy="325" r="3" opacity=".7"/><circle cx="730" cy="95" r="2"/>
+    <circle cx="890" cy="410" r="2"/><circle cx="1040" cy="78" r="3" opacity=".72"/><circle cx="1400" cy="270" r="2"/><circle cx="1510" cy="90" r="3" opacity=".65"/>
+    <circle cx="150" cy="620" r="3" opacity=".7"/><circle cx="360" cy="735" r="2"/><circle cx="620" cy="610" r="2"/><circle cx="920" cy="700" r="3" opacity=".64"/><circle cx="1330" cy="690" r="2"/>
+  </g>
+  <g transform="translate(525 420) rotate(-10)">
+    <path d="M0 58 190 0l92 42-86 22 49 44-91-24-76 42 18-55Z" fill="#9fb6da" opacity=".88"/>
+    <path d="m190 0 38 44-32 20-65-31Z" fill="#dbe7f7" opacity=".85"/>
+    <path d="M-65 76 5 59" stroke="#66a8ff" stroke-width="8" opacity=".75" filter="url(#glow)"/>
+    <path d="M-120 90 0 62" stroke="#ff6666" stroke-width="5" opacity=".52" filter="url(#glow)"/>
+  </g>
+  <path d="M0 770c260-95 470-20 720-75 325-70 600-22 880 80v125H0Z" fill="#02050b" opacity=".9"/>
+  <path d="M0 790c310-82 590-26 830-52 290-32 495 15 770 78" fill="none" stroke="#345a91" stroke-width="3" opacity=".32"/>
+</svg>

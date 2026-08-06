@@ -1,0 +1,9 @@
+LOOTIFER FRONTPAGE V6
+
+- Light mode category and highlight cards are now light instead of dark.
+- The Bekijk categorieën button is readable in light mode.
+- Highlights no longer have filters and always show six cards.
+- Homepage uses the six newest/featured active products; empty spots receive a neutral placeholder.
+- Added an animated collector playground with original generic mini collectible characters.
+- Footer and lower homepage sections received extra light-mode polish.
+- Backend, admin, cart, checkout, WhatsApp and inventory logic were not changed.

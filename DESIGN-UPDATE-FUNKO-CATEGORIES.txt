@@ -1,0 +1,12 @@
+Lootifer homepage update
+
+- Hero display retained and upgraded with a collage made from the owner's product photos.
+- Featured homepage cards use a temporary empty collector-box placeholder until transparent PNG product photos are uploaded.
+- Added Funko as the main category with eight visual lines: Movies, Television, Pin, Bitty Pop, Games, Heroes, Tee and Animation.
+- Replaced abstract universe icons with the owner's photos for DC & Batman, Marvel, Pokemon, Star Wars and Harry Potter.
+- Shop/admin/database/checkout files were left intact.
+
+Category structure
+- Admin category selector now offers the eight requested Funko lines.
+- Homepage line cards open the shop with the corresponding category filter.
+- Existing products with the old category "Funko Pop" remain valid and can be reassigned one by one in admin.
