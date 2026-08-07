@@ -1,0 +1,23 @@
+LOOTIFER V15 - FUNKO MAXIMAAL 4 FOTO'S + CLEAR FILTERS FIX
+
+Deze update bevat beide aanpassingen:
+
+FUNKO FOTO'S
+- Funko: maximaal 4 afbeeldingen.
+- 1 foto = 1 foto zichtbaar.
+- 2 foto's = 2 foto's zichtbaar.
+- 3 foto's = 3 foto's zichtbaar.
+- 4 foto's = 4 foto's zichtbaar.
+- Geen lege fotovakken.
+- De eerste foto wordt niet meer dubbel in de galerij getoond.
+- Bij meer dan 4 handmatig ingevoerde Funko-afbeeldingen geeft Admin een melding.
+- Automatisch gekoppelde Funko-afbeeldingen worden beperkt tot 4.
+- Andere categorieen worden niet beperkt door deze update.
+
+FUNKO FILTERS
+- In lichte modus is de tekst "Clear filters" altijd goed leesbaar op de donkere knop.
+- Hover/focus blijft duidelijk zichtbaar.
+- Donkere modus blijft ongewijzigd.
+
+Kopieer de map Funko-shop over de huidige projectmap en kies Bestanden vervangen.
+Deze ZIP bevat alleen gewijzigde bestanden, zodat de handmatige V15-aanpassingen aan de categoriepagina's behouden blijven.

@@ -104,7 +104,11 @@ ON CONFLICT(id) DO UPDATE SET
 `;
 
 const mapPayloadToParams = (payload = {}, fallback = {}) => {
-  const images = Array.isArray(payload.images) ? payload.images : Array.isArray(fallback.images) ? fallback.images : [];
+  const category = String(payload.category ?? fallback.category ?? "").trim();
+  const brand = String(payload.brand ?? fallback.brand ?? "").trim();
+  const isFunko = category.toLowerCase().startsWith("funko") || brand.toLowerCase().includes("funko");
+  const rawImages = Array.isArray(payload.images) ? payload.images : Array.isArray(fallback.images) ? fallback.images : [];
+  const images = isFunko ? [...new Set(rawImages.filter(Boolean))].slice(0, 4) : rawImages;
   const tags = Array.isArray(payload.tags) ? payload.tags : Array.isArray(fallback.tags) ? fallback.tags : [];
   const thumbnail = payload.thumbnail || payload.image || fallback.thumbnail || fallback.image || "";
   return [
@@ -112,8 +116,8 @@ const mapPayloadToParams = (payload = {}, fallback = {}) => {
     String(payload.slug || fallback.slug || "").trim().toLowerCase(),
     String(payload.sku || fallback.sku || "").trim(),
     String(payload.barcode ?? fallback.barcode ?? "").trim(),
-    String(payload.category ?? fallback.category ?? "").trim(),
-    String(payload.brand ?? fallback.brand ?? "").trim(),
+    category,
+    brand,
     String(payload.universe ?? fallback.universe ?? "").trim(),
     String(payload.franchise ?? fallback.franchise ?? "").trim(),
     String(payload.name || fallback.name || "").trim(),

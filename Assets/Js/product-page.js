@@ -66,7 +66,10 @@ const getProductById = async () => {
 const renderGallery = (product) => {
   if (!productGalleryMain || !productGalleryThumbs) return;
 
-  const galleryItems = [product.image, ...(product.gallery || [])].filter(Boolean);
+  const isFunko = String(product.category || "").toLowerCase().startsWith("funko")
+    || String(product.brand || "").toLowerCase().includes("funko");
+  const uniqueGalleryItems = [...new Set([product.image, ...(product.gallery || [])].filter(Boolean))];
+  const galleryItems = isFunko ? uniqueGalleryItems.slice(0, 4) : uniqueGalleryItems;
   const mainImage = galleryItems[0];
 
   productGalleryMain.innerHTML = `<img ${createImageAttributes({ src: mainImage, alt: product.name, loading: "eager" })} />`;

@@ -69,6 +69,17 @@ const sanitizeList = (items = []) => {
   return [...new Set(items.map((item) => String(item).trim()).filter(Boolean))];
 };
 
+const isFunkoProduct = (product = {}) => {
+  const category = String(product.category || "").toLowerCase();
+  const brand = String(product.brand || "").toLowerCase();
+  return category.startsWith("funko") || brand === "funko" || brand.includes("funko");
+};
+
+const limitImagesForProduct = (product = {}, images = []) => {
+  const clean = sanitizeList(images);
+  return isFunkoProduct(product) ? clean.slice(0, 4) : clean;
+};
+
 export const parseImagesInput = (value = "") => {
   if (!value) return [];
   if (Array.isArray(value)) return sanitizeList(value);
@@ -102,7 +113,7 @@ export const getMappedImagesForSlug = async ({ slug, category, brand } = {}) => 
 
   const mapped = getMappedImageSet({ slug, category, brand }).images;
   const checks = await Promise.all(mapped.map((imagePath) => fetchImage(imagePath)));
-  return mapped.filter((_, index) => checks[index]);
+  return limitImagesForProduct({ category, brand }, mapped.filter((_, index) => checks[index]));
 };
 
 export const buildDraftFromForm = (formData) => {
@@ -172,6 +183,10 @@ export const validateDraft = ({ draft, products, editingId = null }) => {
     errors.push("stock moet 0 of hoger zijn.");
   }
 
+  if (isFunkoProduct(draft) && Array.isArray(draft.images) && draft.images.length > 4) {
+    errors.push("Funko mag maximaal 4 afbeeldingen hebben.");
+  }
+
   const currentId = editingId === null ? null : Number(editingId);
   const duplicateId = products.find((product) => Number(product.id) === Number(draft.id) && Number(product.id) !== currentId);
   if (duplicateId) {
@@ -201,7 +216,8 @@ export const getProductCompleteness = (product = {}) => {
   const hasReleaseYear = Number(product.releaseYear) > 0;
   const hasDescription = Boolean(String(product.description || "").trim());
   const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
-  const hasPhotos = images.length >= 5 && images[0] !== PREMIUM_PLACEHOLDER_IMAGE;
+  const requiredPhotoCount = isFunkoProduct(product) ? 1 : 5;
+  const hasPhotos = images.length >= requiredPhotoCount && images[0] !== PREMIUM_PLACEHOLDER_IMAGE;
 
   const missing = [];
   if (!hasPrice) missing.push("prijs");
@@ -217,7 +233,8 @@ export const getProductCompleteness = (product = {}) => {
 };
 
 export const buildProductForSave = ({ draft, existingProduct = null, autoLinkedImages = [] }) => {
-  const imageSet = autoLinkedImages.length ? autoLinkedImages : draft.images;
+  const sourceImages = autoLinkedImages.length ? autoLinkedImages : draft.images;
+  const imageSet = limitImagesForProduct(draft, sourceImages);
   const thumbnail = imageSet[0] || PREMIUM_PLACEHOLDER_IMAGE;
 
   const payload = {

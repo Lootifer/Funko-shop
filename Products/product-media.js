@@ -2,6 +2,17 @@ export const PREMIUM_PLACEHOLDER_IMAGE = "Assets/Images/Products/premium-placeho
 
 const IMAGE_SEQUENCE = ["front.webp", "back.webp", "left.webp", "right.webp", "box.webp"];
 
+const isFunkoProduct = (product = {}) => {
+  const category = String(product.category || "").toLowerCase();
+  const brand = String(product.brand || "").toLowerCase();
+  return category.startsWith("funko") || brand === "funko" || brand.includes("funko");
+};
+
+const limitMediaImages = (product = {}, images = []) => {
+  const clean = unique(images);
+  return isFunkoProduct(product) ? clean.slice(0, 4) : clean;
+};
+
 const ROOT_PRODUCTS_PATH = "Assets/Images/Products";
 
 const FUNKO_UNIVERSE_FOLDERS = {
@@ -145,7 +156,8 @@ export const getProductImageFolder = (product = {}) => {
 
 export const getMappedImageSet = (product = {}) => {
   const folderCandidates = buildFolderCandidates(product);
-  const mapped = IMAGE_SEQUENCE.map((fileName) => buildCandidateBundle([
+  const sequence = isFunkoProduct(product) ? IMAGE_SEQUENCE.slice(0, 4) : IMAGE_SEQUENCE;
+  const mapped = sequence.map((fileName) => buildCandidateBundle([
     ...folderCandidates.map((folder) => `${folder}/${fileName}`),
     PREMIUM_PLACEHOLDER_IMAGE,
   ]));
@@ -175,11 +187,12 @@ export const resolveProductMedia = (product = {}) => {
   ]);
 
   const explicitImageCandidates = unique(explicitImages.flatMap((value) => splitCandidates(value)));
-  const explicitRemoteImages = explicitImageCandidates.filter(isRemoteUrl);
+  const hasExplicitImages = explicitImageCandidates.length > 0;
 
-  const resolvedImages = explicitRemoteImages.length ? explicitRemoteImages : mapped.images;
-  const safeImages = resolvedImages.length ? resolvedImages : [PREMIUM_PLACEHOLDER_IMAGE];
-  const thumbnail = explicitRemoteImages.length
+  const resolvedImages = hasExplicitImages ? explicitImageCandidates : mapped.images;
+  const limitedImages = limitMediaImages(product, resolvedImages);
+  const safeImages = limitedImages.length ? limitedImages : [PREMIUM_PLACEHOLDER_IMAGE];
+  const thumbnail = hasExplicitImages
     ? (product.thumbnail || product.image || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
     : (safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE);
 
@@ -188,16 +201,16 @@ export const resolveProductMedia = (product = {}) => {
     image: thumbnail,
     images: safeImages,
     gallery: safeImages,
-    boxFront: explicitRemoteImages.length
+    boxFront: hasExplicitImages
       ? (product.boxFront || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
       : (safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE),
-    boxBack: explicitRemoteImages.length
+    boxBack: hasExplicitImages
       ? (product.boxBack || safeImages[1] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
       : (safeImages[1] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE),
-    leftSide: explicitRemoteImages.length
+    leftSide: hasExplicitImages
       ? (product.leftSide || safeImages[2] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
       : (safeImages[2] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE),
-    rightSide: explicitRemoteImages.length
+    rightSide: hasExplicitImages
       ? (product.rightSide || safeImages[3] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE)
       : (safeImages[3] || safeImages[0] || PREMIUM_PLACEHOLDER_IMAGE),
   };
