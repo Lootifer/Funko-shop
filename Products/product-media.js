@@ -23,6 +23,11 @@ const FUNKO_UNIVERSE_FOLDERS = {
   games: "Games",
   movies: "Movies",
   television: "Television",
+  animation: "Animation",
+  heroes: "Heroes",
+  pin: "Pin",
+  bittyPop: "Bitty Pop",
+  tee: "Tee",
 };
 
 const NON_FUNKO_ROOT_FOLDERS = {
@@ -79,6 +84,19 @@ const getLegacySlug = (product = {}) => {
 const normalizeLabel = (value = "") => String(value).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 const inferFunkoUniverseFolder = (product = {}) => {
+  const category = normalizeLabel(product.category);
+
+  // Funko subcategory always wins over universe/franchise. This keeps
+  // Admin image folders aligned with the storefront category pages.
+  if (category.includes("funko movies")) return FUNKO_UNIVERSE_FOLDERS.movies;
+  if (category.includes("funko television")) return FUNKO_UNIVERSE_FOLDERS.television;
+  if (category.includes("funko animation")) return FUNKO_UNIVERSE_FOLDERS.animation;
+  if (category.includes("funko games")) return FUNKO_UNIVERSE_FOLDERS.games;
+  if (category.includes("funko heroes")) return FUNKO_UNIVERSE_FOLDERS.heroes;
+  if (category.includes("funko pin")) return FUNKO_UNIVERSE_FOLDERS.pin;
+  if (category.includes("funko bitty pop")) return FUNKO_UNIVERSE_FOLDERS.bittyPop;
+  if (category.includes("funko tee")) return FUNKO_UNIVERSE_FOLDERS.tee;
+
   const source = [
     product.category,
     product.brand,

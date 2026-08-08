@@ -1,0 +1,23 @@
+LOOTIFER COLLECTIBLES V16
+
+Belangrijkste wijzigingen:
+- Publieke website is alleen nog donker. De knop The dark side / Become a Jedi is verwijderd.
+- Funko-productkaarten: grote productfoto bovenaan, informatie in een apart donker blok eronder.
+- Witte JPG-achtergronden vallen visueel weg in de volledige studiostage van de kaart.
+- Admin > Producten: knop "Kies fotomap". Kies een map met maximaal 4 JPG/PNG/WebP; upload en koppeling gaan automatisch.
+- Admin > Homepage: beheer de 3 foto's in de grote display en de 6 Highlight-vakken zonder handmatig paden te typen.
+- Homepage display en Highlights hebben een nieuw donker premium ontwerp.
+- Dr. Wily #105 is als actief voorbeeldproduct opgenomen. De bestaande productdatabase uit V15 is behouden; bestaande actieve producten blijven actief.
+
+Starten:
+1. npm install
+2. npm start
+3. Open index.html met Live Server
+4. Gebruik bij voorkeur http://localhost:5500 (zelfde hostnaam als de API-login)
+
+Productfoto's:
+- Vul eerst minimaal naam/slug en categorie in.
+- Klik "Kies fotomap".
+- Bestanden met front/back/left/right in de naam worden automatisch herkend.
+- Bij gewone bestandsnamen worden de eerste 4 afbeeldingen in volgorde gebruikt.
+- Een bestand met bottom/onder/barcode/EAN/UPC in de naam wordt niet als websitefoto gebruikt.

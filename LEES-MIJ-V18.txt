@@ -1,0 +1,17 @@
+LOOTIFER V18
+
+Deze complete versie bouwt verder op V17.
+
+NIEUW
+- Collecties-pagina: grotere, bredere 12 kaarten die de pagina beter vullen.
+- De titel “12 deuren / 12 doors” is groter. Het woord deuren/doors gedraagt zich als een 3D-deur die periodiek openzwaait.
+- FUNKO op Collecties is nu uitklapbaar naar Movies, Television, Animation, Games, Heroes, Pin, Bitty Pop en Tee.
+- De 6 Highlights blijven gekoppeld aan Admin > Homepage.
+- Homepage display is opnieuw ontworpen: compacter, donkerder, speelser, met drie zwevende showpieces op kleine gouden sokkels.
+- Bestaande Admin, database, productfoto-upload, automatische uitsnijding en overige V17-functies zijn behouden.
+
+TESTEN
+1. npm install (alleen nodig na een schone uitpak)
+2. npm start
+3. Open index.html via Live Server.
+4. Gebruik localhost in plaats van 127.0.0.1 voor Admin wanneer je ingelogd wilt blijven.

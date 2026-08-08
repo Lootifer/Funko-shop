@@ -1,0 +1,10 @@
+LOOTIFER COLLECTIBLES V16.2
+
+Aanpassing productdetailpagina:
+- De grote productfoto heeft nu altijd dezelfde vaste displayruimte.
+- Wisselen tussen liggende, vierkante en staande foto's verandert de hoogte van de pagina niet meer.
+- Foto's worden volledig zichtbaar met object-fit: contain en worden niet afgesneden.
+- Thumbnails hebben ook een vaste hoogte en tonen de volledige foto.
+- Mobiele weergave blijft responsief.
+
+Gebaseerd op V16.1; alle V16.1 upload- en Admin-fixes blijven behouden.

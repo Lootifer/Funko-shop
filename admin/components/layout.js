@@ -11,6 +11,7 @@ export const createAdminSidebar = (active = "dashboard") => `
     <nav class="admin-nav">
       <a href="dashboard.html" class="${active === "dashboard" ? "active" : ""}">Dashboard</a>
       <a href="products.html" class="${active === "products" ? "active" : ""}">Producten</a>
+      <a href="homepage.html" class="${active === "homepage" ? "active" : ""}">Homepage</a>
       <a href="orders.html" class="${active === "orders" ? "active" : ""}">Bestellingen</a>
       <a href="settings.html" class="${active === "settings" ? "active" : ""}">Instellingen</a>
     </nav>

@@ -30,21 +30,15 @@ const copy = {
   },
 };
 
-const PREFERENCE_VERSION = "v13-english-light";
+const PREFERENCE_VERSION = "v16-dark-only";
 
 const ensureDefaultPreferences = () => {
   if (typeof window === "undefined") return;
-  if (window.localStorage.getItem("lootifer-preference-version") === PREFERENCE_VERSION) return;
-
-  // V13 starts in English and light mode once. Afterwards the visitor's own choice is remembered.
-  window.localStorage.setItem("lootifer-language", "en");
-  window.localStorage.setItem("lootifer-theme", "light");
+  if (!window.localStorage.getItem("lootifer-language")) {
+    window.localStorage.setItem("lootifer-language", "en");
+  }
+  window.localStorage.setItem("lootifer-theme", "dark");
   window.localStorage.setItem("lootifer-preference-version", PREFERENCE_VERSION);
-};
-
-const getStoredTheme = () => {
-  if (typeof window === "undefined") return "light";
-  return window.localStorage.getItem("lootifer-theme") === "dark" ? "dark" : "light";
 };
 
 const getStoredLanguage = () => {
@@ -52,14 +46,14 @@ const getStoredLanguage = () => {
   return window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en";
 };
 
-const applyTheme = (theme) => {
+const applyDarkTheme = () => {
   if (typeof document === "undefined") return;
-  document.documentElement.dataset.theme = theme;
-  document.body?.setAttribute("data-theme", theme);
+  document.documentElement.dataset.theme = "dark";
+  document.body?.setAttribute("data-theme", "dark");
 };
 
 const updateHeaderLanguage = (language) => {
-  const dictionary = copy[language] || copy.nl;
+  const dictionary = copy[language] || copy.en;
   document.querySelectorAll("[data-header-copy]").forEach((element) => {
     const key = element.dataset.headerCopy;
     if (dictionary[key]) element.textContent = dictionary[key];
@@ -71,39 +65,12 @@ const updateHeaderLanguage = (language) => {
   });
 };
 
-const updateThemeControl = (theme) => {
-  const toggle = document.getElementById("themeModeToggle");
-  if (!toggle) return;
-  const isLight = theme === "light";
-  toggle.classList.toggle("is-light", isLight);
-  toggle.setAttribute("aria-pressed", String(isLight));
-  toggle.setAttribute(
-    "aria-label",
-    isLight ? "Schakel naar The dark side" : "Schakel naar Become a Jedi"
-  );
-};
-
 export const initHeaderPreferences = () => {
   if (typeof document === "undefined") return;
-
   ensureDefaultPreferences();
-  const theme = getStoredTheme();
+  applyDarkTheme();
   const language = getStoredLanguage();
-  applyTheme(theme);
-  updateThemeControl(theme);
   updateHeaderLanguage(language);
-
-  const themeToggle = document.getElementById("themeModeToggle");
-  if (themeToggle && themeToggle.dataset.bound !== "true") {
-    themeToggle.dataset.bound = "true";
-    themeToggle.addEventListener("click", () => {
-      const nextTheme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
-      window.localStorage.setItem("lootifer-theme", nextTheme);
-      applyTheme(nextTheme);
-      updateThemeControl(nextTheme);
-      window.dispatchEvent(new CustomEvent("lootifer:theme-change", { detail: { theme: nextTheme } }));
-    });
-  }
 
   document.querySelectorAll("[data-language-option]").forEach((button) => {
     if (button.dataset.bound === "true") return;
@@ -112,16 +79,14 @@ export const initHeaderPreferences = () => {
       const nextLanguage = button.dataset.languageOption === "en" ? "en" : "nl";
       window.localStorage.setItem("lootifer-language", nextLanguage);
       updateHeaderLanguage(nextLanguage);
-      window.dispatchEvent(
-        new CustomEvent("lootifer:language-change", { detail: { language: nextLanguage } })
-      );
+      window.dispatchEvent(new CustomEvent("lootifer:language-change", { detail: { language: nextLanguage } }));
     });
   });
 };
 
 if (typeof document !== "undefined") {
   ensureDefaultPreferences();
-  applyTheme(getStoredTheme());
+  applyDarkTheme();
 }
 
 export const createHeader = (active = "home") => {
@@ -146,7 +111,7 @@ export const createHeader = (active = "home") => {
       <nav class="nav-links" aria-label="Hoofdnavigatie">
         <a href="index.html" class="${active === "home" ? "active" : ""}" data-header-copy="start">Start</a>
         <a href="shop.html" class="${active === "shop" ? "active" : ""}" data-header-copy="shop">Winkel</a>
-        <a href="index.html#categories" data-header-copy="collections">Collecties</a>
+        <a href="collections.html" class="${active === "collections" ? "active" : ""}" data-header-copy="collections">Collecties</a>
         <a href="about.html" class="${active === "about" ? "active" : ""}" data-header-copy="about">Over ons</a>
         <a href="contact.html" class="${active === "contact" ? "active" : ""}" data-header-copy="contact">Contact</a>
       </nav>
@@ -157,11 +122,6 @@ export const createHeader = (active = "home") => {
           <button type="button" data-language-option="en" aria-pressed="false">EN</button>
         </div>
 
-        <button class="force-theme-switch" id="themeModeToggle" type="button" aria-pressed="false">
-          <span class="theme-side theme-side-dark">The dark side</span>
-          <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-knob"></span></span>
-          <span class="theme-side theme-side-light">Become a Jedi</span>
-        </button>
 
         <a class="account-link" href="account.html" aria-label="Account inloggen">
           ${icon("user")}

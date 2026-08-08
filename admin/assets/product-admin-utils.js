@@ -29,7 +29,19 @@ export const buildAutoSlug = ({ name = "", number = "" } = {}) => {
   return slugify(`${name} ${String(number).replace(/#/g, " ")}`);
 };
 
-const normalizeUniverseFolder = (universe = "") => {
+const normalizeUniverseFolder = (universe = "", category = "") => {
+  const categoryValue = String(category || "").trim().toLowerCase();
+
+  // The selected Funko subcategory determines the image folder.
+  if (categoryValue.includes("funko movies")) return "Movies";
+  if (categoryValue.includes("funko television")) return "Television";
+  if (categoryValue.includes("funko animation")) return "Animation";
+  if (categoryValue.includes("funko games")) return "Games";
+  if (categoryValue.includes("funko heroes")) return "Heroes";
+  if (categoryValue.includes("funko pin")) return "Pin";
+  if (categoryValue.includes("funko bitty pop")) return "Bitty Pop";
+  if (categoryValue.includes("funko tee")) return "Tee";
+
   const value = String(universe || "").trim().toLowerCase();
   if (value.includes("marvel")) return "Marvel";
   if (value.includes("dc") || value.includes("batman")) return "DC";
@@ -51,17 +63,22 @@ const getCategoryRoot = ({ category = "", brand = "" } = {}) => {
   return "funko";
 };
 
+const IMAGE_BASE_NAMES = ["front", "back", "left", "right", "box"];
+const IMAGE_EXTENSIONS = ["webp", "jpg", "jpeg", "png"];
+
 export const getCanonicalImageInfo = ({ slug = "", category = "", brand = "", universe = "" } = {}) => {
   const safeSlug = slugify(slug);
   const root = getCategoryRoot({ category, brand });
   const folder = root === "funko"
-    ? `Assets/Images/Products/${root}/${normalizeUniverseFolder(universe)}/${safeSlug}`
+    ? `Assets/Images/Products/${root}/${normalizeUniverseFolder(universe, category)}/${safeSlug}`
     : `Assets/Images/Products/${root}/${safeSlug}`;
 
-  const files = ["front.webp", "back.webp", "left.webp", "right.webp", "box.webp"];
+  const isFunko = root === "funko";
+  const baseNames = isFunko ? IMAGE_BASE_NAMES.slice(0, 4) : IMAGE_BASE_NAMES;
   return {
     folder,
-    paths: files.map((fileName) => `${folder}/${fileName}`),
+    baseNames,
+    paths: baseNames.map((baseName) => `${folder}/${baseName}.webp / .jpg / .jpeg / .png`),
   };
 };
 
@@ -108,12 +125,49 @@ const fetchImage = async (url) => {
   }
 };
 
-export const getMappedImagesForSlug = async ({ slug, category, brand } = {}) => {
+const toAdminFetchUrl = (path = "") => {
+  const clean = String(path || "").trim();
+  if (!clean) return clean;
+  if (/^https?:\/\//i.test(clean)) return clean;
+  if (clean.startsWith("../")) return clean;
+  if (clean.startsWith("Assets/")) return `../${clean}`;
+  return clean;
+};
+
+const buildImageCandidates = (folder, baseName) => {
+  const normal = IMAGE_EXTENSIONS.map((extension) => `${folder}/${baseName}.${extension}`);
+  // Also tolerate photos that were renamed in Explorer without converting the original JPG/PNG,
+  // for example front.webp.JPG. These are accepted for local migration, while front.jpg is preferred.
+  const legacyDoubleExtensions = [
+    `${folder}/${baseName}.webp.jpg`,
+    `${folder}/${baseName}.webp.jpeg`,
+    `${folder}/${baseName}.webp.png`,
+    `${folder}/${baseName}.webp.JPG`,
+    `${folder}/${baseName}.webp.JPEG`,
+    `${folder}/${baseName}.webp.PNG`,
+  ];
+  return [...normal, ...legacyDoubleExtensions];
+};
+
+export const getMappedImagesForSlug = async ({ slug, category, brand, universe = "" } = {}) => {
   if (!slug) return [];
 
-  const mapped = getMappedImageSet({ slug, category, brand }).images;
-  const checks = await Promise.all(mapped.map((imagePath) => fetchImage(imagePath)));
-  return limitImagesForProduct({ category, brand }, mapped.filter((_, index) => checks[index]));
+  const canonical = getCanonicalImageInfo({ slug, category, brand, universe });
+  const linked = [];
+
+  for (const baseName of canonical.baseNames) {
+    const candidates = buildImageCandidates(canonical.folder, baseName);
+    let found = "";
+    for (const imagePath of candidates) {
+      if (await fetchImage(toAdminFetchUrl(imagePath))) {
+        found = imagePath;
+        break;
+      }
+    }
+    if (found) linked.push(found);
+  }
+
+  return limitImagesForProduct({ category, brand }, linked);
 };
 
 export const buildDraftFromForm = (formData) => {

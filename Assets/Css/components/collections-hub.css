@@ -1,0 +1,430 @@
+/* LOOTIFER V18 — larger 12-door collections hub + expandable Funko vault */
+.collections-page {
+  min-height: 100vh;
+  background: #07090b;
+  overflow-x: hidden;
+}
+
+.collections-atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 10% 12%, rgba(224,181,40,.13), transparent 27%),
+    radial-gradient(circle at 88% 76%, rgba(71,139,205,.10), transparent 31%),
+    linear-gradient(145deg,#090b0e 0%,#050607 72%);
+}
+.collections-atmosphere i {
+  position:absolute;
+  width:320px;
+  height:320px;
+  border:1px solid rgba(224,181,40,.08);
+  border-radius:50%;
+  animation:collections-orbit 14s linear infinite;
+}
+.collections-atmosphere i:nth-child(1){right:2%;top:8%;}
+.collections-atmosphere i:nth-child(2){left:-4%;bottom:-3%;width:220px;height:220px;animation-direction:reverse;animation-duration:18s;}
+.collections-atmosphere i:nth-child(3){left:48%;top:38%;width:110px;height:110px;animation-duration:10s;}
+@keyframes collections-orbit { 50% { transform:translateY(-13px) rotate(180deg); opacity:.52; } 100% { transform:rotate(360deg); } }
+
+.collections-hub-main {
+  width: min(1780px, calc(100% - 34px));
+  margin: 0 auto;
+  padding: clamp(18px,2vw,32px) 0 44px;
+}
+
+.collections-hub-intro {
+  display:grid;
+  grid-template-columns:minmax(0,1.55fr) minmax(300px,.45fr);
+  align-items:end;
+  gap:clamp(22px,4vw,60px);
+  margin: 4px 0 20px;
+}
+.collections-kicker {
+  margin:0 0 8px;
+  color:#e0b528;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.26em;
+}
+.collections-hero-title {
+  margin:0;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  column-gap:.18em;
+  row-gap:.02em;
+  font-size:clamp(3rem,5.7vw,6.9rem);
+  line-height:.88;
+  letter-spacing:-.055em;
+  color:#f6f2e9;
+}
+.collections-title-count { font-size:1.08em; font-weight:800; text-shadow:0 16px 44px rgba(0,0,0,.5); }
+.collections-title-rest {
+  flex-basis:100%;
+  margin-top:.08em;
+  font-size:.49em;
+  line-height:.96;
+  letter-spacing:-.045em;
+  color:#f2eee5;
+}
+.collections-door-frame {
+  position:relative;
+  display:inline-grid;
+  perspective:1000px;
+  padding:.045em .08em .055em;
+  border:2px solid rgba(224,181,40,.62);
+  border-radius:.08em;
+  background:rgba(224,181,40,.035);
+  box-shadow:0 0 0 1px rgba(255,255,255,.035),0 18px 45px rgba(0,0,0,.35),inset 0 0 22px rgba(224,181,40,.05);
+  vertical-align:middle;
+}
+.collections-door-frame::before {
+  content:"";
+  position:absolute;
+  left:-.045em;
+  top:-.03em;
+  bottom:-.03em;
+  width:.035em;
+  border-radius:999px;
+  background:linear-gradient(#f5d766,#8f6714,#f5d766);
+  box-shadow:0 0 12px rgba(224,181,40,.35);
+}
+.collections-door-word {
+  position:relative;
+  display:inline-block;
+  transform-origin:left center;
+  transform-style:preserve-3d;
+  padding:.01em .10em .055em .07em;
+  border-radius:.035em;
+  background:linear-gradient(110deg,#231b0d 0%,#15110b 42%,#080a0c 100%);
+  box-shadow:inset -12px 0 25px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.08);
+  color:#f7f2e7;
+  animation:lootifer-door-open 7s cubic-bezier(.65,.05,.25,1) infinite;
+  backface-visibility:hidden;
+}
+.collections-door-word::after {
+  content:"";
+  position:absolute;
+  right:.07em;
+  top:53%;
+  width:.055em;
+  height:.055em;
+  border-radius:50%;
+  background:#e2b83f;
+  box-shadow:0 0 10px rgba(226,184,63,.8);
+}
+@keyframes lootifer-door-open {
+  0%,47%,100% { transform:rotateY(0deg); }
+  60%,74% { transform:rotateY(-63deg); }
+  82% { transform:rotateY(-7deg); }
+}
+.collections-hub-intro > p {
+  max-width:470px;
+  margin:0 0 8px auto;
+  color:rgba(255,255,255,.61);
+  font-size:.92rem;
+  line-height:1.6;
+  text-align:right;
+}
+
+.collections-strip { margin-top:16px; }
+.collections-strip-heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 2px 9px;
+}
+.collections-strip-heading h2 {
+  margin:0;
+  font-size:.82rem;
+  text-transform:uppercase;
+  letter-spacing:.17em;
+  color:rgba(255,255,255,.9);
+}
+.collections-strip-heading > span,
+.collections-strip-heading a { color:#e1b62d; font-size:.72rem; font-weight:750; }
+
+.collections-world-grid,
+.collections-pick-grid {
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:clamp(10px,1vw,17px);
+}
+
+.collection-world-tile {
+  --world-image:none;
+  --world-accent:#e0b528;
+  position:relative;
+  isolation:isolate;
+  aspect-ratio:1.38 / 1;
+  min-height:0;
+  overflow:hidden;
+  display:flex;
+  align-items:flex-end;
+  width:100%;
+  padding:clamp(13px,1.15vw,19px);
+  border:1px solid rgba(255,255,255,.105);
+  border-radius:20px;
+  color:white;
+  background:#0c0f13;
+  box-shadow:0 16px 34px rgba(0,0,0,.31);
+  transition:transform .27s ease,border-color .27s ease,box-shadow .27s ease;
+  text-align:left;
+  font:inherit;
+  cursor:pointer;
+}
+.collection-world-tile::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background-image:var(--world-image);
+  background-size:cover;
+  background-position:center;
+  filter:saturate(.92) brightness(.67);
+  transform:scale(1.025);
+  transition:transform .4s ease,filter .32s ease;
+}
+.collection-world-tile::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:
+    linear-gradient(180deg,rgba(4,6,8,.03),rgba(4,6,8,.18) 36%,rgba(4,6,8,.96) 94%),
+    radial-gradient(circle at 78% 10%,color-mix(in srgb,var(--world-accent) 20%,transparent),transparent 38%);
+}
+.collection-world-tile:hover,
+.collection-world-tile[aria-expanded="true"] {
+  transform:translateY(-7px);
+  border-color:color-mix(in srgb,var(--world-accent) 58%,transparent);
+  box-shadow:0 25px 44px rgba(0,0,0,.43),0 0 34px color-mix(in srgb,var(--world-accent) 10%,transparent);
+}
+.collection-world-tile:hover::before,
+.collection-world-tile[aria-expanded="true"]::before { transform:scale(1.085); filter:saturate(1.06) brightness(.82); }
+.world-number { position:absolute; top:11px; right:13px; color:rgba(255,255,255,.24); font-size:1.35rem; font-weight:800; }
+.world-copy { display:flex; flex-direction:column; align-items:flex-start; min-width:0; }
+.world-copy small { color:color-mix(in srgb,var(--world-accent) 82%,white); font-size:.54rem; font-weight:800; letter-spacing:.15em; text-transform:uppercase; white-space:nowrap; }
+.world-copy strong { margin-top:3px; font-size:clamp(1.15rem,1.65vw,1.75rem); line-height:.98; letter-spacing:-.035em; }
+.world-copy em { margin-top:7px; color:rgba(255,255,255,.66); font-size:.68rem; font-style:normal; }
+.world-copy em b { color:white; }
+.collection-world-tile > i { position:absolute; right:14px; bottom:14px; color:var(--world-accent); font-style:normal; font-size:1.05rem; transition:transform .25s ease; }
+.collection-world-tile:hover > i { transform:translateX(4px); }
+.collection-world-tile[aria-expanded="true"] .world-toggle-arrow { transform:rotate(180deg); }
+.world-funko{--world-image:url("../../Images/Home/category-funko.webp");--world-accent:#e2b83f;}
+.world-lego{--world-image:url("../../Images/Home/category-lego-v8.webp");--world-accent:#f0b82d;}
+.world-pokemon{--world-image:url("../../Images/Home/category-creature-world.svg");--world-accent:#70b7ff;}
+.world-starwars{--world-image:url("../../Images/Home/category-star-space.svg");--world-accent:#70b7ff;}
+.world-harry{--world-image:url("../../Images/Home/category-magic-wand.svg");--world-accent:#d7aaff;}
+.world-sale{--world-image:url("../../Images/Home/category-sale.svg");--world-accent:#ff914d;}
+
+/* Expandable Funko vault on Collections. */
+.collections-funko-drawer {
+  max-height:0;
+  opacity:0;
+  overflow:hidden;
+  margin-top:0;
+  transform:translateY(-8px) scale(.992);
+  transition:max-height .45s cubic-bezier(.2,.8,.2,1),opacity .28s ease,transform .35s ease,margin .35s ease;
+}
+.collections-funko-drawer.is-open {
+  max-height:310px;
+  opacity:1;
+  margin-top:14px;
+  transform:translateY(0) scale(1);
+}
+.collections-funko-drawer-inner {
+  position:relative;
+  overflow:hidden;
+  padding:16px;
+  border:1px solid rgba(226,184,63,.25);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 7% 20%,rgba(226,184,63,.13),transparent 27%),
+    linear-gradient(135deg,rgba(22,23,24,.98),rgba(7,9,12,.98));
+  box-shadow:0 20px 44px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.045);
+}
+.collections-funko-drawer-inner::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.035) 47%,transparent 72%);
+  transform:translateX(-110%);
+  animation:funko-vault-sheen 7s ease-in-out infinite;
+}
+@keyframes funko-vault-sheen { 45%,100%{transform:translateX(115%)} }
+.collections-funko-drawer-head { position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:12px; }
+.collections-funko-drawer-head small { display:block; color:#e2b83f; font-size:.56rem; font-weight:800; letter-spacing:.18em; }
+.collections-funko-drawer-head strong { display:block; margin-top:2px; color:white; font-size:1.25rem; }
+.collections-funko-drawer-head p { margin:3px 0 0; color:rgba(255,255,255,.55); font-size:.72rem; }
+.collections-funko-drawer-actions { display:flex; align-items:center; gap:8px; flex:none; }
+.collections-funko-all { min-height:38px; display:inline-flex; align-items:center; gap:8px; padding:0 13px; border:1px solid rgba(226,184,63,.28); border-radius:999px; color:#f0c43e; font-size:.68rem; font-weight:750; }
+#collectionsFunkoClose { width:38px; height:38px; border:1px solid rgba(255,255,255,.12); border-radius:50%; color:white; background:#0d1014; font:inherit; font-size:1.25rem; cursor:pointer; }
+.collections-funko-subgrid { position:relative; z-index:1; display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:8px; }
+.collections-funko-subgrid a { min-width:0; min-height:72px; display:grid; grid-template-columns:auto 1fr; grid-template-rows:auto auto; align-content:center; column-gap:9px; padding:10px 11px; border:1px solid rgba(255,255,255,.09); border-radius:15px; background:rgba(5,7,9,.72); color:white; transition:transform .22s ease,border-color .22s ease,background .22s ease; }
+.collections-funko-subgrid a:hover { transform:translateY(-4px); border-color:rgba(226,184,63,.42); background:rgba(25,21,12,.82); }
+.collections-funko-subgrid a > span { grid-row:1/3; align-self:center; display:grid; place-items:center; width:28px; height:28px; border:1px solid rgba(226,184,63,.32); border-radius:50%; color:#e2b83f; font-size:.55rem; font-weight:800; }
+.collections-funko-subgrid strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.76rem; }
+.collections-funko-subgrid small { color:rgba(255,255,255,.5); font-size:.58rem; }
+.collections-funko-subgrid small b { color:#e2b83f; }
+
+.collections-pick-card {
+  --pick-accent:#e0b528;
+  position:relative;
+  aspect-ratio:1.38 / 1;
+  min-height:0;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.105);
+  border-radius:20px;
+  color:white;
+  background:linear-gradient(155deg,#15181d,#090b0e);
+  box-shadow:0 16px 34px rgba(0,0,0,.31);
+  transition:transform .27s ease,border-color .27s ease,box-shadow .27s ease;
+}
+.collections-pick-card:hover { transform:translateY(-7px) rotate(.12deg); border-color:color-mix(in srgb,var(--pick-accent) 55%,transparent); box-shadow:0 25px 44px rgba(0,0,0,.43); }
+.collections-pick-card .pick-media { position:absolute; inset:0; display:grid; place-items:center; padding:11px 12px 46px; }
+.collections-pick-card .pick-media::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 45%,rgba(6,7,9,.16) 61%,rgba(6,7,9,.97) 100%),radial-gradient(circle at 50% 32%,color-mix(in srgb,var(--pick-accent) 12%,transparent),transparent 49%); }
+.collections-pick-card img { position:relative; z-index:1; width:100%; height:100%; max-height:150px; object-fit:contain; filter:drop-shadow(0 15px 15px rgba(0,0,0,.42)); transition:transform .32s ease; }
+.collections-pick-card:hover img { transform:translateY(-5px) scale(1.045); }
+.pick-index { position:absolute; z-index:3; top:11px; right:13px; color:rgba(255,255,255,.2); font-weight:800; font-size:1rem; }
+.pick-badge { position:absolute; z-index:3; top:11px; left:11px; max-width:68%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:4px 8px; border-radius:8px; color:#15120a; background:#e0b528; font-size:.5rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+.pick-copy { position:absolute; z-index:4; left:13px; right:13px; bottom:12px; display:flex; align-items:flex-end; justify-content:space-between; gap:8px; }
+.pick-copy div { min-width:0; }
+.pick-copy small { display:block; color:color-mix(in srgb,var(--pick-accent) 76%,white); font-size:.53rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pick-copy strong { display:block; max-width:100%; margin-top:2px; font-size:.88rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pick-copy b { flex:none; color:#e6ba32; font-size:.75rem; }
+.collections-pick-card.is-empty .pick-media { padding-bottom:47px; }
+.pick-placeholder { position:relative; z-index:1; width:62px; height:82px; border:1px solid rgba(224,181,40,.24); border-radius:14px; box-shadow:inset 0 0 30px rgba(224,181,40,.05); }
+.pick-placeholder::before { content:""; position:absolute; width:25px; height:25px; border-radius:50%; top:18px; left:18px; background:rgba(224,181,40,.15); box-shadow:0 31px 0 -5px rgba(224,181,40,.11); }
+
+@media (max-width:1450px) {
+  .collections-hero-title{font-size:clamp(2.8rem,5.2vw,5.3rem)}
+  .collection-world-tile,.collections-pick-card{aspect-ratio:1.28/1}
+  .collections-funko-subgrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .collections-funko-drawer.is-open{max-height:390px}
+}
+@media (max-width:1180px) {
+  .collections-world-grid,.collections-pick-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .collection-world-tile,.collections-pick-card{aspect-ratio:1.65/1}
+}
+@media (max-width:760px) {
+  .collections-hub-main{width:min(100% - 22px,1780px)}
+  .collections-hub-intro{grid-template-columns:1fr}
+  .collections-hub-intro>p{text-align:left;margin:0}
+  .collections-world-grid,.collections-pick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .collection-world-tile,.collections-pick-card{aspect-ratio:1.15/1}
+  .world-copy small{white-space:normal}
+  .collections-funko-drawer-head{align-items:flex-start}
+  .collections-funko-drawer-head p{display:none}
+  .collections-funko-subgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .collections-funko-drawer.is-open{max-height:650px}
+}
+@media (max-width:460px) {
+  .collections-world-grid,.collections-pick-grid{grid-template-columns:1fr}
+  .collection-world-tile,.collections-pick-card{aspect-ratio:1.7/1}
+  .collections-door-frame{border-width:1px}
+  .collections-funko-drawer-actions .collections-funko-all{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .collections-atmosphere i,.collections-door-word,.collections-funko-drawer-inner::after{animation:none}
+  .collection-world-tile,.collections-pick-card,.collection-world-tile::before,.collections-pick-card img,.collections-funko-subgrid a{transition:none}
+}
+
+
+/* LOOTIFER V19 — wider collection cards, static title, full-width Funko decoration */
+.collections-hub-main {
+  width:min(1880px, calc(100% - 18px));
+  padding-bottom:0;
+}
+
+/* The word 'doors/deuren' is now clean, static typography — no door frame/animation. */
+.collections-hero-title {
+  font-size:clamp(3.4rem,6.35vw,7.7rem);
+  column-gap:.13em;
+}
+.collections-door-frame { display:contents; }
+.collections-door-word {
+  position:relative;
+  display:inline-block;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+  color:#f6f2e9;
+  transform:none !important;
+  animation:none !important;
+  perspective:none;
+  text-shadow:0 16px 44px rgba(0,0,0,.5);
+}
+.collections-door-word::after,
+.collections-door-frame::before { display:none !important; content:none !important; }
+
+/* Make both rows feel wider and more substantial while retaining six-at-once overview. */
+.collections-world-grid,
+.collections-pick-grid {
+  gap:clamp(8px,.72vw,13px);
+}
+.collection-world-tile,
+.collections-pick-card {
+  aspect-ratio:auto;
+  min-height:clamp(176px,12vw,224px);
+  border-radius:18px;
+}
+.collection-world-tile {
+  padding:clamp(15px,1.2vw,22px);
+}
+.world-copy strong {
+  font-size:clamp(1.32rem,1.72vw,1.95rem);
+}
+.collections-pick-card .pick-media {
+  padding:14px 13px 56px;
+}
+.collections-pick-card img {
+  max-height:178px;
+}
+.pick-copy strong { font-size:.96rem; }
+
+/* Full-width decorative Funko strip at the bottom of the Collections page. */
+.collections-funko-decoration {
+  position:relative;
+  left:50%;
+  width:100vw;
+  height:clamp(150px,15vw,235px);
+  margin-top:clamp(30px,4vw,58px);
+  transform:translateX(-50%);
+  overflow:hidden;
+  border-top:1px solid rgba(226,184,63,.2);
+  background:
+    linear-gradient(180deg,#07090b 0%,rgba(7,9,11,.12) 28%,rgba(7,9,11,.16) 62%,#07090b 100%),
+    linear-gradient(90deg,rgba(7,9,11,.92) 0%,rgba(7,9,11,.06) 18%,rgba(7,9,11,.06) 82%,rgba(7,9,11,.92) 100%),
+    url("../../Images/Home/category-funko.webp") center 44% / cover no-repeat;
+  filter:saturate(.92);
+  box-shadow:inset 0 28px 70px #07090b,inset 0 -28px 70px #07090b;
+}
+.collections-funko-decoration::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,rgba(226,184,63,.065) 47%,transparent 72%);
+  pointer-events:none;
+}
+
+@media (max-width:1450px) {
+  .collection-world-tile,.collections-pick-card { min-height:170px; }
+}
+@media (max-width:1180px) {
+  .collection-world-tile,.collections-pick-card { min-height:190px; }
+}
+@media (max-width:760px) {
+  .collections-hub-main { width:min(100% - 16px,1880px); }
+  .collection-world-tile,.collections-pick-card { min-height:170px; }
+  .collections-funko-decoration { height:150px; }
+}
+@media (max-width:460px) {
+  .collection-world-tile,.collections-pick-card { min-height:168px; }
+}

@@ -15,7 +15,6 @@ import {
   buildAutoSlug,
   buildDraftFromForm,
   buildProductForSave,
-  getMappedImagesForSlug,
   parseImagesInput,
   validateDraft,
   getProductCompleteness,
@@ -75,7 +74,6 @@ const root = {
   submit: document.getElementById("saveProductButton"),
   cancel: document.getElementById("cancelEditButton"),
   resetData: document.getElementById("resetCatalogButton"),
-  autoLink: document.getElementById("autoLinkImagesButton"),
   imageSource: document.getElementById("imageSourceHint"),
   slugReset: document.getElementById("resetSlugButton"),
   canonicalHint: document.getElementById("canonicalImageHint"),
@@ -131,6 +129,46 @@ const state = {
   slugTouched: false,
   autoLinkedImages: [],
   importPreviewProducts: null,
+};
+
+const PRODUCT_DRAFT_KEY = "lootifer-admin-product-draft-v16";
+
+const clearProductDraft = () => {
+  try { window.localStorage.removeItem(PRODUCT_DRAFT_KEY); } catch { /* storage unavailable */ }
+};
+
+const persistProductDraft = () => {
+  if (state.editingId !== null) return;
+  try {
+    window.localStorage.setItem(PRODUCT_DRAFT_KEY, JSON.stringify(readFormData()));
+  } catch {
+    // Never interrupt product entry if storage is unavailable.
+  }
+};
+
+const restoreProductDraft = () => {
+  if (state.editingId !== null) return false;
+  try {
+    const raw = window.localStorage.getItem(PRODUCT_DRAFT_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    if (!saved || typeof saved !== "object") return false;
+
+    Object.entries(fields).forEach(([key, element]) => {
+      if (!element || !(key in saved)) return;
+      if (element.type === "checkbox") element.checked = Boolean(saved[key]);
+      else element.value = saved[key] ?? "";
+    });
+
+    state.slugTouched = Boolean(String(fields.slug?.value || "").trim());
+    state.autoLinkedImages = parseImagesInput(fields.images?.value || "");
+    updateCanonicalHint();
+    renderPreview();
+    setStatus("Je niet-opgeslagen productinvoer is automatisch hersteld.", "accent");
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 const readFormData = () => {
@@ -434,7 +472,7 @@ const resetForm = () => {
   setFormMode(false);
   setErrors([]);
   setStatus("Klaar om een product toe te voegen.", "muted");
-  if (root.imageSource) root.imageSource.textContent = "Afbeeldingen: handmatig invoeren of automatisch koppelen via slug.";
+  if (root.imageSource) root.imageSource.textContent = "Gebruik ‘Kies fotomap’ of ‘Kies 1-4 foto’s’. De foto’s worden automatisch gekoppeld.";
 
   updateAutoSlug();
   updateCanonicalHint();
@@ -454,32 +492,6 @@ const updateAutoSlug = () => {
     name: fields.name.value,
     number: fields.number.value,
   });
-};
-
-const linkImagesBySlug = async () => {
-  const slug = String(fields.slug.value || "").trim();
-  if (!slug) {
-    state.autoLinkedImages = [];
-    if (root.imageSource) root.imageSource.textContent = "Afbeeldingen: vul eerst naam/nummer in voor een slug.";
-    renderPreview();
-    return;
-  }
-
-  const linked = await getMappedImagesForSlug({
-    slug,
-    category: fields.category.value,
-    brand: fields.brand.value,
-  });
-
-  state.autoLinkedImages = linked;
-  if (linked.length) {
-    fields.images.value = linked.join("\n");
-    if (root.imageSource) root.imageSource.textContent = `Afbeeldingen automatisch gekoppeld (${linked.length} gevonden).`;
-  } else if (root.imageSource) {
-    root.imageSource.textContent = "Geen afbeeldingen gevonden voor deze slugmap. Handmatige paden of placeholder worden gebruikt.";
-  }
-
-  renderPreview();
 };
 
 const duplicateProduct = async (product) => {
@@ -700,10 +712,6 @@ const handleSaveProduct = async (event) => {
     return;
   }
 
-  if (!state.autoLinkedImages.length && !parseImagesInput(formData.images).length) {
-    await linkImagesBySlug();
-  }
-
   const existingProduct = editingId === null
     ? null
     : state.products.find((item) => Number(item.id) === Number(editingId)) || null;
@@ -723,6 +731,7 @@ const handleSaveProduct = async (event) => {
 
     await refreshProducts();
     setErrors([]);
+    clearProductDraft();
     setStatus(editingId === null ? `${savedProduct.name} toegevoegd.` : `${savedProduct.name} bijgewerkt.`, "accent");
     resetForm();
   } catch (error) {
@@ -733,6 +742,8 @@ const handleSaveProduct = async (event) => {
 
 const bindFormInteractions = () => {
   root.form?.addEventListener("submit", handleSaveProduct);
+  root.form?.addEventListener("input", persistProductDraft);
+  root.form?.addEventListener("change", persistProductDraft);
 
   const rerenderInputs = [
     fields.id,
@@ -777,32 +788,31 @@ const bindFormInteractions = () => {
 
       updateCanonicalHint();
       renderPreview();
+      persistProductDraft();
     });
   });
 
   fields.slug?.addEventListener("blur", () => {
-    linkImagesBySlug();
+    updateCanonicalHint();
+    persistProductDraft();
   });
 
   [fields.category, fields.brand].forEach((input) => {
     input?.addEventListener("change", () => {
       updateCanonicalHint();
-      linkImagesBySlug();
+      persistProductDraft();
     });
-  });
-
-  root.autoLink?.addEventListener("click", () => {
-    linkImagesBySlug();
   });
 
   root.slugReset?.addEventListener("click", () => {
     state.slugTouched = false;
     updateAutoSlug();
     updateCanonicalHint();
-    linkImagesBySlug();
+    persistProductDraft();
   });
 
   root.cancel?.addEventListener("click", () => {
+    clearProductDraft();
     resetForm();
   });
 
@@ -812,6 +822,7 @@ const bindFormInteractions = () => {
 
     try {
       await refreshProducts();
+      clearProductDraft();
       resetForm();
       resetImportPreview();
       setStatus("Producten opnieuw geladen vanuit de database.", "accent");
@@ -884,8 +895,9 @@ const init = async () => {
   try {
     const loaded = await refreshProducts();
     resetForm();
+    const restoredDraft = restoreProductDraft();
 
-    setStatus(
+    if (!restoredDraft) setStatus(
       loaded.source === "api"
         ? "Producten geladen vanuit database."
         : "Producten geladen vanuit Data/products.json.",
@@ -902,6 +914,7 @@ const init = async () => {
       renderTable();
       renderCompletenessStats();
       resetForm();
+      restoreProductDraft();
     } catch {
       // no-op
     }

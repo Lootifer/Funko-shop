@@ -144,9 +144,26 @@
                   Beschrijving
                   <textarea id="fieldDescription" rows="3" placeholder="Korte productbeschrijving voor de winkel."></textarea>
                 </label>
+                <div class="admin-grid-wide admin-media-uploader" id="productMediaUploader">
+                  <div class="admin-media-uploader-copy">
+                    <div>
+                      <p class="admin-label">Foto's snel toevoegen</p>
+                      <h4>Kies één fotomap en klaar.</h4>
+                      <p class="admin-detail">Selecteer de map met maximaal 4 JPG/PNG/WebP foto's. De foto's worden één voor één geüpload; je ingevulde productgegevens blijven staan, ook als een upload mislukt of je de pagina vernieuwt.</p>
+                    </div>
+                    <div class="admin-media-uploader-actions">
+                      <button class="button primary" type="button" id="chooseProductPhotoFolderButton">Kies fotomap</button>
+                      <button class="button secondary" type="button" id="chooseProductPhotosButton">Kies 1-4 foto's</button>
+                    </div>
+                  </div>
+                  <input id="productPhotoFolderInput" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" webkitdirectory directory multiple hidden />
+                  <input id="productPhotoFilesInput" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple hidden />
+                  <div class="admin-upload-preview" id="productPhotoPreview"></div>
+                  <p class="admin-detail" id="productPhotoUploadStatus">Nog geen foto's gekozen. Vul bij voorkeur eerst Naam, Nummer en Categorie in.</p>
+                </div>
                 <label class="admin-grid-wide">
-                  Afbeeldingen (een per regel · Funko maximaal 4)
-                  <textarea id="fieldImages" rows="4" placeholder="Assets/Images/Products/funko/your-slug/front.webp"></textarea>
+                  Afbeeldingen (automatisch ingevuld · Funko maximaal 4)
+                  <textarea id="fieldImages" rows="4" placeholder="Na het kiezen van een fotomap worden de paden hier automatisch ingevuld."></textarea>
                 </label>
               </div>
 
@@ -161,11 +178,10 @@
               <div class="admin-canonical-preview" id="canonicalImageHint"></div>
 
               <div class="admin-form-actions">
-                <button class="button secondary" type="button" id="autoLinkImagesButton">Afbeeldingen koppelen</button>
                 <button class="button secondary" type="button" id="cancelEditButton" style="display: none;">Bewerken annuleren</button>
                 <button class="button primary" type="submit" id="saveProductButton">Product opslaan</button>
               </div>
-              <p class="admin-detail" id="imageSourceHint">Afbeeldingen: handmatig invoeren of automatisch koppelen via slug.</p>
+              <p class="admin-detail" id="imageSourceHint">Gebruik “Kies fotomap” of “Kies 1-4 foto’s”. De foto’s worden automatisch verwerkt, opgeslagen en gekoppeld.</p>
             </form>
           </div>
         </section>
@@ -232,5 +248,6 @@
     </div>
 
     <script type="module" src="assets/products-admin.js"></script>
+    <script type="module" src="assets/product-media-uploader.js"></script>
   </body>
 </html>

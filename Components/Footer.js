@@ -96,7 +96,7 @@ export const createFooter = () => {
       <div class="footer-column">
         <h3 data-footer-copy="lootifer">${copy.lootifer}</h3>
         <a href="about.html" data-footer-copy="about">${copy.about}</a>
-        <a href="index.html#categories" data-footer-copy="collections">${copy.collections}</a>
+        <a href="collections.html" data-footer-copy="collections">${copy.collections}</a>
         <a href="shop.html" data-footer-copy="once">${copy.once}</a>
       </div>
 

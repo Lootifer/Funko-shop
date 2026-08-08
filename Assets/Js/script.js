@@ -106,6 +106,49 @@ const updateCategoryCounts = (products = []) => {
 
 const highlightGrid = document.getElementById("highlightGrid");
 let runtimeProducts = [];
+let homepageSettings = {
+  display: Array.from({ length: 3 }, () => ({ image: "" })),
+  highlights: Array.from({ length: 6 }, () => ({ productId: null, image: "" })),
+};
+
+const HOMEPAGE_SETTINGS_URL = "http://localhost:3001/api/site/homepage";
+
+const loadHomepageSettings = async () => {
+  try {
+    const response = await fetch(HOMEPAGE_SETTINGS_URL, { credentials: "include", cache: "no-store" });
+    if (!response.ok) throw new Error(`Homepage settings ${response.status}`);
+    const data = await response.json();
+    homepageSettings = {
+      display: Array.from({ length: 3 }, (_, index) => ({ image: String(data?.display?.[index]?.image || "") })),
+      highlights: Array.from({ length: 6 }, (_, index) => ({
+        productId: Number(data?.highlights?.[index]?.productId) || null,
+        image: String(data?.highlights?.[index]?.image || ""),
+      })),
+    };
+  } catch {
+    // The homepage remains usable when the local API is offline.
+  }
+  return homepageSettings;
+};
+
+const applyHomepageDisplay = () => {
+  document.querySelectorAll("[data-home-display-slot]").forEach((image, index) => {
+    const entry = homepageSettings.display?.[index] || {};
+    const wrapper = image.closest(".display-placeholder");
+    const fallback = wrapper?.querySelector("span");
+    if (entry.image) {
+      image.src = entry.image;
+      image.hidden = false;
+      wrapper?.classList.add("has-image");
+      if (fallback) fallback.hidden = true;
+    } else {
+      image.removeAttribute("src");
+      image.hidden = true;
+      wrapper?.classList.remove("has-image");
+      if (fallback) fallback.hidden = false;
+    }
+  });
+};
 
 const getHighlightAccent = (product = {}, index = 0) => {
   if (getValidDiscountPrice(product) !== null) return "#ff9456";
@@ -116,7 +159,7 @@ const getHighlightAccent = (product = {}, index = 0) => {
   return ["#e2b83f", "#8cc8ff", "#d8a5ff", "#72d6b2", "#ffad7d", "#e2b83f"][index % 6];
 };
 
-const getHighlightProducts = () => {
+const getAutoHighlightProducts = () => {
   const activeProducts = runtimeProducts.filter((product) => {
     const status = normalize(product.status || "active");
     return !product.archived && status !== "archived";
@@ -133,6 +176,20 @@ const getHighlightProducts = () => {
     .slice(0, 6);
 };
 
+const getHighlightSlots = () => {
+  const configured = Array.isArray(homepageSettings.highlights) ? homepageSettings.highlights : [];
+  const hasManualConfiguration = configured.some((entry) => Number(entry?.productId) || entry?.image);
+  if (!hasManualConfiguration) {
+    return getAutoHighlightProducts().map((product) => ({ product, image: "" }));
+  }
+
+  return Array.from({ length: 6 }, (_, index) => {
+    const entry = configured[index] || {};
+    const product = runtimeProducts.find((item) => Number(item.id) === Number(entry.productId)) || null;
+    return { product, image: String(entry.image || "") };
+  });
+};
+
 const getPageLanguage = () =>
   window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en";
 
@@ -142,12 +199,14 @@ const highlightPlaceholderCopy = {
     title: "A new collectible will take its place here.",
     link: "Explore the collection",
     priceRequest: "Price on request",
+    manualTitle: "Collection highlight",
   },
   nl: {
     label: "Binnenkort",
     title: "Een nieuwe vondst krijgt hier een plek.",
     link: "Ontdek de collectie",
     priceRequest: "Prijs op aanvraag",
+    manualTitle: "Collectie-highlight",
   },
 };
 
@@ -170,8 +229,28 @@ const renderHighlightPlaceholder = (index) => {
 const renderHighlights = () => {
   if (!highlightGrid) return;
 
-  const products = getHighlightProducts();
-  const cards = products.map((product, index) => {
+  const slots = getHighlightSlots();
+  const cards = slots.map((entry, index) => {
+    const product = entry?.product || null;
+    const customImage = entry?.image || "";
+    if (!product && !customImage) return renderHighlightPlaceholder(index);
+
+    if (!product) {
+      const copy = highlightPlaceholderCopy[getPageLanguage()];
+      return `
+        <a class="highlight-card" href="shop.html" style="--highlight-accent:${getHighlightAccent({}, index)}">
+          <div class="highlight-media">
+            <span class="highlight-slot-number">0${index + 1}</span>
+            <img ${createImageAttributes({ src: customImage, alt: copy.manualTitle })} />
+          </div>
+          <div class="highlight-copy">
+            <small>Lootifer</small>
+            <h3>${copy.manualTitle}</h3>
+            <div class="highlight-card-footer"><span class="highlight-price">${copy.link}</span><span class="highlight-open" aria-hidden="true">→</span></div>
+          </div>
+        </a>`;
+    }
+
     const discount = getValidDiscountPrice(product);
     const selling = getSellingPrice(product);
     const displayPrice = discount ?? selling;
@@ -180,13 +259,14 @@ const renderHighlights = () => {
     const label = product.universe || product.brand || product.category || "Collectible";
     const slug = encodeURIComponent(product.slug || "");
     const accent = getHighlightAccent(product, index);
+    const image = customImage || product.image;
 
     return `
       <a class="highlight-card" href="product.html?slug=${slug}" style="--highlight-accent:${accent}">
         <div class="highlight-media">
           <span class="highlight-slot-number">0${index + 1}</span>
           <span class="highlight-badge${badgeClass}">${badge}</span>
-          <img ${createImageAttributes({ src: product.image, alt: product.name || "Collectible" })} />
+          <img ${createImageAttributes({ src: image, alt: product.name || "Collectible" })} />
         </div>
         <div class="highlight-copy">
           <small>${label}</small>
@@ -207,14 +287,16 @@ const renderHighlights = () => {
 
 const loadHomepageCatalog = async () => {
   try {
-    const result = await loadRuntimeCatalog();
+    const [result] = await Promise.all([loadRuntimeCatalog(), loadHomepageSettings()]);
     runtimeProducts = result.products || [];
     updateCategoryCounts(runtimeProducts);
+    applyHomepageDisplay();
     renderHighlights();
   } catch (error) {
     console.error("Categorie-aantallen konden niet worden geladen", error);
     runtimeProducts = [];
     updateCategoryCounts([]);
+    applyHomepageDisplay();
     renderHighlights();
   }
 };

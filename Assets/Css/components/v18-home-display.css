@@ -1,0 +1,161 @@
+/* LOOTIFER V18 — compact playful homepage collector stage */
+.home-page .hero-stage-clean {
+  min-height: 390px;
+  border-radius: 2rem;
+  border: 1px solid rgba(226,184,63,.25);
+  background:
+    radial-gradient(circle at 50% 15%, rgba(226,184,63,.14), transparent 34%),
+    radial-gradient(circle at 18% 62%, rgba(74,131,181,.10), transparent 32%),
+    radial-gradient(circle at 84% 58%, rgba(126,92,174,.09), transparent 30%),
+    linear-gradient(155deg,#11151a 0%,#080b0f 55%,#050607 100%);
+  box-shadow:0 28px 62px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.055);
+}
+.home-page .hero-stage-clean::before {
+  opacity:.65;
+  background:
+    radial-gradient(circle at 50% 112%, rgba(226,184,63,.12), transparent 37%),
+    repeating-linear-gradient(90deg,transparent 0 86px,rgba(255,255,255,.012) 87px 88px);
+}
+.home-page .hero-stage-clean::after {
+  inset:8% 4.5% 9%;
+  border-radius:1.7rem;
+  border:1px solid rgba(226,184,63,.11);
+  box-shadow:inset 0 0 60px rgba(226,184,63,.025);
+}
+.home-page .hero-stage-clean .display-light { top:-35%; height:130%; opacity:.2; }
+.home-page .hero-stage-clean .display-shelf-top { display:none; }
+.home-page .hero-stage-clean .display-shelf-bottom {
+  left:8%; right:8%; bottom:13%; height:2px;
+  background:linear-gradient(90deg,transparent,#9b761d 12%,#f3cf55 50%,#9b761d 88%,transparent);
+  box-shadow:0 0 18px rgba(226,184,63,.28);
+  opacity:.78;
+}
+.home-page .hero-stage-clean .display-cases {
+  inset:7% 5.5% 12%;
+  gap:clamp(1.1rem,3vw,2.8rem);
+  align-items:center;
+  transform:none;
+}
+.home-page .hero-stage-clean .display-case,
+.home-page .hero-stage-clean .display-case:nth-child(2) {
+  width:31%;
+  height:88%;
+  display:grid;
+  place-items:center;
+  align-self:center;
+  animation:v18-showpiece-float 5.6s ease-in-out infinite;
+}
+.home-page .hero-stage-clean .display-case:nth-child(2) {
+  width:34%;
+  height:100%;
+  animation-duration:4.9s;
+  animation-delay:-1.7s;
+}
+.home-page .hero-stage-clean .display-case:nth-child(3) { animation-delay:-3.1s; }
+.home-page .hero-stage-clean .display-case::before {
+  content:"";
+  position:absolute;
+  left:8%; right:8%; top:8%; bottom:19%;
+  border-radius:50%;
+  background:radial-gradient(circle at 50% 46%,rgba(255,222,108,.12),rgba(226,184,63,.045) 34%,transparent 66%);
+  filter:blur(.2px);
+  opacity:.85;
+  animation:v18-halo-pulse 4.8s ease-in-out infinite;
+}
+.home-page .hero-stage-clean .display-case:nth-child(2)::before { opacity:1; transform:scale(1.06); }
+.home-page .hero-stage-clean .display-glass {
+  inset:15% 10% 22%;
+  border:0;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(255,255,255,.055),transparent 58%),
+    radial-gradient(circle at 50% 88%,rgba(226,184,63,.09),transparent 58%);
+  box-shadow:none;
+  backdrop-filter:none;
+}
+.home-page .hero-stage-clean .display-glass::after {
+  top:auto; left:10%; right:10%; bottom:4%; width:auto; height:1px;
+  transform:none;
+  background:linear-gradient(90deg,transparent,rgba(226,184,63,.5),transparent);
+  opacity:.9;
+}
+.home-page .hero-stage-clean .display-placeholder,
+.home-page .hero-stage-clean .display-placeholder-featured {
+  width:94%;
+  height:76%;
+  aspect-ratio:auto;
+  margin:0 0 10%;
+  overflow:visible;
+  border:0 !important;
+  border-radius:0;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.home-page .hero-stage-clean .display-placeholder:not(.has-image) {
+  width:58%;
+  height:58%;
+  border:1px solid rgba(226,184,63,.16) !important;
+  border-radius:42% 42% 30% 30%;
+  background:linear-gradient(145deg,rgba(255,255,255,.025),rgba(0,0,0,.08)) !important;
+}
+.home-page .hero-stage-clean .display-slot-image {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center bottom;
+  padding:0;
+  mix-blend-mode:normal;
+  filter:drop-shadow(0 18px 16px rgba(0,0,0,.5));
+  transform:translateZ(0);
+  transition:transform .28s ease,filter .28s ease;
+}
+.home-page .hero-stage-clean .display-case:hover .display-slot-image {
+  transform:translateY(-7px) scale(1.025) rotate(-.35deg);
+  filter:drop-shadow(0 25px 20px rgba(0,0,0,.56));
+}
+.home-page .hero-stage-clean .display-base {
+  left:15%; right:15%; bottom:9%; height:11px;
+  border:0;
+  border-radius:999px;
+  background:linear-gradient(180deg,#f3d15a,#a47814 54%,#4f3807 100%);
+  box-shadow:0 10px 16px rgba(0,0,0,.48),0 0 20px rgba(226,184,63,.16),inset 0 1px rgba(255,255,255,.55);
+}
+.home-page .hero-stage-clean .display-base::before {
+  top:2px; left:19%; right:19%; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);
+  box-shadow:none;
+}
+.home-page .hero-stage-clean .display-base::after {
+  content:"";
+  position:absolute;
+  left:13%; right:13%; top:100%; height:12px;
+  border-radius:50%;
+  background:rgba(0,0,0,.45);
+  filter:blur(5px);
+}
+.home-page .hero-stage-clean .display-plaque {
+  bottom:3.1%;
+  min-width:122px;
+  padding:.46rem .9rem;
+  border-radius:11px;
+  letter-spacing:.14em;
+  box-shadow:0 9px 22px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.65);
+}
+.home-page .hero-stage-clean .display-plaque span { font-size:.68rem; }
+.home-page .hero-stage-clean .display-plaque small { font-size:.43rem; }
+@keyframes v18-showpiece-float { 0%,100%{transform:translateY(0) rotate(.15deg)} 50%{transform:translateY(-7px) rotate(-.15deg)} }
+@keyframes v18-halo-pulse { 0%,100%{transform:scale(.97);opacity:.64} 50%{transform:scale(1.035);opacity:1} }
+@media (max-width:900px){
+  .home-page .hero-stage-clean{min-height:350px}
+  .home-page .hero-stage-clean .display-cases{gap:.7rem;inset:9% 4% 13%}
+  .home-page .hero-stage-clean .display-case,.home-page .hero-stage-clean .display-case:nth-child(2){width:32%;height:86%}
+  .home-page .hero-stage-clean .display-case:nth-child(2){width:35%;height:96%}
+}
+@media (prefers-reduced-motion:reduce){
+  .home-page .hero-stage-clean .display-case,.home-page .hero-stage-clean .display-case::before{animation:none}
+}
+.home-page .hero-stage-clean:hover .display-case:nth-child(1),
+.home-page .hero-stage-clean:hover .display-case:nth-child(2),
+.home-page .hero-stage-clean:hover .display-case:nth-child(3) {
+  transform: translateY(-4px) scale(1.01);
+}

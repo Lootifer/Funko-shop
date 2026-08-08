@@ -1,0 +1,10 @@
+LOOTIFER V16.3 — PRODUCTFOTO'S ZONDER WITTE RAND
+
+- Productfoto's uit Admin worden automatisch voorbereid.
+- Bij een bijna-witte achtergrond wordt alleen de achtergrond die met de buitenrand verbonden is transparant gemaakt.
+- Lege witte buitenruimte wordt automatisch strak rondom het product weggesneden.
+- Het resultaat wordt als transparante PNG opgeslagen.
+- Dit werkt bij 'Kies fotomap' en bij 'Kies 1-4 foto's'.
+- De productpagina toont alle hoofd- en miniatuurfoto's in een vaste maat zonder witte rechthoek.
+- De actieve gele rand rond miniaturen is compacter.
+- Bestaande Dr. Wily-foto's in deze ZIP zijn eenmalig opnieuw verwerkt.

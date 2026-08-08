@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage | Lootifer Admin</title>
+    <link rel="stylesheet" href="../Assets/Css/main.css" />
+    <link rel="stylesheet" href="assets/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-shell">
+      <div id="adminSidebar"></div>
+      <main class="admin-main">
+        <div id="adminTopbar"></div>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <p class="admin-label">Beginscherm display</p>
+            <h3>De drie grote foto's bovenaan</h3>
+            <p class="admin-detail">Klik op “Kies JPG/PNG/WebP”. De foto wordt direct geüpload, meteen zichtbaar en automatisch opgeslagen. Je hoeft geen mappen of bestandsnamen te maken.</p>
+            <div class="admin-home-grid admin-home-grid-three" id="displayManager"></div>
+            <div class="admin-form-actions"><button class="button primary" type="button" id="saveDisplayButton">Display opslaan</button></div>
+            <p class="admin-detail" id="displayStatus"></p>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <p class="admin-label">Highlights</p>
+            <h3>Zes vakken op de homepage</h3>
+            <p class="admin-detail">Kies een product per vak; dit wordt direct opgeslagen. Met “Kies andere foto” kun je meteen een eigen JPG/PNG/WebP uploaden en bekijken.</p>
+            <div class="admin-home-grid admin-home-grid-six" id="highlightManager"></div>
+            <div class="admin-form-actions"><button class="button primary" type="button" id="saveHighlightsButton">Highlights opslaan</button></div>
+            <p class="admin-detail" id="highlightStatus"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="assets/homepage-admin.js"></script>
+  </body>
+</html>

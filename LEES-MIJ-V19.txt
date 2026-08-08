@@ -1,0 +1,9 @@
+LOOTIFER COLLECTIBLES V19
+
+Aanpassingen op Collecties:
+- De animatie rond het woord deuren/doors is verwijderd.
+- De titel 12 deuren/doors is groter en rustiger weergegeven.
+- Alle 12 kaarten zijn groter/langer gemaakt en vullen de pagina beter.
+- De Funko-uitklapfunctie met subcategorieen blijft behouden.
+- Onderaan staat een brede Funko-afbeelding als decoratieve strook over de volledige paginabreedte.
+- Alle bestaande V18 functies, Admin, database en media-upload blijven behouden.
