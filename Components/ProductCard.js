@@ -1,6 +1,5 @@
 import { shoppingState } from "./Experience/shopping-state.js";
 import {
-  getCollectorScore,
   getProductBadges,
   getStockLabel,
   getStockTone,
@@ -18,7 +17,6 @@ export const createProductCard = (product) => {
     .join("");
   const stockTone = getStockTone(product);
   const stockLabel = getStockLabel(product);
-  const collectorScore = getCollectorScore(product);
   const inWishlist = shoppingState.isWishlisted(product?.id);
   const safePrice = getDisplayPrice(product || {});
   const hasValidPrice = hasValidSellingPrice(product || {});
@@ -39,7 +37,6 @@ export const createProductCard = (product) => {
         <p class="card-meta">${product.universe || product.category} • ${product.franchise || "Verzamelaar"}</p>
         <h3>${safeName}</h3>
         <p>${product.description}</p>
-        <p class="collector-score">${collectorScore}</p>
         <div class="card-footer">
           <span class="card-price">${getProductPriceLabel(product, formatCurrency)}</span>
           <div class="card-actions">

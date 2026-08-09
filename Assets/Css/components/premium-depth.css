@@ -429,6 +429,20 @@ body::before {
   font-size: 0.78rem;
 }
 
+.footer-admin-link {
+  color: inherit;
+  font-size: 0.68rem;
+  opacity: 0.36;
+  text-decoration: none;
+  transition: opacity 160ms ease, color 160ms ease;
+}
+
+.footer-admin-link:hover,
+.footer-admin-link:focus-visible {
+  color: var(--accent-bright);
+  opacity: 1;
+}
+
 @media (max-width: 900px) {
   .premium-topbar {
     flex-wrap: wrap;

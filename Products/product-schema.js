@@ -66,6 +66,8 @@ export const PRODUCT_DEFAULTS = {
   releaseYear: new Date().getFullYear(),
   condition: "Mint",
   boxCondition: "Mint",
+  neverOutOfBox: false,
+  figureLikeNew: false,
   protectorIncluded: false,
   stock: 0,
   warehouseLocation: "",
@@ -157,7 +159,9 @@ export const normalizeProduct = (rawProduct = {}) => {
   normalized.chase = toBoolean(rawProduct.chase);
   normalized.vaulted = toBoolean(rawProduct.vaulted);
   normalized.signed = toBoolean(rawProduct.signed);
-  normalized.protectorIncluded = toBoolean(rawProduct.protectorIncluded);
+  normalized.neverOutOfBox = toBoolean(rawProduct.neverOutOfBox);
+  normalized.figureLikeNew = toBoolean(rawProduct.figureLikeNew);
+  normalized.protectorIncluded = false;
 
   const media = resolveProductMedia({
     ...rawProduct,

@@ -107,6 +107,8 @@ const fields = {
   releaseYear: document.getElementById("fieldReleaseYear"),
   condition: document.getElementById("fieldCondition"),
   boxCondition: document.getElementById("fieldBoxCondition"),
+  neverOutOfBox: document.getElementById("fieldNeverOutOfBox"),
+  figureLikeNew: document.getElementById("fieldFigureLikeNew"),
   warehouseLocation: document.getElementById("fieldWarehouseLocation"),
   purchasePrice: document.getElementById("fieldPurchasePrice"),
   sellingPrice: document.getElementById("fieldSellingPrice"),
@@ -120,7 +122,6 @@ const fields = {
   chase: document.getElementById("fieldChase"),
   vaulted: document.getElementById("fieldVaulted"),
   signed: document.getElementById("fieldSigned"),
-  protectorIncluded: document.getElementById("fieldProtectorIncluded"),
 };
 
 const state = {
@@ -433,6 +434,8 @@ const applyFormValues = (product) => {
   fields.releaseYear.value = product.releaseYear ? String(product.releaseYear) : "";
   fields.condition.value = product.condition || "Mint";
   fields.boxCondition.value = product.boxCondition || "Mint";
+  fields.neverOutOfBox.checked = Boolean(product.neverOutOfBox);
+  fields.figureLikeNew.checked = Boolean(product.figureLikeNew);
   fields.warehouseLocation.value = product.warehouseLocation || "";
   fields.purchasePrice.value = String(product.purchasePrice ?? 0);
   fields.sellingPrice.value = String(product.sellingPrice ?? product.price ?? 0);
@@ -446,7 +449,6 @@ const applyFormValues = (product) => {
   fields.chase.checked = Boolean(product.chase);
   fields.vaulted.checked = Boolean(product.vaulted);
   fields.signed.checked = Boolean(product.signed);
-  fields.protectorIncluded.checked = Boolean(product.protectorIncluded);
 };
 
 const resetForm = () => {

@@ -110,8 +110,12 @@
                 </label>
                 <label>
                   Staat doos
-                  <input id="fieldBoxCondition" value="Mint" />
+                  <input id="fieldBoxCondition" value="Mint" placeholder="Bijv. Mint, Near Mint, Good" />
                 </label>
+                <div class="admin-grid-wide admin-check-grid admin-collector-condition-grid">
+                  <label><input id="fieldNeverOutOfBox" type="checkbox" /> Nooit uit de doos geweest</label>
+                  <label><input id="fieldFigureLikeNew" type="checkbox" /> Figuur in nieuwstaat</label>
+                </div>
                 <label>
                   Magazijnlocatie
                   <input id="fieldWarehouseLocation" placeholder="WH-DC-593" />
@@ -172,7 +176,6 @@
                 <label><input id="fieldChase" type="checkbox" /> Chase</label>
                 <label><input id="fieldVaulted" type="checkbox" /> Vaulted</label>
                 <label><input id="fieldSigned" type="checkbox" /> Gesigneerd</label>
-                <label><input id="fieldProtectorIncluded" type="checkbox" /> Protector inbegrepen</label>
               </div>
 
               <div class="admin-canonical-preview" id="canonicalImageHint"></div>

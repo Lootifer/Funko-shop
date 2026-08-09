@@ -1,0 +1,6 @@
+V20.3 - ADMIN LOGIN FIX
+
+Fix:
+- Admin API gebruikt nu automatisch dezelfde hostnaam als Live Server.
+- Werkt daardoor goed met zowel 127.0.0.1 als localhost.
+- Voorkomt dat de login-cookie verloren gaat en je terug naar login springt.

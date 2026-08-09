@@ -1,0 +1,9 @@
+LOOTIFER V20 — Verzamelaardetails
+
+- Verzamelaarscore verwijderd van productpagina en productkaarten.
+- Beschermhoes inbegrepen verwijderd uit Admin en productpagina.
+- Staat doos wordt nu getoond als Doosconditie bij Verzamelaardetails.
+- Nieuwe Admin-optie: Nooit uit de doos geweest.
+- Nieuwe Admin-optie: Figuur in nieuwstaat.
+- Bestaande database wordt automatisch uitgebreid bij npm start.
+- Deze update vervangt geen productdatabase of productfoto's.

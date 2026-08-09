@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS products (
   release_year INTEGER,
   condition TEXT,
   box_condition TEXT,
+  never_out_of_box INTEGER NOT NULL DEFAULT 0,
+  figure_like_new INTEGER NOT NULL DEFAULT 0,
   protector_included INTEGER NOT NULL DEFAULT 0,
   stock INTEGER NOT NULL DEFAULT 0,
   warehouse_location TEXT,
@@ -127,7 +129,9 @@ const normalizeProductRecord = (item = {}, index = 0) => {
     releaseYear: asNumber(item.releaseYear, null),
     condition: item.condition || "",
     boxCondition: item.boxCondition || "",
-    protectorIncluded: toBooleanInt(item.protectorIncluded),
+    neverOutOfBox: toBooleanInt(item.neverOutOfBox),
+    figureLikeNew: toBooleanInt(item.figureLikeNew),
+    protectorIncluded: 0,
     stock: Math.max(0, asNumber(item.stock, 0)),
     warehouseLocation: item.warehouseLocation || "",
     reserved: Math.max(0, asNumber(item.reserved, 0)),
@@ -152,16 +156,10 @@ const upsertProductSql = `
 INSERT INTO products (
   id, slug, sku, barcode, category, brand, universe, franchise, name, number, edition, variant,
   exclusive, chase, vaulted, signed, convention, release_year, condition, box_condition,
-  protector_included, stock, warehouse_location, reserved, purchase_price, selling_price,
-  discount_price, archived, thumbnail, images_json, description, tags_json, box_front, box_back,
-  left_side, right_side, meta_title, meta_description, updated_at
-) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-  ?, ?, ?, ?, ?, ?, ?, ?,
-  ?, ?, ?, ?, ?, ?,
-  ?, ?, ?, ?, ?, ?, ?, ?,
-  ?, ?, ?, ?, CURRENT_TIMESTAMP
-)
+  never_out_of_box, figure_like_new, protector_included, stock, warehouse_location, reserved,
+  purchase_price, selling_price, discount_price, archived, thumbnail, images_json, description,
+  tags_json, box_front, box_back, left_side, right_side, meta_title, meta_description, updated_at
+) VALUES (${new Array(40).fill("?").join(", ")}, CURRENT_TIMESTAMP)
 ON CONFLICT(id) DO UPDATE SET
   slug = excluded.slug,
   sku = excluded.sku,
@@ -182,7 +180,9 @@ ON CONFLICT(id) DO UPDATE SET
   release_year = excluded.release_year,
   condition = excluded.condition,
   box_condition = excluded.box_condition,
-  protector_included = excluded.protector_included,
+  never_out_of_box = excluded.never_out_of_box,
+  figure_like_new = excluded.figure_like_new,
+  protector_included = 0,
   stock = excluded.stock,
   warehouse_location = excluded.warehouse_location,
   reserved = excluded.reserved,
@@ -211,9 +211,23 @@ const ensureProductsArchivedColumn = async () => {
   }
 };
 
+const ensureProductsCollectorDetailColumns = async () => {
+  const columns = await all("PRAGMA table_info(products)");
+  const names = new Set(columns.map((column) => String(column.name || "").toLowerCase()));
+
+  if (!names.has("never_out_of_box")) {
+    await run("ALTER TABLE products ADD COLUMN never_out_of_box INTEGER NOT NULL DEFAULT 0");
+  }
+
+  if (!names.has("figure_like_new")) {
+    await run("ALTER TABLE products ADD COLUMN figure_like_new INTEGER NOT NULL DEFAULT 0");
+  }
+};
+
 export const migrateDatabase = async ({ productsFilePath } = {}) => {
   await exec(schemaSql);
   await ensureProductsArchivedColumn();
+  await ensureProductsCollectorDetailColumns();
 
   const inputPath = productsFilePath
     ? path.resolve(productsFilePath)
@@ -251,7 +265,9 @@ export const migrateDatabase = async ({ productsFilePath } = {}) => {
       product.releaseYear,
       product.condition,
       product.boxCondition,
-      product.protectorIncluded,
+      product.neverOutOfBox,
+      product.figureLikeNew,
+      0,
       product.stock,
       product.warehouseLocation,
       product.reserved,

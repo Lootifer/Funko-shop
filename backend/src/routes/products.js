@@ -58,10 +58,10 @@ const upsertSql = `
 INSERT INTO products (
   id, slug, sku, barcode, category, brand, universe, franchise, name, number, edition, variant,
   exclusive, chase, vaulted, signed, convention, release_year, condition, box_condition,
-  protector_included, stock, warehouse_location, reserved, purchase_price, selling_price,
+  never_out_of_box, figure_like_new, protector_included, stock, warehouse_location, reserved, purchase_price, selling_price,
   discount_price, archived, thumbnail, images_json, description, tags_json, box_front, box_back,
   left_side, right_side, meta_title, meta_description
-) VALUES (${new Array(38).fill("?").join(", ")})
+) VALUES (${new Array(40).fill("?").join(", ")})
 ON CONFLICT(id) DO UPDATE SET
   slug = excluded.slug,
   sku = excluded.sku,
@@ -82,7 +82,9 @@ ON CONFLICT(id) DO UPDATE SET
   release_year = excluded.release_year,
   condition = excluded.condition,
   box_condition = excluded.box_condition,
-  protector_included = excluded.protector_included,
+  never_out_of_box = excluded.never_out_of_box,
+  figure_like_new = excluded.figure_like_new,
+  protector_included = 0,
   stock = excluded.stock,
   warehouse_location = excluded.warehouse_location,
   reserved = excluded.reserved,
@@ -132,7 +134,9 @@ const mapPayloadToParams = (payload = {}, fallback = {}) => {
     asNumber(payload.releaseYear ?? fallback.releaseYear, null),
     String(payload.condition ?? fallback.condition ?? "").trim(),
     String(payload.boxCondition ?? fallback.boxCondition ?? "").trim(),
-    toBooleanInt(payload.protectorIncluded ?? fallback.protectorIncluded),
+    toBooleanInt(payload.neverOutOfBox ?? fallback.neverOutOfBox),
+    toBooleanInt(payload.figureLikeNew ?? fallback.figureLikeNew),
+    0,
     Math.max(0, asNumber(payload.stock ?? fallback.stock, 0)),
     String(payload.warehouseLocation ?? fallback.warehouseLocation ?? "").trim(),
     Math.max(0, asNumber(payload.reserved ?? fallback.reserved, 0)),

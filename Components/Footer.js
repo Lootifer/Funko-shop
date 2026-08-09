@@ -98,11 +98,13 @@ export const createFooter = () => {
         <a href="about.html" data-footer-copy="about">${copy.about}</a>
         <a href="collections.html" data-footer-copy="collections">${copy.collections}</a>
         <a href="shop.html" data-footer-copy="once">${copy.once}</a>
+        <a href="admin/login.html" aria-label="Admin login"><strong>Admin</strong></a>
       </div>
 
       <div class="footer-bottom">
         <span>© ${new Date().getFullYear()} Lootifer Collectibles</span>
         <span data-footer-copy="built">${copy.built}</span>
+        <a class="footer-admin-link" href="admin/login.html" aria-label="Admin login">Admin</a>
       </div>
     </footer>
   `;

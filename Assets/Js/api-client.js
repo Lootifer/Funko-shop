@@ -1,6 +1,10 @@
+const DEFAULT_API_HOST = (typeof window !== "undefined" && window.location?.hostname)
+  ? window.location.hostname
+  : "localhost";
+
 const API_BASE = (typeof window !== "undefined" && window.LOOTIFER_API_BASE)
   ? String(window.LOOTIFER_API_BASE).replace(/\/$/, "")
-  : "http://localhost:3001/api";
+  : `http://${DEFAULT_API_HOST}:3001/api`;
 
 export const SERVER_UNREACHABLE_MESSAGE = "De server is niet bereikbaar. Probeer het later opnieuw.";
 

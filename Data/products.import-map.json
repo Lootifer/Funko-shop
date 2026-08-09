@@ -24,7 +24,8 @@
     "releaseYear",
     "condition",
     "boxCondition",
-    "protectorIncluded",
+    "neverOutOfBox",
+    "figureLikeNew",
     "stock",
     "warehouseLocation",
     "reserved",
@@ -61,7 +62,8 @@
     "releaseYear": "number",
     "condition": "string",
     "boxCondition": "string",
-    "protectorIncluded": "boolean",
+    "neverOutOfBox": "boolean",
+    "figureLikeNew": "boolean",
     "stock": "number",
     "warehouseLocation": "string",
     "reserved": "number",
@@ -99,6 +101,10 @@
     "primary_image": "thumbnail",
     "image_list": "images",
     "seo_title": "metaTitle",
-    "seo_description": "metaDescription"
+    "seo_description": "metaDescription",
+    "never_opened": "neverOutOfBox",
+    "never_out_of_box": "neverOutOfBox",
+    "figure_like_new": "figureLikeNew",
+    "figure_mint": "figureLikeNew"
   }
 }

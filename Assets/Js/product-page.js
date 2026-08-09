@@ -4,7 +4,7 @@ import { attachPremiumFallback, createImageAttributes } from "../../Products/pro
 import { createHeader } from "../../Components/Header.js";
 import { createFooter } from "../../Components/Footer.js";
 import { createShoppingUi, bindShoppingActions, attachProductCardInteractions } from "../../Components/Experience/shopping-ui.js";
-import { getCollectorScore, getProductBadges, getStockTone } from "../../Components/Collector/collector-experience.js";
+import { getProductBadges, getStockTone } from "../../Components/Collector/collector-experience.js";
 import { shoppingState } from "../../Components/Experience/shopping-state.js";
 import { syncHeaderCounters } from "../../Components/Experience/shopping-ui.js";
 import { formatCurrency } from "./formatting.js";
@@ -36,7 +36,7 @@ const productCondition = document.getElementById("productCondition");
 const productPrice = document.getElementById("productPrice");
 const productStock = document.getElementById("productStock");
 const productDescription = document.getElementById("productDescription");
-const collectorScore = document.getElementById("collectorScore");
+const collectorDetailsList = document.getElementById("collectorDetailsList");
 const collectorInfo = document.getElementById("collectorInfo");
 const productSpecs = document.getElementById("productSpecs");
 const relatedProducts = document.getElementById("relatedProducts");
@@ -103,6 +103,40 @@ const renderCollectorInfo = (product) => {
   collectorInfo.innerHTML = chips
     .map((chip) => `<span class="collector-chip">${chip}</span>`)
     .join("");
+};
+
+const renderCollectorDetails = (product) => {
+  if (!collectorDetailsList) return;
+
+  collectorDetailsList.innerHTML = "";
+
+  const addDetail = (text, emphasized = false) => {
+    const item = document.createElement("li");
+    if (emphasized) {
+      const strong = document.createElement("strong");
+      strong.textContent = text;
+      item.appendChild(strong);
+    } else {
+      item.textContent = text;
+    }
+    collectorDetailsList.appendChild(item);
+  };
+
+  if (hasValue(product.boxCondition)) {
+    addDetail(`Doosconditie: ${product.boxCondition}`, true);
+  }
+
+  if (product.neverOutOfBox) {
+    addDetail("✓ Nooit uit de doos geweest");
+  }
+
+  if (product.figureLikeNew) {
+    addDetail("✓ Figuur in nieuwstaat");
+  }
+
+  if (!collectorDetailsList.children.length) {
+    addDetail("Geen aanvullende conditie-informatie opgegeven.");
+  }
 };
 
 const renderSpecs = (product) => {
@@ -221,10 +255,10 @@ const renderProduct = async () => {
     : stockCount === 1
       ? "Nog 1 beschikbaar"
       : `Nog ${stockCount} beschikbaar`;
-  collectorScore.textContent = `Verzamelaarscore ${getCollectorScore(product)}`;
   productStock.textContent = stockLabel;
   productStock.className = `product-stock ${stockTone}`;
   productDescription.textContent = product.description;
+  renderCollectorDetails(product);
   renderCollectorInfo(product);
   renderSpecs(product);
   currentProduct = product;

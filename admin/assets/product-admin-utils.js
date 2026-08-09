@@ -191,6 +191,8 @@ export const buildDraftFromForm = (formData) => {
     releaseYear: Number(formData.releaseYear || new Date().getFullYear()),
     condition: String(formData.condition || "Mint").trim(),
     boxCondition: String(formData.boxCondition || "Mint").trim(),
+    neverOutOfBox: toBoolean(formData.neverOutOfBox),
+    figureLikeNew: toBoolean(formData.figureLikeNew),
     warehouseLocation: String(formData.warehouseLocation || "").trim(),
     description: String(formData.description || "").trim(),
     sellingPrice: Number(formData.sellingPrice || 0),
@@ -202,7 +204,7 @@ export const buildDraftFromForm = (formData) => {
     chase: toBoolean(formData.chase),
     vaulted: toBoolean(formData.vaulted),
     signed: toBoolean(formData.signed),
-    protectorIncluded: toBoolean(formData.protectorIncluded),
+    protectorIncluded: false,
     tags: String(formData.tags || "")
       .split(",")
       .map((item) => item.trim())
