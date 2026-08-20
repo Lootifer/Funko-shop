@@ -111,7 +111,7 @@ let homepageSettings = {
   highlights: Array.from({ length: 6 }, () => ({ productId: null, image: "" })),
 };
 
-const HOMEPAGE_SETTINGS_URL = "http://localhost:3001/api/site/homepage";
+const HOMEPAGE_SETTINGS_URL = "https://funko-shop-production-9308.up.railway.app/api/site/homepage";
 
 const loadHomepageSettings = async () => {
   try {
