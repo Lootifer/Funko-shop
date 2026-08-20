@@ -2,7 +2,6 @@ import { Router } from "express";
 import { all, exec, get, run } from "../db/connection.js";
 import { toApiProduct } from "../services/serializers.js";
 import { requireAdmin } from "../auth/middleware.js";
-import { persistEmbeddedProductMedia } from "../services/product-media-storage.js";
 
 const router = Router();
 
@@ -194,11 +193,10 @@ router.get("/", async (request, response, next) => {
       SELECT *
       FROM products
       ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-      ORDER BY id DESC
+      ORDER BY release_year DESC, id DESC
     `;
 
     const rows = await all(sql, params);
-    response.set("Cache-Control", "no-store, no-cache, must-revalidate");
     response.json({ products: rows.map(toApiProduct), source: "database" });
   } catch (error) {
     next(error);
@@ -225,13 +223,12 @@ router.get("/:idOrSlug", async (request, response, next) => {
 
 router.post("/", requireAdmin, async (request, response, next) => {
   try {
-    const rawPayload = request.body || {};
-    const validation = await validateProductPayload(rawPayload, null);
+    const payload = request.body || {};
+    const validation = await validateProductPayload(payload, null);
     if (!validation.valid) {
       return response.status(400).json({ error: "Validatie mislukt.", details: validation.errors });
     }
 
-    const payload = await persistEmbeddedProductMedia(rawPayload, {});
     await run(upsertSql, mapPayloadToParams(payload, {}));
     const row = await get("SELECT * FROM products WHERE id = ?", [Number(payload.id)]);
     return response.status(201).json({ product: toApiProduct(row), source: "database" });
@@ -248,15 +245,13 @@ router.put("/:id", requireAdmin, async (request, response, next) => {
     const existingRow = await get("SELECT * FROM products WHERE id = ?", [id]);
     if (!existingRow) return response.status(404).json({ error: "Product niet gevonden." });
 
-    const existingProduct = toApiProduct(existingRow);
-    const rawPayload = { ...request.body, id };
-    const validation = await validateProductPayload(rawPayload, id);
+    const payload = { ...request.body, id };
+    const validation = await validateProductPayload(payload, id);
     if (!validation.valid) {
       return response.status(400).json({ error: "Validatie mislukt.", details: validation.errors });
     }
 
-    const payload = await persistEmbeddedProductMedia(rawPayload, existingProduct);
-    await run(upsertSql, mapPayloadToParams(payload, existingProduct));
+    await run(upsertSql, mapPayloadToParams(payload, toApiProduct(existingRow)));
     const row = await get("SELECT * FROM products WHERE id = ?", [id]);
     return response.json({ product: toApiProduct(row), source: "database" });
   } catch (error) {

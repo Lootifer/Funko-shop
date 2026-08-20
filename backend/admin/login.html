@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin inloggen | Lootifer</title>
+    <link rel="stylesheet" href="../Assets/Css/main.css" />
+    <link rel="stylesheet" href="assets/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="admin-body admin-login-body">
+    <main class="admin-login-shell">
+      <section class="admin-login-card">
+        <div class="admin-brand admin-login-brand">
+          <span class="brand-mark">L</span>
+          <div><strong>Lootifer</strong><small>Beveiligd beheer</small></div>
+        </div>
+        <p class="admin-label">Adminomgeving</p>
+        <h1>Inloggen</h1>
+        <p class="admin-detail">Log in om producten, voorraad en bestellingen te beheren.</p>
+
+        <div class="admin-setup-notice" id="adminSetupNotice" hidden>
+          <strong>Eenmalige installatie nodig</strong>
+          <p>Open de terminal in de Funko-shop-map en voer uit:</p>
+          <code>npm run setup-admin</code>
+          <p>Herstart daarna de server met <code>npm start</code>.</p>
+        </div>
+
+        <form id="adminLoginForm" class="admin-login-form">
+          <label>
+            Gebruikersnaam
+            <input name="username" autocomplete="username" required />
+          </label>
+          <label>
+            Wachtwoord
+            <input name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="button primary" type="submit" id="adminLoginButton">Inloggen</button>
+        </form>
+        <p class="admin-detail" id="adminLoginStatus" aria-live="polite"></p>
+        <a class="button secondary" href="../index.html">Terug naar de winkel</a>
+      </section>
+    </main>
+    <script type="module">
+      import { initializeLoginPage } from './assets/admin-auth.js';
+      initializeLoginPage();
+    </script>
+  </body>
+</html>

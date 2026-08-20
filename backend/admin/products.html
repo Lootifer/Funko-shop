@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Producten | Lootifer Admin</title>
+    <link rel="stylesheet" href="../Assets/Css/main.css" />
+    <link rel="stylesheet" href="assets/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-shell">
+      <div id="adminSidebar"></div>
+      <main class="admin-main">
+        <div id="adminTopbar"></div>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3><span id="formModeLabel">Product toevoegen</span></h3>
+            <p class="admin-detail" id="productStatus">Productcatalogus wordt geladen...</p>
+            <div class="admin-error" id="productErrors" style="display: none;"></div>
+
+            <div class="admin-toolbar">
+              <button class="button primary" type="button" id="backupDatabaseButton">Backup maken</button>
+              <button class="button secondary" type="button" id="exportCatalogButton">Exporteer products.json</button>
+              <button class="button secondary" type="button" id="importCatalogButton">Importeer JSON / ZIP</button>
+              <input id="importCatalogInput" type="file" accept=".json,.zip,application/json,application/zip,application/x-zip-compressed" hidden />
+              <button class="button secondary" type="button" id="resetCatalogButton">Producten opnieuw laden</button>
+            </div>
+
+            <div class="admin-import-preview" id="importPreview" style="display: none;"></div>
+
+            <div class="admin-overview-stats" id="productCompletenessStats"></div>
+
+            <form id="productForm">
+              <div class="admin-form-grid">
+                <label>
+                  ID
+                  <input id="fieldId" type="number" placeholder="Automatisch" required />
+                </label>
+                <label>
+                  Naam *
+                  <input id="fieldName" placeholder="Naam van het product" required />
+                </label>
+                <label>
+                  Nummer
+                  <input id="fieldNumber" value="#" placeholder="#593" />
+                </label>
+                <label>
+                  Slug *
+                  <div class="admin-inline-controls">
+                    <input id="fieldSlug" placeholder="automatisch" required />
+                    <button class="button secondary" type="button" id="resetSlugButton">Genereer</button>
+                  </div>
+                </label>
+                <label>
+                  SKU *
+                  <input id="fieldSku" placeholder="Wordt automatisch ingevuld" required />
+                </label>
+                <label>
+                  Barcode
+                  <input id="fieldBarcode" placeholder="EAN/UPC" />
+                </label>
+                <label>
+                  Categorie *
+                  <select id="fieldCategory" required>
+                    <option value="Funko Movies">Funko Movies</option>
+                    <option value="Funko Television">Funko Television</option>
+                    <option value="Funko Pin">Funko Pin</option>
+                    <option value="Funko Bitty Pop">Funko Bitty Pop</option>
+                    <option value="Funko Games">Funko Games</option>
+                    <option value="Funko Heroes" selected>Funko Heroes</option>
+                    <option value="Funko Tee">Funko Tee</option>
+                    <option value="Funko Animation">Funko Animation</option>
+                    <option value="Funko Pop">Funko Pop (oud)</option>
+                    <option value="LEGO">LEGO</option>
+                    <option value="Pokémon">Pokémon</option>
+                    <option value="Star Wars">Star Wars</option>
+                    <option value="Harry Potter">Harry Potter</option>
+                  </select>
+                </label>
+                <label>
+                  Merk *
+                  <input id="fieldBrand" value="Funko" required />
+                </label>
+                <label>
+                  Universum *
+                  <input id="fieldUniverse" placeholder="DC, Marvel, Pokémon" required />
+                </label>
+                <label>
+                  Franchise *
+                  <input id="fieldFranchise" placeholder="Batman" required />
+                </label>
+                <div class="admin-grid-wide admin-edition-picker">
+                  <span class="admin-field-label">Editie(s)</span>
+                  <details id="editionPicker">
+                    <summary id="editionPickerSummary">Kies editie(s)</summary>
+                    <div class="admin-edition-options">
+                      <label><input type="checkbox" data-edition-option value="FUNKO SPECIAL EDITION" /> FUNKO SPECIAL EDITION</label>
+                      <label><input type="checkbox" data-edition-option value="GLOW IN THE DARK" /> GLOW IN THE DARK</label>
+                      <label><input type="checkbox" data-edition-option value="UNDERGROUND TOYS EXCLUSIVE" /> UNDERGROUND TOYS EXCLUSIVE</label>
+                      <label><input type="checkbox" data-edition-option value="ZAVVI EXCLUSIVE" /> ZAVVI EXCLUSIVE</label>
+                      <label><input type="checkbox" data-edition-option value="EMP EXCLUSIVE" /> EMP EXCLUSIVE</label>
+                      <label><input type="checkbox" data-edition-option value="PX PREVIEWS EXCLUSIVE" /> PX PREVIEWS EXCLUSIVE</label>
+                      <label><input type="checkbox" data-edition-option value="FUNKO SPECIALTY SERIES" /> FUNKO SPECIALTY SERIES</label>
+                      <label><input type="checkbox" data-edition-option value="ART SERIES ONLY AT TARGET" /> ART SERIES ONLY AT TARGET</label>
+                      <label><input type="checkbox" data-edition-option value="STAR WARS GAMING GREATS SPECIAL EDITION" /> STAR WARS GAMING GREATS SPECIAL EDITION</label>
+                      <label><input type="checkbox" data-edition-option value="LOOTCRATE EXCLUSIVE" /> LOOTCRATE EXCLUSIVE</label>
+                      <label><input type="checkbox" data-edition-option value="FUNKO LIMITED EDITION" /> FUNKO LIMITED EDITION</label>
+                      <label><input type="checkbox" data-edition-option value="FUNKO FLOCKED" /> FUNKO FLOCKED</label>
+                    </div>
+                  </details>
+                  <input id="fieldEdition" type="hidden" value="" />
+                  <p class="admin-detail">Kies één of meerdere. In de winkel verschijnen de gekozen teksten in een gele special-item ster.</p>
+                </div>
+                <label>
+                  Variant
+                  <input id="fieldVariant" value="Standard" />
+                </label>
+                <label>
+                  Uitgavejaar
+                  <input id="fieldReleaseYear" type="number" value="2026" />
+                </label>
+                <label>
+                  Staat
+                  <input id="fieldCondition" value="Mint" />
+                </label>
+                <label>
+                  Staat doos
+                  <input id="fieldBoxCondition" value="Mint" placeholder="Bijv. Mint, Near Mint, Good" />
+                </label>
+                <div class="admin-grid-wide admin-check-grid admin-collector-condition-grid">
+                  <label><input id="fieldNeverOutOfBox" type="checkbox" /> Nooit uit de doos geweest</label>
+                  <label><input id="fieldFigureLikeNew" type="checkbox" /> Figuur in nieuwstaat</label>
+                </div>
+                <label>
+                  Magazijnlocatie
+                  <input id="fieldWarehouseLocation" placeholder="WH-DC-593" />
+                </label>
+                <label>
+                  Inkoopprijs
+                  <input id="fieldPurchasePrice" type="number" step="0.01" value="0" />
+                </label>
+                <label>
+                  Verkoopprijs *
+                  <input id="fieldSellingPrice" type="number" step="0.01" value="0" required />
+                </label>
+                <label>
+                  Actieprijs
+                  <input id="fieldDiscountPrice" type="number" step="0.01" />
+                </label>
+                <label>
+                  Voorraad *
+                  <input id="fieldStock" type="number" value="0" required />
+                </label>
+                <label>
+                  Gereserveerd (alleen admin)
+                  <input id="fieldReserved" type="number" value="0" />
+                </label>
+                <label>
+                  Tags
+                  <input id="fieldTags" placeholder="exclusive, dc, batman" />
+                </label>
+                <label class="admin-grid-wide">
+                  Beschrijving
+                  <textarea id="fieldDescription" rows="3" placeholder="Korte productbeschrijving voor de winkel."></textarea>
+                </label>
+                <div class="admin-grid-wide admin-media-uploader" id="productMediaUploader">
+                  <div class="admin-media-uploader-copy">
+                    <div>
+                      <p class="admin-label">Foto's snel toevoegen</p>
+                      <h4>Kies één fotomap en klaar.</h4>
+                      <p class="admin-detail">Selecteer de map met maximaal 4 JPG/PNG/WebP foto's. De foto's worden één voor één geüpload; je ingevulde productgegevens blijven staan, ook als een upload mislukt of je de pagina vernieuwt.</p>
+                    </div>
+                    <div class="admin-media-uploader-actions">
+                      <button class="button primary" type="button" id="chooseProductPhotoFolderButton">Kies fotomap</button>
+                      <button class="button secondary" type="button" id="chooseProductPhotosButton">Kies 1-4 foto's</button>
+                    </div>
+                  </div>
+                  <input id="productPhotoFolderInput" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" webkitdirectory directory multiple hidden />
+                  <input id="productPhotoFilesInput" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple hidden />
+                  <div class="admin-upload-preview" id="productPhotoPreview"></div>
+                  <p class="admin-detail" id="productPhotoUploadStatus">Nog geen foto's gekozen. Vul bij voorkeur eerst Naam, Nummer en Categorie in.</p>
+                </div>
+                <label class="admin-grid-wide">
+                  Afbeeldingen (automatisch ingevuld · Funko maximaal 4)
+                  <textarea id="fieldImages" rows="4" placeholder="Na het kiezen van een fotomap worden de paden hier automatisch ingevuld."></textarea>
+                </label>
+              </div>
+
+              <div class="admin-check-grid">
+                <label><input id="fieldExclusive" type="checkbox" /> Exclusive</label>
+                <label><input id="fieldChase" type="checkbox" /> Chase</label>
+                <label><input id="fieldVaulted" type="checkbox" /> Vaulted</label>
+                <label><input id="fieldSigned" type="checkbox" /> Gesigneerd</label>
+              </div>
+
+              <div class="admin-canonical-preview" id="canonicalImageHint"></div>
+
+              <div class="admin-form-actions">
+                <button class="button secondary" type="button" id="cancelEditButton" style="display: none;">Bewerken annuleren</button>
+                <button class="button primary" type="submit" id="saveProductButton">Product opslaan</button>
+              </div>
+              <p class="admin-detail" id="imageSourceHint">Gebruik “Kies fotomap” of “Kies 1-4 foto’s”. De foto’s worden automatisch verwerkt, opgeslagen en gekoppeld.</p>
+            </form>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Live preview</h3>
+            <p class="admin-detail">Preview toont direct hoe de productkaart eruitziet vóór opslaan.</p>
+            <div id="productLivePreview"></div>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Productoverzicht</h3>
+            <div class="admin-filters-grid">
+              <label>
+                Zoeken
+                <input id="tableSearch" type="text" placeholder="Zoek op naam, slug, SKU of barcode" />
+              </label>
+              <label>
+                Universum
+                <select id="tableUniverseFilter"><option value="">Alle universums</option></select>
+              </label>
+              <label>
+                Franchise
+                <select id="tableFranchiseFilter"><option value="">Alle franchises</option></select>
+              </label>
+              <label>
+                Voorraadstatus
+                <select id="tableStockFilter">
+                  <option value="">Alles</option>
+                  <option value="in-stock">Op voorraad</option>
+                  <option value="low-stock">Lage voorraad (≤2)</option>
+                  <option value="out-of-stock">Niet op voorraad</option>
+                </select>
+              </label>
+              <label>
+                Ontbrekende info
+                <select id="tableMissingFilter">
+                  <option value="">Geen filter</option>
+                  <option value="any">Heeft ontbrekende gegevens</option>
+                  <option value="price">Mist prijs</option>
+                  <option value="barcode">Mist barcode</option>
+                  <option value="releaseYear">Mist uitgavejaar</option>
+                  <option value="description">Mist beschrijving</option>
+                  <option value="photos">Mist foto's</option>
+                </select>
+              </label>
+              <label>
+                Productstatus
+                <select id="tableArchiveFilter">
+                  <option value="active">Actief</option>
+                  <option value="archived">Gearchiveerd</option>
+                  <option value="all">Alles</option>
+                </select>
+              </label>
+            </div>
+            <p class="admin-detail" id="tableResultHint"></p>
+          </div>
+          <div id="productTable"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="assets/products-admin.js"></script>
+    <script type="module" src="assets/product-media-uploader.js"></script>
+  </body>
+</html>

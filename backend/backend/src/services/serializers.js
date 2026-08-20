@@ -7,14 +7,9 @@ const safeJsonParse = (value, fallback) => {
 };
 
 const asBoolean = (value) => Boolean(Number(value));
-const isEmbeddedImage = (value = "") => /^data:image\/(?:jpeg|jpg|png|webp);base64,/i.test(String(value || ""));
-const safeMediaValue = (value = "") => {
-  const text = String(value || "");
-  return isEmbeddedImage(text) ? "" : text;
-};
 
 export const toApiProduct = (row = {}) => {
-  const images = safeJsonParse(row.images_json, []).map(safeMediaValue).filter(Boolean);
+  const images = safeJsonParse(row.images_json, []);
   const tags = safeJsonParse(row.tags_json, []);
   const sellingPrice = Number(row.selling_price) || 0;
 
@@ -49,18 +44,18 @@ export const toApiProduct = (row = {}) => {
     sellingPrice,
     discountPrice: row.discount_price === null ? null : Number(row.discount_price) || 0,
     archived: Boolean(Number(row.archived) || 0),
-    thumbnail: safeMediaValue(row.thumbnail),
+    thumbnail: row.thumbnail || "",
     images,
     description: row.description || "",
     tags,
-    boxFront: safeMediaValue(row.box_front),
-    boxBack: safeMediaValue(row.box_back),
-    leftSide: safeMediaValue(row.left_side),
-    rightSide: safeMediaValue(row.right_side),
+    boxFront: row.box_front || "",
+    boxBack: row.box_back || "",
+    leftSide: row.left_side || "",
+    rightSide: row.right_side || "",
     metaTitle: row.meta_title || "",
     metaDescription: row.meta_description || "",
     price: sellingPrice,
-    image: safeMediaValue(row.thumbnail),
+    image: row.thumbnail || "",
     gallery: images,
   };
 };

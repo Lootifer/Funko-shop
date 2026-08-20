@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Lootifer</title>
+    <link rel="stylesheet" href="../Assets/Css/main.css" />
+    <link rel="stylesheet" href="assets/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-shell">
+      <div id="adminSidebar"></div>
+      <main class="admin-main">
+        <div id="adminTopbar"></div>
+
+        <section class="admin-grid">
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">Totaal producten</p>
+            <h3 id="statTotalProducts">0</h3>
+            <p class="admin-detail">Verspreid over premium drops</p>
+          </article>
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">Totaal universums</p>
+            <h3 id="statTotalUniverses">0</h3>
+            <p class="admin-detail">Gecureerde verzamelwerelden</p>
+          </article>
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">Weinig voorraad</p>
+            <h3 id="statLowStock">0</h3>
+            <p class="admin-detail">Vraagt binnenkort aandacht</p>
+          </article>
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">Volledige producten</p>
+            <h3 id="statCompleteProducts">0</h3>
+            <p class="admin-detail">Met complete kerngegevens</p>
+          </article>
+          <article class="admin-card admin-stat-card">
+            <p class="admin-label">Onvolledige producten</p>
+            <h3 id="statIncompleteProducts">0</h3>
+            <p class="admin-detail">Mist prijs, barcode, jaar, tekst of foto's</p>
+          </article>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Collector Club leden</h3>
+            <p class="admin-detail">Widget voor toekomstige CRM- en aanmeldinzichten.</p>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Recente activiteit</h3>
+            <table class="admin-table">
+              <thead>
+                <tr><th>Item</th><th>Status</th><th>Bijgewerkt</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Midnight Viper</td><td>Live</td><td>2 uur geleden</td></tr>
+                <tr><td>Aurora Guardian</td><td>Herbevoorrading in wachtrij</td><td>5 uur geleden</td></tr>
+                <tr><td>Snow Queen</td><td>Uitgelicht</td><td>Gisteren</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Bestellingen beheren</h3>
+            <p class="admin-detail">Open de uitgebreide bestelbeheerpagina voor filters, statusacties en exports.</p>
+            <a class="button secondary" href="orders.html">Ga naar bestellingen</a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="assets/dashboard-admin.js"></script>
+  </body>
+</html>

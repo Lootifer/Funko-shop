@@ -10,7 +10,6 @@ const router = Router();
 const PROJECT_ROOT = path.resolve(process.cwd());
 const HOMEPAGE_FILE = path.resolve(PROJECT_ROOT, "Data", "homepage.json");
 const IMAGE_ROOT = path.resolve(PROJECT_ROOT, "Assets", "Images");
-const HOMEPAGE_HIGHLIGHT_SLOTS = 3;
 
 const cleanText = (value = "") => String(value || "").trim();
 const slugify = (value = "") => cleanText(value)
@@ -21,19 +20,16 @@ const slugify = (value = "") => cleanText(value)
   .replace(/(^-|-$)/g, "");
 
 const defaultHomepage = () => ({
-  display: Array.from({ length: 3 }, () => ({ productId: null, image: "" })),
-  highlights: Array.from({ length: HOMEPAGE_HIGHLIGHT_SLOTS }, () => ({ productId: null, image: "" })),
+  display: [{ image: "" }, { image: "" }, { image: "" }],
+  highlights: Array.from({ length: 6 }, () => ({ productId: null, image: "" })),
 });
 
 const readHomepage = async () => {
   try {
     const parsed = JSON.parse(await fs.readFile(HOMEPAGE_FILE, "utf8"));
     return {
-      display: Array.from({ length: 3 }, (_, index) => ({
-        productId: Number(parsed?.display?.[index]?.productId) || null,
-        image: cleanText(parsed?.display?.[index]?.image),
-      })),
-      highlights: Array.from({ length: HOMEPAGE_HIGHLIGHT_SLOTS }, (_, index) => ({
+      display: Array.from({ length: 3 }, (_, index) => ({ image: cleanText(parsed?.display?.[index]?.image) })),
+      highlights: Array.from({ length: 6 }, (_, index) => ({
         productId: Number(parsed?.highlights?.[index]?.productId) || null,
         image: cleanText(parsed?.highlights?.[index]?.image),
       })),
@@ -326,10 +322,9 @@ router.put("/homepage", requireAdmin, async (request, response, next) => {
   try {
     const current = await readHomepage();
     const display = Array.from({ length: 3 }, (_, index) => ({
-      productId: Number(request.body?.display?.[index]?.productId ?? current.display[index]?.productId) || null,
       image: cleanText(request.body?.display?.[index]?.image ?? current.display[index]?.image),
     }));
-    const highlights = Array.from({ length: HOMEPAGE_HIGHLIGHT_SLOTS }, (_, index) => ({
+    const highlights = Array.from({ length: 6 }, (_, index) => ({
       productId: Number(request.body?.highlights?.[index]?.productId) || null,
       image: cleanText(request.body?.highlights?.[index]?.image ?? current.highlights[index]?.image),
     }));
@@ -422,7 +417,7 @@ router.post("/product-media", requireAdmin, async (request, response, next) => {
 router.post("/homepage-media", requireAdmin, async (request, response, next) => {
   try {
     const section = request.body?.section === "highlight" ? "highlight" : "display";
-    const max = section === "display" ? 3 : HOMEPAGE_HIGHLIGHT_SLOTS;
+    const max = section === "display" ? 3 : 6;
     const slot = Math.max(1, Math.min(max, Number(request.body?.slot) || 1));
     const { extension, buffer } = decodeDataUrl(request.body?.dataUrl);
     const folder = path.resolve(IMAGE_ROOT, "Home", "Admin");
