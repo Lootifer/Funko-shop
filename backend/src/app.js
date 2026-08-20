@@ -11,9 +11,17 @@ const app = express();
 
 const isAllowedOrigin = (origin = "") => {
   if (!origin) return true;
+
   try {
     const url = new URL(origin);
-    return ["localhost", "127.0.0.1"].includes(url.hostname);
+
+    return [
+      "localhost",
+      "127.0.0.1",
+      "test.2ndlifetoys.nl",
+      "2ndlifetoys.nl",
+      "www.2ndlifetoys.nl"
+    ].includes(url.hostname);
   } catch {
     return false;
   }
