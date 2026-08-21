@@ -1,6 +1,6 @@
 // Gebruik alleen cijfers met landcode, zonder +, spaties of streepjes.
 // Vervang dit nummer later door het zakelijke WhatsApp-nummer van Lootifer.
-export const LOOTIFER_WHATSAPP_NUMBER = "31683691784";
+export const LOOTIFER_WHATSAPP_NUMBER = "31612987694";
 
 export const getLootiferWhatsAppUrl = (message = "") => {
   const number = String(LOOTIFER_WHATSAPP_NUMBER || "").replace(/\D/g, "");
