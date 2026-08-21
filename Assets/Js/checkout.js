@@ -7,8 +7,7 @@ import { createImageAttributes } from "../../Products/product-media.js";
 import { getProductPriceLabel } from "../../Products/product-pricing.js";
 import { addOrder, synchronizeCartWithInventory } from "../../Components/Experience/order-inventory.js";
 import { getLootiferWhatsAppUrl } from "./store-config.js";
-import { calculateOrderTotals } from "../../Shared/shipping.js";
-
+import { calculateOrderTotals, isNetherlands } from "../../Shared/shipping.js";
 const headerRoot = document.getElementById("headerRoot");
 const footerRoot = document.getElementById("footerRoot");
 const checkoutForm = document.getElementById("checkoutForm");
@@ -38,7 +37,8 @@ const validateForm = (values, cart) => {
   if (!values.phone?.trim()) errors.push("Telefoonnummer is verplicht.");
   if (!values.street?.trim()) errors.push("Straat is verplicht.");
   if (!values.houseNumber?.trim()) errors.push("Huisnummer is verplicht.");
-  if (!values.postalCode?.trim() || !postalCodePattern.test(values.postalCode.trim())) errors.push("Postcode moet een geldig Nederlands formaat hebben.");
+  if (!values.postalCode?.trim()) errors.push("Postcode is verplicht.");
+else if (isNetherlands(values.country) && !postalCodePattern.test(values.postalCode.trim())) errors.push("Postcode moet een geldig Nederlands formaat hebben, bijvoorbeeld 1234 AB.");
   if (!values.city?.trim()) errors.push("Plaats is verplicht.");
   if (!values.country?.trim()) errors.push("Land is verplicht.");
 
@@ -52,7 +52,38 @@ const validateForm = (values, cart) => {
 const renderSummary = () => {
   const cart = shoppingState.getCart();
   const subtotal = shoppingState.getCartSubtotal();
-  const totals = calculateOrderTotals(subtotal);
+const country = document.getElementById("checkoutCountry")?.value || "Nederland";
+const totals = calculateOrderTotals(subtotal, country);
+const deliveryCard = document.querySelector(".checkout-delivery-card");
+const deliveryText = deliveryCard?.querySelector("small");
+const deliveryStatus = deliveryCard?.querySelector(".checkout-delivery-status");
+const deliveryMethodInput = document.getElementById("checkoutDeliveryMethod");
+const displayCountry = country.trim() || "Nederland";
+
+if (totals.domesticShipping) {
+  if (deliveryText) {
+    deliveryText.textContent =
+      "Nederland: €6,95 verzendkosten, gratis vanaf €75,00.";
+  }
+
+  if (deliveryStatus) deliveryStatus.textContent = "Nederland";
+
+  if (deliveryMethodInput) {
+    deliveryMethodInput.value = "Verzending binnen Nederland";
+  }
+} else {
+  if (deliveryText) {
+    deliveryText.textContent =
+      "Internationale verzendkosten worden apart berekend en via WhatsApp bevestigd.";
+  }
+
+  if (deliveryStatus) deliveryStatus.textContent = displayCountry;
+
+  if (deliveryMethodInput) {
+    deliveryMethodInput.value =
+      `Internationale verzending naar ${displayCountry} - kosten apart te bevestigen`;
+  }
+}
   const quantity = shoppingState.getCartQuantity();
 
   if (checkoutMeta) {
@@ -85,13 +116,18 @@ const renderSummary = () => {
         )
         .join("")}
       <div class="summary-line"><span>Subtotaal</span><strong>${formatCurrency(totals.subtotal)}</strong></div>
-      <div class="summary-line"><span>Verzendkosten Nederland</span><strong>${totals.hasFreeShipping ? "Gratis" : formatCurrency(totals.shippingCost)}</strong></div>
-      <div class="summary-total"><span>Totaal</span><strong>${formatCurrency(totals.total)}</strong></div>
-      <p class="shipping-threshold-note ${totals.hasFreeShipping ? "is-free" : ""}">${totals.hasFreeShipping ? "Je bestelling wordt gratis verzonden." : `Nog ${formatCurrency(totals.amountUntilFreeShipping)} voor gratis verzending.`}</p>
+       
+      <div class="order-summary-line"><span>${totals.internationalShippingPending ? "Internationale verzending" : "Verzendkosten Nederland"}</span><strong>${totals.internationalShippingPending ? "Apart te bevestigen" : (totals.hasFreeShipping ? "Gratis" : formatCurrency(totals.shippingCost))}</strong></div>
+      <p class="shipping-threshold-note ${totals.hasFreeShipping ? "is-free" : ""}">${totals.internationalShippingPending ? "Internationale verzendkosten worden apart via WhatsApp bevestigd." : totals.hasFreeShipping ? "Je bestelling wordt gratis verzonden." : `Nog ${formatCurrency(totals.amountUntilFreeShipping)} tot gratis verzending.`}</p>
     </div>
   `;
 };
+const checkoutCountryInput = document.getElementById("checkoutCountry");
 
+if (checkoutCountryInput) {
+  checkoutCountryInput.addEventListener("input", renderSummary);
+  checkoutCountryInput.addEventListener("change", renderSummary);
+}
 const showErrors = (errors = []) => {
   if (!checkoutErrors) return;
   if (!errors.length) {
@@ -220,13 +256,15 @@ checkoutForm?.addEventListener("submit", (event) => {
       }
 
       const subtotal = shoppingState.getCartSubtotal();
-      const totals = calculateOrderTotals(subtotal);
+      const totals = calculateOrderTotals(subtotal, values.country);
       const order = {
         status: "Nieuw",
         paymentStatus: "Via WhatsApp af te stemmen",
         isTestOrder: false,
         stockRestoredAt: null,
-        deliveryMethod: "Verzending binnen Nederland",
+        deliveryMethod: totals.domesticShipping
+  ? "Verzending binnen Nederland"
+  : `Internationale verzending naar ${values.country.trim()} - kosten apart te bevestigen`,
         shippingCost: totals.shippingCost,
         total: totals.total,
         subtotal: totals.subtotal,
