@@ -117,7 +117,7 @@ if (totals.domesticShipping) {
         .join("")}
       <div class="summary-line"><span>Subtotaal</span><strong>${formatCurrency(totals.subtotal)}</strong></div>
        
-      <div class="order-summary-line"><span>${totals.internationalShippingPending ? "Internationale verzending" : "Verzendkosten Nederland"}</span><strong>${totals.internationalShippingPending ? "Apart te bevestigen" : (totals.hasFreeShipping ? "Gratis" : formatCurrency(totals.shippingCost))}</strong></div>
+      <div class="summary-line"><span>${totals.internationalShippingPending ? "Internationale verzending" : "Verzendkosten Nederland"}</span><strong>${totals.internationalShippingPending ? "Apart te bevestigen" : (totals.hasFreeShipping ? "Gratis" : formatCurrency(totals.shippingCost))}</strong></div>
       <p class="shipping-threshold-note ${totals.hasFreeShipping ? "is-free" : ""}">${totals.internationalShippingPending ? "Internationale verzendkosten worden apart via WhatsApp bevestigd." : totals.hasFreeShipping ? "Je bestelling wordt gratis verzonden." : `Nog ${formatCurrency(totals.amountUntilFreeShipping)} tot gratis verzending.`}</p>
     </div>
   `;
