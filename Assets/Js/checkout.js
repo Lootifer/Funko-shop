@@ -166,7 +166,7 @@ const buildWhatsAppMessage = (order) => {
     itemLines,
     "",
     `Subtotaal: ${formatCurrency(order.subtotal)}`,
-    `Verzendkosten: ${Number(order.shippingCost) > 0 ? formatCurrency(order.shippingCost) : "Gratis"}`,
+    `Verzendkosten: ${String(order.deliveryMethod || "").startsWith("Internationale verzending") ? "N.t.b. - apart te bevestigen" : (Number(order.shippingCost) > 0 ? formatCurrency(order.shippingCost) : "Gratis")}`,
     `Totaal: ${formatCurrency(order.total)}`,
     "",
     `Naam: ${customer.name || ""}`,

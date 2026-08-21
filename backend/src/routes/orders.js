@@ -117,7 +117,7 @@ router.post("/", async (request, response, next) => {
         throw Object.assign(new Error("Er zijn geen geldige orderregels aangeleverd."), { status: 400 });
       }
 
-      const totals = calculateOrderTotals(subtotal);
+      const totals = calculateOrderTotals(subtotal, customer?.country || "Nederland");
 
       const insertedOrder = await run(
         `INSERT INTO orders (
