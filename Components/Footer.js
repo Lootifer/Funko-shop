@@ -87,11 +87,13 @@ export const createFooter = () => {
       </div>
 
       <div class="footer-column">
-        <h3 data-footer-copy="service">${copy.service}</h3>
-        <a href="contact.html" data-footer-copy="contact">${copy.contact}</a>
-        <a href="checkout.html" data-footer-copy="checkout">${copy.checkout}</a>
-        <a href="terms.html" data-footer-copy="terms">${copy.terms}</a>
-      </div>
+  <h3 data-footer-copy="service">${copy.service}</h3>
+  <a href="contact.html" data-footer-copy="contact">${copy.contact}</a>
+  <a href="checkout.html" data-footer-copy="checkout">${copy.checkout}</a>
+  <a href="terms.html" data-footer-copy="terms">${copy.terms}</a>
+  <a href="mailto:info@2ndlifetoys.nl">info@2ndlifetoys.nl</a>
+  <a href="https://www.instagram.com/2nd_life_toys.nl/" target="_blank" rel="noopener noreferrer">@2nd_life_toys.nl</a>
+</div>
 
       <div class="footer-column">
         <h3 data-footer-copy="lootifer">${copy.lootifer}</h3>
