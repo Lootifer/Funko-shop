@@ -25,3 +25,9 @@
 @import url('components/collections-hub.css');
 
 @import url('components/v18-home-display.css');
+/* MOBIEL: ruimte tussen logo en zoekbalk */
+@media (max-width: 700px) {
+  .premium-topbar .header-tools {
+    margin-top: 5rem;
+  }
+}
