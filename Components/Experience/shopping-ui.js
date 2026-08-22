@@ -106,7 +106,7 @@ export const createShoppingUi = ({ root } = {}) => {
   drawer.innerHTML = `
     <div class="drawer-header">
       <div>
-        <p class="drawer-eyebrow">Lootifer Collectibles</p>
+        <p class="drawer-eyebrow">2nd Life Toys</p>
         <h3 id="shoppingDrawerTitle">Winkelwagen</h3>
       </div>
       <button class="drawer-close" type="button" aria-label="Winkelwagen sluiten">&times;</button>

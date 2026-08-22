@@ -180,7 +180,7 @@ export const normalizeProduct = (rawProduct = {}) => {
   normalized.image = media.image;
   normalized.gallery = media.gallery;
 
-  normalized.metaTitle = rawProduct.metaTitle || `${rawProduct.name || "Collectible"} | Lootifer Collectibles`;
+  normalized.metaTitle = rawProduct.metaTitle || `${rawProduct.name || "Collectible"} | 2nd Life Toys`;
   normalized.metaDescription = rawProduct.metaDescription || rawProduct.description || "";
   normalized.description = (rawProduct.description || normalized.metaDescription || "").trim() || DEFAULT_DESCRIPTION;
 

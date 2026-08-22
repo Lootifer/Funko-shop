@@ -1,4 +1,4 @@
-LOOTIFER COLLECTIBLES V16.2
+2nd Life Toys V16.2
 
 Aanpassing productdetailpagina:
 - De grote productfoto heeft nu altijd dezelfde vaste displayruimte.

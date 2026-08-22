@@ -158,7 +158,7 @@ const buildWhatsAppMessage = (order) => {
     .trim();
 
   return [
-    "Hallo Lootifer Collectibles!",
+    "Hallo 2nd Life Toys!",
     "",
     `Ik heb bestelling ${order.number} geplaatst en wil de betaling afronden.`,
     "",

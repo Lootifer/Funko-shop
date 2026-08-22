@@ -1,4 +1,4 @@
-LOOTIFER COLLECTIBLES V14
+2nd Life Toys V14
 
 AANGEPAST
 - De knop 'Only in stock' is altijd goed leesbaar, ook zonder hover.

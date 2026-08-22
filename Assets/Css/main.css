@@ -30,4 +30,9 @@
   .premium-topbar .header-tools {
     margin-top: 5rem;
   }
+}/* Geen gele decoratie/punt bij Contact in de hoofdnavigatie */
+.nav-links a[href="contact.html"]::before,
+.nav-links a[href="contact.html"]::after {
+  content: none !important;
+  display: none !important;
 }

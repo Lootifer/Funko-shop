@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Lootifer Collectibles is a modular storefront built with plain HTML, CSS, and JavaScript. The project is designed to be easy to extend as a collector platform for Funko Pops, LEGO, Hot Wheels, action figures, trading cards, and other collectible categories.
+2nd Life Toys is a modular storefront built with plain HTML, CSS, and JavaScript. The project is designed to be easy to extend as a collector platform for Funko Pops, LEGO, Hot Wheels, action figures, trading cards, and other collectible categories.
 
 ## Folder Structure
 
@@ -103,7 +103,7 @@ Compatibility fields kept for current frontend modules:
   "boxBack": "Assets/Images/Products/funko/batman-593/back.webp",
   "leftSide": "Assets/Images/Products/funko/batman-593/left.webp",
   "rightSide": "Assets/Images/Products/funko/batman-593/right.webp",
-  "metaTitle": "Midnight Viper #001 | Lootifer Collectibles",
+  "metaTitle": "Midnight Viper #001 | 2nd Life Toys",
   "metaDescription": "Chrome-finished collectible with numbered packaging and premium display appeal.",
   "price": 249,
   "image": "Assets/Images/Products/funko/batman-593/front.webp",

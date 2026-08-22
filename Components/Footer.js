@@ -91,9 +91,8 @@ export const createFooter = () => {
   <a href="contact.html" data-footer-copy="contact">${copy.contact}</a>
   <a href="checkout.html" data-footer-copy="checkout">${copy.checkout}</a>
   <a href="terms.html" data-footer-copy="terms">${copy.terms}</a>
-  <a href="mailto:info@2ndlifetoys.nl">info@2ndlifetoys.nl</a>
-  <a href="https://www.instagram.com/2nd_life_toys.nl/" target="_blank" rel="noopener noreferrer">@2nd_life_toys.nl</a>
-</div>
+  <a href="mailto:info@2ndlifetoys.nl">✉️&nbsp; info@2ndlifetoys.nl</a>
+<a href="https://www.instagram.com/2nd_life_toys.nl/" target="_blank" rel="noopener noreferrer">📷&nbsp; @2nd_life_toys.nl</a>
 
       <div class="footer-column">
         <h3 data-footer-copy="lootifer">${copy.lootifer}</h3>
@@ -104,7 +103,7 @@ export const createFooter = () => {
       </div>
 
       <div class="footer-bottom">
-        <span>© ${new Date().getFullYear()} Lootifer Collectibles</span>
+        <span>© ${new Date().getFullYear()} 2nd Life Toys</span>
         <span data-footer-copy="built">${copy.built}</span>
         <a class="footer-admin-link" href="admin/login.html" aria-label="Admin login">Admin</a>
       </div>

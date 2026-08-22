@@ -11,7 +11,7 @@ if (user) {
     `
       <label>
         Winkelnaam
-        <input value="Lootifer Collectibles" />
+        <input value="2nd Life Toys" />
       </label>
       <label>
         Dropmodus

@@ -313,7 +313,7 @@ export const buildProductForSave = ({ draft, existingProduct = null, autoLinkedI
     leftSide: imageSet[2] || thumbnail,
     rightSide: imageSet[3] || thumbnail,
     price: Number(draft.sellingPrice || 0),
-    metaTitle: `${draft.name || "Collectible"} ${draft.number || ""} | Lootifer Collectibles`.trim(),
+    metaTitle: `${draft.name || "Collectible"} ${draft.number || ""} | 2nd Life Toys`.trim(),
     metaDescription: draft.description || `${draft.name || "Collectible"} premium listing.`,
     convention: existingProduct?.convention || "",
   };
