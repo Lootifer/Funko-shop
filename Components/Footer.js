@@ -10,7 +10,7 @@ const footerCopy = {
     contact: "Contact",
     checkout: "Checkout",
     terms: "Terms",
-    lootifer: "Lootifer",
+    lootifer: "2nd Life Toys",
     about: "About",
     collections: "Collections",
     once: "Once it is gone, it is gone",
@@ -27,7 +27,7 @@ const footerCopy = {
     contact: "Contact",
     checkout: "Afrekenen",
     terms: "Voorwaarden",
-    lootifer: "Lootifer",
+    lootifer: "2nd Life Toys",
     about: "Over ons",
     collections: "Collecties",
     once: "Op is op",
@@ -71,9 +71,9 @@ export const createFooter = () => {
             </svg>
           </span>
           <span class="brand-wordmark">
-            <strong>Lootifer</strong>
-            <small>Collectibles</small>
-          </span>
+  <strong>2nd Life</strong>
+  <small>Toys</small>
+</span>
         </a>
         <p data-footer-copy="intro">${copy.intro}</p>
         <span class="footer-private-label" data-footer-copy="private">${copy.private}</span>
@@ -91,8 +91,22 @@ export const createFooter = () => {
   <a href="contact.html" data-footer-copy="contact">${copy.contact}</a>
   <a href="checkout.html" data-footer-copy="checkout">${copy.checkout}</a>
   <a href="terms.html" data-footer-copy="terms">${copy.terms}</a>
-  <a href="mailto:info@2ndlifetoys.nl">✉️&nbsp; info@2ndlifetoys.nl</a>
-<a href="https://www.instagram.com/2nd_life_toys.nl/" target="_blank" rel="noopener noreferrer">📷&nbsp; @2nd_life_toys.nl</a>
+<a href="mailto:info@2ndlifetoys.nl">
+  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-3px;margin-right:8px;">
+    <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+    <path d="m3 7 9 6 9-6"></path>
+  </svg>
+  info@2ndlifetoys.nl
+</a>
+
+<a href="https://www.instagram.com/2nd_life_toys.nl/" target="_blank" rel="noopener noreferrer">
+  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-3px;margin-right:8px;">
+    <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+    <circle cx="12" cy="12" r="4"></circle>
+    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
+  </svg>
+  @2nd_life_toys.nl
+</a>
 
       <div class="footer-column">
         <h3 data-footer-copy="lootifer">${copy.lootifer}</h3>
