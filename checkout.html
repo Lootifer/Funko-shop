@@ -37,57 +37,67 @@
                 Naam
                 <input id="checkoutName" name="name" type="text" autocomplete="name" required />
               </label>
+
               <label>
                 E-mail
                 <input id="checkoutEmail" name="email" type="email" autocomplete="email" required />
               </label>
+
               <label>
                 Telefoon
                 <input id="checkoutPhone" name="phone" type="tel" autocomplete="tel" required />
               </label>
+
               <label>
-                Straat
-                <input id="checkoutStreet" name="street" type="text" autocomplete="address-line1" required />
+                Land
+                <select id="checkoutCountry" name="country" autocomplete="country-name" required>
+                  <option value="Nederland" selected>Nederland</option>
+                  <option value="België">België</option>
+                  <option value="Duitsland">Duitsland</option>
+                  <option value="Frankrijk">Frankrijk</option>
+                  <option value="Luxemburg">Luxemburg</option>
+                  <option value="Verenigd Koninkrijk">Verenigd Koninkrijk</option>
+                  <option value="Spanje">Spanje</option>
+                  <option value="Portugal">Portugal</option>
+                  <option value="Italië">Italië</option>
+                  <option value="Oostenrijk">Oostenrijk</option>
+                  <option value="Zwitserland">Zwitserland</option>
+                  <option value="Denemarken">Denemarken</option>
+                  <option value="Zweden">Zweden</option>
+                  <option value="Noorwegen">Noorwegen</option>
+                  <option value="Ierland">Ierland</option>
+                  <option value="Polen">Polen</option>
+                  <option value="Tsjechië">Tsjechië</option>
+                  <option value="Anders">Anders</option>
+                </select>
               </label>
-              <label>
-                Huisnummer
-                <input id="checkoutHouseNumber" name="houseNumber" type="text" autocomplete="address-line2" required />
-              </label>
+
               <label>
                 Postcode
                 <input id="checkoutPostalCode" name="postalCode" type="text" placeholder="1234 AB" autocomplete="postal-code" required />
               </label>
+
+              <label>
+                Huisnummer
+                <input id="checkoutHouseNumber" name="houseNumber" type="text" autocomplete="address-line2" required />
+              </label>
+
+              <p
+                id="addressAutoFillHint"
+                class="checkout-submit-note full-span"
+                style="margin: -0.15rem 0 0.25rem;"
+              >
+                Vul eerst postcode en huisnummer in. Straat en plaats worden daarna automatisch ingevuld.
+              </p>
+
+              <label>
+                Straat
+                <input id="checkoutStreet" name="street" type="text" autocomplete="address-line1" required />
+              </label>
+
               <label>
                 Plaats
                 <input id="checkoutCity" name="city" type="text" autocomplete="address-level2" required />
-              </label>
-              <label>
-                Land
-                <select id="checkoutCountry" name="country" autocomplete="country-name" required>
-  <option value="Nederland" selected>Nederland</option>
-  <option value="België">België</option>
-  <option value="Duitsland">Duitsland</option>
-  <option value="Frankrijk">Frankrijk</option>
-  <option value="Luxemburg">Luxemburg</option>
-  <option value="Spanje">Spanje</option>
-  <option value="Portugal">Portugal</option>
-  <option value="Italië">Italië</option>
-  <option value="Oostenrijk">Oostenrijk</option>
-  <option value="Zwitserland">Zwitserland</option>
-  <option value="Denemarken">Denemarken</option>
-  <option value="Zweden">Zweden</option>
-  <option value="Noorwegen">Noorwegen</option>
-  <option value="Finland">Finland</option>
-  <option value="Polen">Polen</option>
-  <option value="Tsjechië">Tsjechië</option>
-  <option value="Verenigd Koninkrijk">Verenigd Koninkrijk</option>
-  <option value="Ierland">Ierland</option>
-  <option value="Verenigde Staten">Verenigde Staten</option>
-  <option value="Canada">Canada</option>
-  <option value="Japan">Japan</option>
-  <option value="Australië">Australië</option>
-  <option value="Anders">Ander land</option>
-</select>
               </label>
 
               <div class="full-span checkout-delivery-card" role="group" aria-labelledby="deliveryHeading">
@@ -121,6 +131,7 @@
             </label>
 
             <div id="checkoutErrors" class="admin-error" style="display: none;"></div>
+
             <div class="checkout-actions">
               <button class="button primary whatsapp-checkout-button" type="submit" id="checkoutSubmitButton">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -131,6 +142,7 @@
               </button>
               <a class="button secondary checkout-back-link" href="cart.html">← Terug naar winkelwagen</a>
             </div>
+
             <p class="checkout-submit-note">Je winkelwagen wordt pas geleegd nadat de bestelling succesvol is opgeslagen.</p>
           </form>
         </article>
