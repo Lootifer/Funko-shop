@@ -5,6 +5,7 @@ import ordersRouter from "./routes/orders.js";
 import stockRouter from "./routes/stock.js";
 import authRouter from "./routes/auth.js";
 import siteRouter from "./routes/site.js";
+import accountRouter from "./routes/account.js";
 import { getDbPath } from "./db/connection.js";
 
 const app = express();
@@ -41,6 +42,7 @@ app.get("/api/health", (request, response) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/account", accountRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/stock", stockRouter);
