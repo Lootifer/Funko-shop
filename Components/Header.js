@@ -23,6 +23,10 @@ const copy = {
     loginHint: "Ik heb al een account",
     createAccount: "Maak account",
     createHint: "Ik ben nieuw bij 2nd Life Toys",
+    myAccount: "Mijn account",
+    myAccountHint: "Bekijk gegevens en bestellingen",
+    logout: "Uitloggen",
+    logoutHint: "Afmelden op dit apparaat",
     wishlist: "Verlanglijst",
     cart: "Winkelwagen",
     searchPlaceholder: "Zoek product...",
@@ -39,6 +43,10 @@ const copy = {
     loginHint: "I already have an account",
     createAccount: "Create account",
     createHint: "I am new to 2nd Life Toys",
+    myAccount: "My account",
+    myAccountHint: "View details and orders",
+    logout: "Sign out",
+    logoutHint: "Sign out on this device",
     wishlist: "Wishlist",
     cart: "Cart",
     searchPlaceholder: "Search product...",
@@ -315,6 +323,38 @@ const ensureHeaderStyles = () => {
   document.head.appendChild(style);
 };
 
+const ACCOUNT_TOKEN_KEY = "second-life-account-token";
+const ACCOUNT_USER_KEY = "second-life-account-user";
+
+const readStoredAccount = () => {
+  if (typeof window === "undefined") return null;
+  const token = window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY) || window.localStorage.getItem(ACCOUNT_TOKEN_KEY) || "";
+  const raw = window.sessionStorage.getItem(ACCOUNT_USER_KEY) || window.localStorage.getItem(ACCOUNT_USER_KEY) || "";
+  if (!token || !raw) return null;
+  try { return { token, user: JSON.parse(raw) }; } catch { return null; }
+};
+
+const updateAccountMenuState = (state = null) => {
+  if (typeof document === "undefined") return;
+  const stored = state || readStoredAccount();
+  const authenticated = Boolean(stored?.user);
+  const user = stored?.user || {};
+
+  document.querySelectorAll("[data-second-life-account-menu]").forEach((menu) => {
+    const summary = menu.querySelector("[data-account-summary-label]");
+    const title = menu.querySelector("[data-account-panel-title]");
+    const subtitle = menu.querySelector("[data-account-panel-subtitle]");
+    const guestActions = menu.querySelector("[data-account-guest-actions]");
+    const memberActions = menu.querySelector("[data-account-member-actions]");
+
+    if (summary) summary.textContent = authenticated ? (user.firstName || "Account") : (copy[getLanguage()]?.account || "Account");
+    if (title) title.textContent = authenticated ? `Hallo, ${user.firstName || "collector"}` : (copy[getLanguage()]?.accountTitle || "Mijn account");
+    if (subtitle) subtitle.textContent = authenticated ? (user.email || "") : (copy[getLanguage()]?.accountQuestion || "Wat wil je doen?");
+    if (guestActions) guestActions.hidden = authenticated;
+    if (memberActions) memberActions.hidden = !authenticated;
+  });
+};
+
 const updateHeaderLanguage = (language = getLanguage()) => {
   if (typeof document === "undefined") return;
 
@@ -430,6 +470,15 @@ export const initHeaderPreferences = () => {
   bindHeaderSearch();
   bindLanguageSwitch();
   bindAccountMenu();
+  updateAccountMenuState();
+
+  if (document.documentElement.dataset.secondLifeAccountStateBound !== "true") {
+    document.documentElement.dataset.secondLifeAccountStateBound = "true";
+    window.addEventListener("secondlife:account-state", (event) => {
+      const detail = event.detail || {};
+      updateAccountMenuState(detail.authenticated ? { user: detail.user } : null);
+    });
+  }
 };
 
 if (typeof document !== "undefined") {
@@ -502,7 +551,7 @@ export const createHeader = (active = "home") => {
         >
           <summary class="second-life-account-summary">
             ${icon("user")}
-            <span data-header-copy="account">Account</span>
+            <span data-header-copy="account" data-account-summary-label>Account</span>
             <span class="second-life-account-chevron" aria-hidden="true">⌄</span>
           </summary>
 
@@ -516,16 +565,18 @@ export const createHeader = (active = "home") => {
                 <strong
                   class="second-life-account-panel-title"
                   data-header-copy="accountTitle"
+                  data-account-panel-title
                 >Mijn account</strong>
 
                 <small
                   class="second-life-account-panel-subtitle"
                   data-header-copy="accountQuestion"
+                  data-account-panel-subtitle
                 >Wat wil je doen?</small>
               </span>
             </div>
 
-            <div class="second-life-account-actions">
+            <div class="second-life-account-actions" data-account-guest-actions>
               <a
                 class="second-life-account-action second-life-account-login"
                 href="account.html#login"
@@ -565,6 +616,23 @@ export const createHeader = (active = "home") => {
                     class="second-life-account-action-subtitle"
                     data-header-copy="createHint"
                   >Ik ben nieuw bij 2nd Life Toys</small>
+                </span>
+              </a>
+            </div>
+
+            <div class="second-life-account-actions" data-account-member-actions hidden>
+              <a class="second-life-account-action second-life-account-login" href="account.html">
+                <span class="second-life-account-action-icon" aria-hidden="true">${icon("arrow")}</span>
+                <span class="second-life-account-action-copy">
+                  <strong class="second-life-account-action-title" data-header-copy="myAccount">Mijn account</strong>
+                  <small class="second-life-account-action-subtitle" data-header-copy="myAccountHint">Bekijk gegevens en bestellingen</small>
+                </span>
+              </a>
+              <a class="second-life-account-action second-life-account-register" href="account.html#logout">
+                <span class="second-life-account-action-icon" aria-hidden="true">${icon("arrow")}</span>
+                <span class="second-life-account-action-copy">
+                  <strong class="second-life-account-action-title" data-header-copy="logout">Uitloggen</strong>
+                  <small class="second-life-account-action-subtitle" data-header-copy="logoutHint">Afmelden op dit apparaat</small>
                 </span>
               </a>
             </div>

@@ -7,33 +7,48 @@
   <title>Account | 2nd Life Toys</title>
   <meta name="description" content="Inloggen of een nieuw 2nd Life Toys account aanmaken." />
   <link rel="stylesheet" href="Assets/Css/main.css" />
-  <link rel="stylesheet" href="Assets/Css/components/v45-layout.css?v=45" />
+  <link rel="stylesheet" href="Assets/Css/components/v45-layout.css?v=46" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    [hidden]{display:none!important}
+    .account-live-note{display:flex;gap:10px;align-items:center;justify-content:center;margin:18px auto 0;color:#9ea5ad;font-size:13px}
+    .account-live-dot{width:9px;height:9px;border-radius:50%;background:#e8bd3c;box-shadow:0 0 16px rgba(232,189,60,.5)}
+    .account-dashboard{max-width:1180px;margin:28px auto 80px;padding:0 24px}
+    .account-dashboard-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:22px;padding:24px;border:1px solid rgba(255,255,255,.09);border-radius:20px;background:rgba(255,255,255,.035)}
+    .account-dashboard-head h2{margin:4px 0 0;font-size:clamp(24px,3vw,38px)}
+    .account-dashboard-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}
+    .account-dashboard-card{padding:22px;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:rgba(255,255,255,.035)}
+    .account-dashboard-card h3{margin:0 0 8px}.account-dashboard-card>p{margin:0 0 18px;color:#9ea5ad}
+    .account-orders-card{grid-column:1/-1}.account-orders-list{display:grid;gap:12px}.account-order{padding:16px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(0,0,0,.16)}
+    .account-order-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.account-order-number{font-weight:800}.account-order-meta{color:#9ea5ad;font-size:12px}.account-order-total{font-weight:800;color:#efc746}.account-order-items{margin:10px 0 0;padding-left:18px;color:#c8cdd2;font-size:13px}
+    .account-empty{padding:18px;border:1px dashed rgba(255,255,255,.12);border-radius:14px;color:#9ea5ad;text-align:center}
+    .account-danger-button{border:1px solid rgba(255,255,255,.15);background:transparent;color:#fff;border-radius:999px;padding:10px 16px;cursor:pointer}
+    .account-form-status.is-error{color:#ff8e8e}.account-form-status.is-success{color:#9fe29f}
+    @media(max-width:820px){.account-dashboard-grid{grid-template-columns:1fr}.account-orders-card{grid-column:auto}.account-dashboard-head{align-items:flex-start;flex-direction:column}}
+  </style>
 </head>
 <body>
   <div id="headerRoot"></div>
 
   <main class="account-page-v45">
-    <section class="account-v45-intro">
+    <section class="account-v45-intro" data-account-guest-intro>
       <p class="eyebrow">2ND LIFE TOYS ACCOUNT</p>
       <h1>Welkom bij je account.</h1>
-      <p>Log in als je al een account hebt, of maak een nieuw account aan. De veilige serverkoppeling bouwen we in de volgende stap.</p>
+      <p>Log in als je al een account hebt, of maak gratis een nieuw account aan.</p>
+      <div class="account-live-note"><span class="account-live-dot"></span><span>Accountgegevens worden veilig via de 2nd Life Toys server verwerkt.</span></div>
     </section>
 
-    <section class="account-choice-grid">
+    <section class="account-choice-grid" data-account-guest>
       <article class="account-choice-card" id="login">
         <div class="account-card-heading">
           <span class="account-card-step">01</span>
-          <div>
-            <p class="eyebrow">BESTAANDE KLANT</p>
-            <h2>Inloggen</h2>
-          </div>
+          <div><p class="eyebrow">BESTAANDE KLANT</p><h2>Inloggen</h2></div>
         </div>
-        <p>Bekijk later je bestellingen, opgeslagen adressen en verlanglijst op één plek.</p>
+        <p>Bekijk je bestellingen en bewaar je gegevens op één plek.</p>
 
-        <form class="account-v45-form" data-account-demo-form="login">
+        <form class="account-v45-form" data-account-form="login">
           <label>E-mailadres
             <input type="email" name="email" autocomplete="email" required />
           </label>
@@ -45,7 +60,7 @@
             <span>Ingelogd blijven op dit apparaat</span>
           </label>
           <button class="button primary button-raised" type="submit">Inloggen</button>
-          <button class="account-text-button" type="button" data-account-not-ready="Wachtwoord herstellen">Wachtwoord vergeten?</button>
+          <button class="account-text-button" type="button" data-password-reset>Wachtwoord vergeten?</button>
           <p class="account-form-status" hidden></p>
         </form>
       </article>
@@ -53,25 +68,22 @@
       <article class="account-choice-card account-choice-card-register" id="register">
         <div class="account-card-heading">
           <span class="account-card-step">02</span>
-          <div>
-            <p class="eyebrow">NIEUW BIJ 2ND LIFE TOYS</p>
-            <h2>Maak account</h2>
-          </div>
+          <div><p class="eyebrow">NIEUW BIJ 2ND LIFE TOYS</p><h2>Maak account</h2></div>
         </div>
 
         <div class="account-benefits">
           <span>✓ Bestellingen terugzien</span>
           <span>✓ Adresgegevens bewaren</span>
-          <span>✓ Verlanglijst later koppelen</span>
+          <span>✓ Sneller je gegevens invullen</span>
         </div>
 
-        <form class="account-v45-form" data-account-demo-form="register">
+        <form class="account-v45-form" data-account-form="register">
           <div class="account-form-two">
             <label>Voornaam
-              <input type="text" name="firstName" autocomplete="given-name" required />
+              <input type="text" name="firstName" autocomplete="given-name" maxlength="80" required />
             </label>
             <label>Achternaam
-              <input type="text" name="lastName" autocomplete="family-name" required />
+              <input type="text" name="lastName" autocomplete="family-name" maxlength="100" required />
             </label>
           </div>
           <label>E-mailadres
@@ -79,10 +91,10 @@
           </label>
           <div class="account-form-two">
             <label>Wachtwoord
-              <input type="password" name="password" autocomplete="new-password" minlength="8" required />
+              <input type="password" name="password" autocomplete="new-password" minlength="8" maxlength="128" required />
             </label>
             <label>Herhaal wachtwoord
-              <input type="password" name="passwordRepeat" autocomplete="new-password" minlength="8" required />
+              <input type="password" name="passwordRepeat" autocomplete="new-password" minlength="8" maxlength="128" required />
             </label>
           </div>
           <label class="account-check">
@@ -95,13 +107,59 @@
       </article>
     </section>
 
-    <aside class="account-v45-security-note">
-      <strong>Veilig opgezet</strong>
-      <span>Deze V45-versie maakt de accountomgeving visueel klaar. Inloggen en registreren slaan nog geen gegevens op totdat de beveiligde backend-koppeling is toegevoegd.</span>
-    </aside>
+    <section class="account-dashboard" data-account-dashboard hidden>
+      <div class="account-dashboard-head">
+        <div><p class="eyebrow">MIJN ACCOUNT</p><h2>Welkom, <span data-account-first-name></span>.</h2><p data-account-email></p></div>
+        <button type="button" class="account-danger-button" data-account-logout>Uitloggen</button>
+      </div>
+
+      <div class="account-dashboard-grid">
+        <article class="account-dashboard-card">
+          <h3>Mijn gegevens</h3>
+          <p>Bewaar je contact- en adresgegevens voor je bestellingen.</p>
+          <form class="account-v45-form" data-account-form="profile">
+            <div class="account-form-two">
+              <label>Voornaam<input type="text" name="firstName" required /></label>
+              <label>Achternaam<input type="text" name="lastName" required /></label>
+            </div>
+            <label>E-mailadres<input type="email" name="email" disabled /></label>
+            <label>Telefoon<input type="tel" name="phone" autocomplete="tel" /></label>
+            <div class="account-form-two">
+              <label>Straat<input type="text" name="street" autocomplete="address-line1" /></label>
+              <label>Huisnummer<input type="text" name="houseNumber" /></label>
+            </div>
+            <div class="account-form-two">
+              <label>Postcode<input type="text" name="postalCode" autocomplete="postal-code" /></label>
+              <label>Plaats<input type="text" name="city" autocomplete="address-level2" /></label>
+            </div>
+            <label>Land<input type="text" name="country" autocomplete="country-name" /></label>
+            <button class="button primary button-raised" type="submit">Gegevens opslaan</button>
+            <p class="account-form-status" hidden></p>
+          </form>
+        </article>
+
+        <article class="account-dashboard-card">
+          <h3>Wachtwoord wijzigen</h3>
+          <p>Gebruik een uniek wachtwoord van minimaal 8 tekens.</p>
+          <form class="account-v45-form" data-account-form="password">
+            <label>Huidig wachtwoord<input type="password" name="currentPassword" autocomplete="current-password" required /></label>
+            <label>Nieuw wachtwoord<input type="password" name="newPassword" autocomplete="new-password" minlength="8" maxlength="128" required /></label>
+            <label>Herhaal nieuw wachtwoord<input type="password" name="newPasswordRepeat" autocomplete="new-password" minlength="8" maxlength="128" required /></label>
+            <button class="button primary button-raised" type="submit">Wachtwoord wijzigen</button>
+            <p class="account-form-status" hidden></p>
+          </form>
+        </article>
+
+        <article class="account-dashboard-card account-orders-card">
+          <h3>Mijn bestellingen</h3>
+          <p>Bestellingen met hetzelfde e-mailadres worden automatisch aan je account getoond.</p>
+          <div class="account-orders-list" data-account-orders><div class="account-empty">Bestellingen laden…</div></div>
+        </article>
+      </div>
+    </section>
   </main>
 
   <div id="footerRoot"></div>
-  <script type="module" src="Assets/Js/account.js?v=45"></script>
+  <script type="module" src="Assets/Js/account.js?v=46"></script>
 </body>
 </html>
