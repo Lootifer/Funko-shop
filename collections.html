@@ -1,98 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="Assets/Js/bootstrap-preferences.js"></script>
-    <title>Collections | 2nd Life Toys</title>
-    <meta name="description" content="Explore all Lootifer collection worlds and highlights in one clear overview." />
-    <link rel="stylesheet" href="Assets/Css/main.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  </head>
-  <body class="collections-page">
-    <div class="collections-atmosphere" aria-hidden="true"><i></i><i></i><i></i></div>
-    <div id="headerRoot"></div>
-
-    <main class="collections-hub-main">
-      <header class="collections-hub-intro">
-        <div class="collections-title-wrap">
-          <p class="collections-kicker" data-collections-copy="kicker">THE LOOTIFER VAULT</p>
-          <h1 class="collections-hero-title" id="collectionsHeroTitle" aria-label="12 doors. Pick your next obsession.">
-            <span class="collections-title-count" aria-hidden="true">12</span>
-            <span class="collections-door-word" aria-hidden="true" data-collections-door-word>doors</span>
-            <span class="collections-title-rest" aria-hidden="true" data-collections-copy="titleRest">Pick your next obsession.</span>
-          </h1>
-        </div>
-        <p data-collections-copy="intro">Six worlds and six hand-picked highlights, all visible at once.</p>
-      </header>
-
-      <section class="collections-strip collections-worlds" aria-labelledby="collectionsWorldTitle">
-        <div class="collections-strip-heading">
-          <h2 id="collectionsWorldTitle" data-collections-copy="worlds">Choose your world</h2>
-          <span data-collections-copy="worldsHint">6 collection worlds</span>
-        </div>
-        <div class="collections-world-grid">
-          <button class="collection-world-tile world-funko" id="collectionsFunkoToggle" type="button" data-world="funko" aria-expanded="false" aria-controls="collectionsFunkoDrawer">
-            <span class="world-number">01</span><span class="world-copy"><small data-collections-copy="funkoKick">Figures, pins &amp; more</small><strong>FUNKO</strong><em><b data-collection-count="funko">0</b> <span data-collections-copy="items">items</span></em></span><i class="world-toggle-arrow" aria-hidden="true">↓</i>
-          </button>
-          <a class="collection-world-tile world-lego" href="lego.html" data-world="lego">
-            <span class="world-number">02</span><span class="world-copy"><small data-collections-copy="legoKick">Build &amp; collect</small><strong>LEGO</strong><em><b data-collection-count="lego">0</b> <span data-collections-copy="items">items</span></em></span><i>→</i>
-          </a>
-          <a class="collection-world-tile world-pokemon" href="pokemon.html" data-world="pokemon">
-            <span class="world-number">03</span><span class="world-copy"><small data-collections-copy="pokemonKick">Creature collecting</small><strong>POKÉMON</strong><em><b data-collection-count="pokemon">0</b> <span data-collections-copy="items">items</span></em></span><i>→</i>
-          </a>
-          <a class="collection-world-tile world-starwars" href="star-wars.html" data-world="star-wars">
-            <span class="world-number">04</span><span class="world-copy"><small data-collections-copy="starKick">A galaxy far away</small><strong>STAR WARS</strong><em><b data-collection-count="star-wars">0</b> <span data-collections-copy="items">items</span></em></span><i>→</i>
-          </a>
-          <a class="collection-world-tile world-harry" href="harry-potter.html" data-world="harry-potter">
-            <span class="world-number">05</span><span class="world-copy"><small data-collections-copy="harryKick">Wizarding world</small><strong>HARRY POTTER</strong><em><b data-collection-count="harry-potter">0</b> <span data-collections-copy="items">items</span></em></span><i>→</i>
-          </a>
-          <a class="collection-world-tile world-sale" href="sale.html" data-world="sale">
-            <span class="world-number">06</span><span class="world-copy"><small data-collections-copy="saleKick">Limited-time finds</small><strong>SALE</strong><em><b data-collection-count="sale">0</b> <span data-collections-copy="offers">offers</span></em></span><i>→</i>
-          </a>
-        </div>
-
-        <div class="collections-funko-drawer" id="collectionsFunkoDrawer" aria-hidden="true">
-          <div class="collections-funko-drawer-inner">
-            <div class="collections-funko-drawer-head">
-              <div>
-                <small data-collections-copy="funkoDrawerEyebrow">FUNKO VAULT</small>
-                <strong data-collections-copy="funkoDrawerTitle">Choose your Funko line.</strong>
-                <p data-collections-copy="funkoDrawerText">Open one of the eight Funko doors or view the complete Funko collection.</p>
-              </div>
-              <div class="collections-funko-drawer-actions">
-                <a href="funko.html" class="collections-funko-all"><span data-collections-copy="allFunko">All Funko</span> →</a>
-                <button type="button" id="collectionsFunkoClose" aria-label="Close Funko menu">×</button>
-              </div>
-            </div>
-            <div class="collections-funko-subgrid">
-              <a href="funko.html?category=Funko%20Movies"><span>01</span><strong>Movies</strong><small><b data-collections-funko-count="Funko Movies">0</b> items</small></a>
-<a href="funko.html?category=Funko%20Television"><span>02</span><strong>Television</strong><small><b data-collections-funko-count="Funko Television">0</b> items</small></a>
-<a href="funko.html?category=Funko%20Animation"><span>03</span><strong>Animation</strong><small><b data-collections-funko-count="Funko Animation">0</b> items</small></a>
-<a href="funko.html?category=Funko%20Games"><span>04</span><strong>Games</strong><small><b data-collections-funko-count="Funko Games">0</b> items</small></a>
-<a href="funko.html?category=Funko%20Heroes"><span>05</span><strong>Heroes</strong><small><b data-collections-funko-count="Funko Heroes">0</b> items</small></a>
-<a href="funko.html?category=Funko%20Pin"><span>06</span><strong>Pin</strong><small><b data-collections-funko-count="Funko Pin">0</b> items</small></a>
-<a href="funko.html?category=Funko%20Bitty%20Pop"><span>07</span><strong>Bitty Pop</strong><small><b data-collections-funko-count="Funko Bitty Pop">0</b> items</small></a>
-<a href="funko.html?category=Funko%20Tee"><span>08</span><strong>Tee</strong><small><b data-collections-funko-count="Funko Tee">0</b> items</small></a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="collections-strip collections-picks" aria-labelledby="collectionsPickTitle">
-        <div class="collections-strip-heading">
-          <h2 id="collectionsPickTitle" data-collections-copy="picks">Highlights from the vault</h2>
-          <a href="shop.html"><span data-collections-copy="allProducts">All products</span> →</a>
-        </div>
-        <div class="collections-pick-grid" id="collectionsHighlightGrid" aria-live="polite"></div>
-      </section>
-
-      <div class="collections-funko-decoration" aria-hidden="true"></div>
-    </main>
-
-    <div id="footerRoot"></div>
-    <script type="module" src="Assets/Js/collections.js"></script>
-  </body>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Winkel | 2nd Life Toys</title>
+  <meta name="robots" content="noindex,follow" />
+  <meta http-equiv="refresh" content="0; url=shop.html#categories" />
+  <script>
+    window.location.replace("shop.html#categories");
+  </script>
+</head>
+<body>
+  <p>De pagina Collecties is verhuisd naar de <a href="shop.html#categories">Winkel</a>.</p>
+</body>
 </html>

@@ -10,10 +10,6 @@ const footerCopy = {
     contact: "Contact",
     checkout: "Checkout",
     terms: "Terms",
-    lootifer: "2nd Life Toys",
-    about: "About",
-    collections: "Collections",
-    once: "Once it is gone, it is gone",
     built: "Carefully built for collectors.",
   },
   nl: {
@@ -27,22 +23,18 @@ const footerCopy = {
     contact: "Contact",
     checkout: "Afrekenen",
     terms: "Voorwaarden",
-    lootifer: "2nd Life Toys",
-    about: "Over ons",
-    collections: "Collecties",
-    once: "Op is op",
     built: "Met zorg gebouwd voor verzamelaars.",
   },
 };
 
 const getLanguage = () => {
-  if (typeof window === "undefined") return "en";
-  return window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en";
+  if (typeof window === "undefined") return "nl";
+  return window.localStorage.getItem("lootifer-language") === "en" ? "en" : "nl";
 };
 
 const updateFooterLanguage = (language = getLanguage()) => {
   if (typeof document === "undefined") return;
-  const dictionary = footerCopy[language] || footerCopy.en;
+  const dictionary = footerCopy[language] || footerCopy.nl;
   document.querySelectorAll("[data-footer-copy]").forEach((element) => {
     const value = dictionary[element.dataset.footerCopy];
     if (value) element.textContent = value;
@@ -51,29 +43,19 @@ const updateFooterLanguage = (language = getLanguage()) => {
 
 if (typeof window !== "undefined") {
   window.addEventListener("lootifer:language-change", (event) => {
-    updateFooterLanguage(event.detail?.language || "en");
+    updateFooterLanguage(event.detail?.language || "nl");
   });
 }
 
 export const createFooter = () => {
-  const copy = footerCopy[getLanguage()] || footerCopy.en;
+  const copy = footerCopy[getLanguage()] || footerCopy.nl;
   if (typeof queueMicrotask === "function") queueMicrotask(() => updateFooterLanguage());
 
   return `
-    <footer id="footer" class="footer premium-footer reveal">
+    <footer id="footer" class="footer premium-footer reveal v45-footer">
       <div class="footer-brand-block">
-        <a class="brand footer-brand" href="index.html" aria-label="Lootifer home">
-          <span class="brand-mark brand-mark-angular" aria-hidden="true">
-            <svg viewBox="0 0 48 48">
-              <path d="M11 8v30h27" />
-              <path d="M18 8v21L38 9" />
-              <path d="M18 29h12" />
-            </svg>
-          </span>
-          <span class="brand-wordmark">
-  <strong>2nd Life</strong>
-  <small>Toys</small>
-</span>
+        <a class="brand footer-brand v45-footer-brand" href="index.html" aria-label="2nd Life Toys home">
+          <img class="footer-brand-logo" src="Assets/Images/Brand/2nd-life-toys-logo.png" alt="2nd Life Toys" />
         </a>
         <p data-footer-copy="intro">${copy.intro}</p>
         <span class="footer-private-label" data-footer-copy="private">${copy.private}</span>
@@ -87,33 +69,27 @@ export const createFooter = () => {
       </div>
 
       <div class="footer-column">
-  <h3 data-footer-copy="service">${copy.service}</h3>
-  <a href="contact.html" data-footer-copy="contact">${copy.contact}</a>
-  <a href="checkout.html" data-footer-copy="checkout">${copy.checkout}</a>
-  <a href="terms.html" data-footer-copy="terms">${copy.terms}</a>
-<a href="mailto:info@2ndlifetoys.nl">
-  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-3px;margin-right:8px;">
-    <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-    <path d="m3 7 9 6 9-6"></path>
-  </svg>
-  info@2ndlifetoys.nl
-</a>
+        <h3 data-footer-copy="service">${copy.service}</h3>
+        <a href="contact.html" data-footer-copy="contact">${copy.contact}</a>
+        <a href="checkout.html" data-footer-copy="checkout">${copy.checkout}</a>
+        <a href="terms.html" data-footer-copy="terms">${copy.terms}</a>
 
-<a href="https://www.instagram.com/2nd_life_toys.nl/" target="_blank" rel="noopener noreferrer">
-  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-3px;margin-right:8px;">
-    <rect x="3" y="3" width="18" height="18" rx="5"></rect>
-    <circle cx="12" cy="12" r="4"></circle>
-    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
-  </svg>
-  @2nd_life_toys.nl
-</a>
+        <a href="mailto:info@2ndlifetoys.nl">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-3px;margin-right:8px;">
+            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+            <path d="m3 7 9 6 9-6"></path>
+          </svg>
+          info@2ndlifetoys.nl
+        </a>
 
-      <div class="footer-column">
-        <h3 data-footer-copy="lootifer">${copy.lootifer}</h3>
-        <a href="about.html" data-footer-copy="about">${copy.about}</a>
-        <a href="collections.html" data-footer-copy="collections">${copy.collections}</a>
-        <a href="shop.html" data-footer-copy="once">${copy.once}</a>
-        <a href="admin/login.html" aria-label="Admin login"><strong>Admin</strong></a>
+        <a href="https://www.instagram.com/2nd_life_toys.nl/" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-3px;margin-right:8px;">
+            <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+            <circle cx="12" cy="12" r="4"></circle>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
+          </svg>
+          @2nd_life_toys.nl
+        </a>
       </div>
 
       <div class="footer-bottom">

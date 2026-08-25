@@ -1,161 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="Assets/Js/bootstrap-preferences.js"></script>
-    <title>Shop | 2nd Life Toys</title>
-    <meta
-      name="description"
-      content="Browse 2nd Life Toys by category, universe or Funko line."
-    />
+    <title>Winkel | 2nd Life Toys</title>
+    <meta name="description" content="Bekijk alle categorieën en verzamelitems van 2nd Life Toys." />
     <link rel="stylesheet" href="Assets/Css/main.css" />
+    <link rel="stylesheet" href="Assets/Css/components/shop-v44-clean.css?v=45" />
+    <link rel="stylesheet" href="Assets/Css/components/v45-layout.css?v=45" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
-  <body class="shop-choice-body">
+  <body class="shop-v44-body">
     <div id="headerRoot"></div>
 
-    <main class="shop-choice-page shop-choice-page-v13">
-      <section class="shop-choice-hero shop-choice-hero-v13 reveal visible" aria-labelledby="shopChoiceTitle">
-        <div class="shop-choice-hero-copy">
-          <p class="eyebrow" data-shop-i18n="hero.eyebrow">Collection shop</p>
-          <h1 id="shopChoiceTitle" data-shop-i18n="hero.title">Find your next collectible.</h1>
-          <p class="hero-text" data-shop-i18n="hero.text">
-            Start with a category or universe. You can then filter the matching products in one clear overview.
-          </p>
-          <div class="shop-choice-actions">
-            <a class="button primary button-raised" href="all-products.html" data-shop-i18n="hero.all">View all products</a>
-            <a class="button secondary shop-in-stock-link" href="all-products.html?inStock=1" data-shop-i18n="hero.stock">Only in stock</a>
-          </div>
+    <main class="shop-v44" id="categories">
+      <div class="shop-v44-head">
+        <div>
+          <p class="eyebrow">KIES OP CATEGORIE</p>
+          <h1>Kies wat jij verzamelt.</h1>
+          <p>Ga direct naar de collectie die je zoekt.</p>
         </div>
+        <a class="shop-v44-all" href="all-products.html">Alle producten <span aria-hidden="true">→</span></a>
+      </div>
 
-        <form class="shop-quick-search depth-card" id="shopLandingSearchForm">
-          <label for="shopLandingSearch" data-shop-i18n="search.label">Search the full collection</label>
-          <div class="shop-quick-search-row">
-            <input id="shopLandingSearch" type="search" placeholder="Name, character, number or universe" data-shop-placeholder="search.placeholder" />
-            <button class="button primary" type="submit" data-shop-i18n="search.button">Search</button>
-          </div>
-          <p data-shop-i18n="search.note">You will continue to the complete product overview with your search already active.</p>
-        </form>
-      </section>
+      <div class="shop-v44-grid">
+        <button class="shop-v44-card shop-v44-funko" type="button" data-category-card="funko" aria-haspopup="dialog" aria-controls="shopFunkoModal">
+          <span class="shop-v44-image" aria-hidden="true"></span><span class="shop-v44-shade" aria-hidden="true"></span>
+          <span class="shop-v44-copy"><small>FIGUREN, PINS &amp; MEER</small><strong>FUNKO</strong><em><b data-category-count="funko">0</b> items</em><i aria-hidden="true">↓</i></span>
+        </button>
 
-      <section class="section shop-navigation-section" aria-labelledby="categoryBrowseTitle">
-        <div class="shop-section-heading">
-          <div>
-            <p class="eyebrow" data-shop-i18n="category.eyebrow">Browse by category</p>
-            <h2 id="categoryBrowseTitle" data-shop-i18n="category.title">Choose what you collect.</h2>
-          </div>
-          <a href="all-products.html" data-shop-i18n="category.all">All products →</a>
+        <a class="shop-v44-card shop-v44-lego" href="lego.html" data-category-card="lego">
+          <span class="shop-v44-image" aria-hidden="true"></span><span class="shop-v44-shade" aria-hidden="true"></span>
+          <span class="shop-v44-copy"><small>BOUWEN EN VERZAMELEN</small><strong>LEGO</strong><em><b data-category-count="lego">0</b> items</em><i aria-hidden="true">→</i></span>
+        </a>
+
+        <a class="shop-v44-card shop-v44-pokemon" href="pokemon.html" data-category-card="pokemon">
+          <span class="shop-v44-image" aria-hidden="true"></span><span class="shop-v44-shade" aria-hidden="true"></span>
+          <span class="shop-v44-copy"><small>VOOR TRAINERS EN VERZAMELAARS</small><strong>POKÉMON</strong><em><b data-category-count="pokemon">0</b> items</em><i aria-hidden="true">→</i></span>
+        </a>
+
+        <a class="shop-v44-card shop-v44-starwars" href="star-wars.html" data-category-card="star-wars">
+          <span class="shop-v44-image" aria-hidden="true"></span><span class="shop-v44-shade" aria-hidden="true"></span>
+          <span class="shop-v44-copy"><small>EEN STERRENSTELSEL VER WEG</small><strong>STAR WARS</strong><em><b data-category-count="star-wars">0</b> items</em><i aria-hidden="true">→</i></span>
+        </a>
+
+        <a class="shop-v44-card shop-v44-lamps" href="collectible-lamps.html" data-category-card="collectible-lamps">
+          <span class="shop-v44-image" aria-hidden="true"></span><span class="shop-v44-shade" aria-hidden="true"></span>
+          <span class="shop-v44-copy"><small>SFEERVOL LICHT VOOR VERZAMELAARS</small><strong>COLLECTIBLE LAMPS</strong><em><b data-category-count="collectible-lamps">0</b> items</em><i aria-hidden="true">→</i></span>
+        </a>
+
+        <a class="shop-v44-card shop-v44-toys" href="figures-toys.html" data-category-card="figures-toys">
+          <span class="shop-v44-image" aria-hidden="true"></span><span class="shop-v44-shade" aria-hidden="true"></span>
+          <span class="shop-v44-copy"><small>FIGUREN, SPEELGOED &amp; SEALED FINDS</small><strong>FIGURES &amp; TOYS</strong><em><b data-category-count="figures-toys">0</b> items</em><i aria-hidden="true">→</i></span>
+        </a>
+
+        <a class="shop-v44-card shop-v44-vintage" href="vintage-figures.html" data-category-card="vintage-figures">
+          <span class="shop-v44-image" aria-hidden="true"></span><span class="shop-v44-shade" aria-hidden="true"></span>
+          <span class="shop-v44-copy"><small>ORIGINELE GEBRUIKTE KLASSIEKERS</small><strong>VINTAGE FIGURES</strong><em><b data-category-count="vintage-figures">0</b> items</em><i aria-hidden="true">→</i></span>
+        </a>
+
+        <a class="shop-v44-card shop-v44-hotwheels" href="hot-wheels.html" data-category-card="hot-wheels">
+          <span class="shop-v44-image" aria-hidden="true"></span><span class="shop-v44-shade" aria-hidden="true"></span>
+          <span class="shop-v44-copy"><small>DIE-CAST AUTO'S &amp; VERZAMELITEMS</small><strong>HOT WHEELS</strong><em><b data-category-count="hot-wheels">0</b> items</em><i aria-hidden="true">→</i></span>
+        </a>
+
+        <a class="shop-v44-card shop-v44-sale" href="sale.html" data-category-card="sale">
+          <span class="shop-v44-image" aria-hidden="true"></span><span class="shop-v44-shade" aria-hidden="true"></span>
+          <span class="shop-v44-copy"><small>TIJDELIJK VOORDELIGER</small><strong>SALE</strong><em><b data-category-count="sale">0</b> aanbiedingen</em><i aria-hidden="true">→</i></span>
+        </a>
+      </div>
+
+      <section class="shop-v45-figure-feature" aria-label="2nd Life Toys Figuren">
+        <div class="shop-v45-figure-copy">
+          <p class="eyebrow">UIT DE COLLECTIE</p>
+          <h2>Figuren verdienen een tweede podium.</h2>
+          <p>De bekende figurenstrook van de oude Collecties-pagina heeft hier nu een vaste plek in de Winkel.</p>
         </div>
-
-        <div class="shop-category-dashboard">
-          <a class="shop-dashboard-card shop-dashboard-funko" href="funko.html" data-category-card="funko">
-            <span class="shop-dashboard-image" aria-hidden="true"></span>
-            <span class="shop-dashboard-content">
-              <span data-shop-i18n="category.funko.kicker">Figures, pins and more</span>
-              <strong>FUNKO</strong>
-              <small><b data-category-count="funko">0</b> <span data-shop-i18n="items">items</span></small>
-              <i aria-hidden="true">→</i>
-            </span>
-          </a>
-
-          <a class="shop-dashboard-card shop-dashboard-lego" href="lego.html" data-category-card="lego">
-            <span class="shop-dashboard-image" aria-hidden="true"></span>
-            <span class="shop-dashboard-content">
-              <span data-shop-i18n="category.lego.kicker">Build and collect</span>
-              <strong>LEGO</strong>
-              <small><b data-category-count="lego">0</b> <span data-shop-i18n="items">items</span></small>
-              <i aria-hidden="true">→</i>
-            </span>
-          </a>
-
-          <a class="shop-dashboard-card shop-dashboard-pokemon" href="pokemon.html" data-category-card="pokemon">
-            <span class="shop-dashboard-image" aria-hidden="true"></span>
-            <span class="shop-dashboard-content">
-              <span data-shop-i18n="category.pokemon.kicker">For trainers and collectors</span>
-              <strong>POKÉMON</strong>
-              <small><b data-category-count="pokemon">0</b> <span data-shop-i18n="items">items</span></small>
-              <i aria-hidden="true">→</i>
-            </span>
-          </a>
-
-          <a class="shop-dashboard-card shop-dashboard-starwars" href="star-wars.html" data-category-card="star-wars">
-            <span class="shop-dashboard-image" aria-hidden="true"></span>
-            <span class="shop-dashboard-content">
-              <span data-shop-i18n="category.starwars.kicker">A galaxy far away</span>
-              <strong>STAR WARS</strong>
-              <small><b data-category-count="star-wars">0</b> <span data-shop-i18n="items">items</span></small>
-              <i aria-hidden="true">→</i>
-            </span>
-          </a>
-
-          <a class="shop-dashboard-card shop-dashboard-harry" href="harry-potter.html" data-category-card="harry-potter">
-            <span class="shop-dashboard-image" aria-hidden="true"></span>
-            <span class="shop-dashboard-content">
-              <span data-shop-i18n="category.harry.kicker">The wizarding world</span>
-              <strong>HARRY POTTER</strong>
-              <small><b data-category-count="harry-potter">0</b> <span data-shop-i18n="items">items</span></small>
-              <i aria-hidden="true">→</i>
-            </span>
-          </a>
-
-          <a class="shop-dashboard-card shop-dashboard-sale" href="sale.html" data-category-card="sale">
-            <span class="shop-dashboard-image" aria-hidden="true"></span>
-            <span class="shop-dashboard-content">
-              <span data-shop-i18n="category.sale.kicker">Limited-time savings</span>
-              <strong>SALE</strong>
-              <small><b data-category-count="sale">0</b> <span data-shop-i18n="offers">offers</span></small>
-              <i aria-hidden="true">→</i>
-            </span>
-          </a>
-        </div>
-      </section>
-
-      <section class="section shop-universe-section depth-panel" aria-labelledby="universeBrowseTitle">
-        <div class="shop-section-heading">
-          <div>
-            <p class="eyebrow" data-shop-i18n="universe.eyebrow">Browse by universe</p>
-            <h2 id="universeBrowseTitle" data-shop-i18n="universe.title">Go directly to your favourite world.</h2>
-          </div>
-        </div>
-        <div class="shop-universe-grid">
-          <a class="shop-universe-card universe-dc" href="all-products.html?universe=DC"><span>DC</span><small data-shop-i18n="universe.open">Open universe →</small></a>
-          <a class="shop-universe-card universe-marvel" href="all-products.html?universe=Marvel"><span>MARVEL</span><small data-shop-i18n="universe.open">Open universe →</small></a>
-          <a class="shop-universe-card universe-pokemon" href="pokemon.html"><span>POKÉMON</span><small data-shop-i18n="universe.open">Open universe →</small></a>
-          <a class="shop-universe-card universe-starwars" href="star-wars.html"><span>STAR WARS</span><small data-shop-i18n="universe.open">Open universe →</small></a>
-          <a class="shop-universe-card universe-harry" href="harry-potter.html"><span>HARRY POTTER</span><small data-shop-i18n="universe.open">Open universe →</small></a>
-        </div>
-      </section>
-
-      <section class="shop-funko-section depth-panel" aria-labelledby="funkoChoiceTitle">
-        <div class="shop-funko-heading">
-          <div>
-            <p class="eyebrow" data-shop-i18n="funko.eyebrow">Funko lines</p>
-            <h2 id="funkoChoiceTitle" data-shop-i18n="funko.title">Which Funko line are you looking for?</h2>
-            <p data-shop-i18n="funko.text">Choose a line to see only the products that belong there.</p>
-          </div>
-          <a href="funko.html" data-shop-i18n="funko.all">View all Funko →</a>
-        </div>
-
-        <div class="funko-subcategory-grid shop-funko-grid" aria-label="Funko subcategories">
-          <a href="funko.html?category=Funko%20Movies" class="funko-subcategory-card"><span>01</span><strong>Movies</strong><small><b data-funko-count="Funko Movies">0</b> items</small><i>→</i></a>
-          <a href="funko.html?category=Funko%20Television" class="funko-subcategory-card"><span>02</span><strong>Television</strong><small><b data-funko-count="Funko Television">0</b> items</small><i>→</i></a>
-          <a href="funko.html?category=Funko%20Animation" class="funko-subcategory-card"><span>03</span><strong>Animation</strong><small><b data-funko-count="Funko Animation">0</b> items</small><i>→</i></a>
-          <a href="funko.html?category=Funko%20Games" class="funko-subcategory-card"><span>04</span><strong>Games</strong><small><b data-funko-count="Funko Games">0</b> items</small><i>→</i></a>
-          <a href="funko.html?category=Funko%20Heroes" class="funko-subcategory-card"><span>05</span><strong>Heroes</strong><small><b data-funko-count="Funko Heroes">0</b> items</small><i>→</i></a>
-          <a href="funko.html?category=Funko%20Pin" class="funko-subcategory-card"><span>06</span><strong>Pin</strong><small><b data-funko-count="Funko Pin">0</b> items</small><i>→</i></a>
-          <a href="funko.html?category=Funko%20Bitty%20Pop" class="funko-subcategory-card"><span>07</span><strong>Bitty Pop</strong><small><b data-funko-count="Funko Bitty Pop">0</b> items</small><i>→</i></a>
-          <a href="funko.html?category=Funko%20Tee" class="funko-subcategory-card"><span>08</span><strong>Tee</strong><small><b data-funko-count="Funko Tee">0</b> items</small><i>→</i></a>
-        </div>
+        <div class="shop-collection-figure-banner" aria-hidden="true"></div>
       </section>
     </main>
 
+    <div class="shop-v44-modal" id="shopFunkoModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="shopFunkoTitle">
+      <div class="shop-v44-modal-panel">
+        <button class="shop-v44-modal-close" type="button" aria-label="Sluiten">×</button>
+        <p class="eyebrow">FUNKO-LIJNEN</p>
+        <h2 id="shopFunkoTitle">Welke Funko-lijn zoek je?</h2>
+        <p class="shop-v44-modal-intro">Kies een lijn of bekijk alle Funko-items.</p>
+        <div class="shop-v44-funko-grid">
+          <a href="funko.html?category=Funko%20Movies"><span>01</span><strong>Movies</strong><small><b data-funko-count="Funko Movies">0</b> items</small></a>
+          <a href="funko.html?category=Funko%20Television"><span>02</span><strong>Television</strong><small><b data-funko-count="Funko Television">0</b> items</small></a>
+          <a href="funko.html?category=Funko%20Animation"><span>03</span><strong>Animation</strong><small><b data-funko-count="Funko Animation">0</b> items</small></a>
+          <a href="funko.html?category=Funko%20Games"><span>04</span><strong>Games</strong><small><b data-funko-count="Funko Games">0</b> items</small></a>
+          <a href="funko.html?category=Funko%20Heroes"><span>05</span><strong>Heroes</strong><small><b data-funko-count="Funko Heroes">0</b> items</small></a>
+          <a href="funko.html?category=Funko%20Pin"><span>06</span><strong>Pin</strong><small><b data-funko-count="Funko Pin">0</b> items</small></a>
+          <a href="funko.html?category=Funko%20Bitty%20Pop"><span>07</span><strong>Bitty Pop</strong><small><b data-funko-count="Funko Bitty Pop">0</b> items</small></a>
+          <a href="funko.html?category=Funko%20Tee"><span>08</span><strong>Tee</strong><small><b data-funko-count="Funko Tee">0</b> items</small></a>
+        </div>
+        <a class="button primary shop-v44-funko-all" href="funko.html">Alle Funko bekijken →</a>
+      </div>
+    </div>
+
     <div id="footerRoot"></div>
-    <script type="module" src="Assets/Js/shop-landing.js"></script>
+    <script type="module" src="Assets/Js/shop-v44.js?v=45"></script>
   </body>
 </html>

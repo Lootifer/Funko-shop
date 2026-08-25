@@ -1,34 +1,107 @@
 <!DOCTYPE html>
 <html lang="nl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="Assets/Js/bootstrap-preferences.js"></script>
-    <title>Account | 2nd Life Toys</title>
-    <meta name="description" content="2nd Life Toys accountomgeving." />
-    <link rel="stylesheet" href="Assets/Css/main.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="headerRoot"></div>
-    <main class="account-page">
-      <section class="account-card depth-card reveal visible">
-        <div>
-          <p class="eyebrow">Lootifer account</p>
-          <h1>Accountomgeving in voorbereiding.</h1>
-          <p class="hero-text">De knop staat alvast in de navigatie. Een veilig klantaccount wordt later gekoppeld aan een echte inlog- en betaalomgeving.</p>
-          <a class="button primary button-raised" href="shop.html">Verder winkelen</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="Assets/Js/bootstrap-preferences.js"></script>
+  <title>Account | 2nd Life Toys</title>
+  <meta name="description" content="Inloggen of een nieuw 2nd Life Toys account aanmaken." />
+  <link rel="stylesheet" href="Assets/Css/main.css" />
+  <link rel="stylesheet" href="Assets/Css/components/v45-layout.css?v=45" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="headerRoot"></div>
+
+  <main class="account-page-v45">
+    <section class="account-v45-intro">
+      <p class="eyebrow">2ND LIFE TOYS ACCOUNT</p>
+      <h1>Welkom bij je account.</h1>
+      <p>Log in als je al een account hebt, of maak een nieuw account aan. De veilige serverkoppeling bouwen we in de volgende stap.</p>
+    </section>
+
+    <section class="account-choice-grid">
+      <article class="account-choice-card" id="login">
+        <div class="account-card-heading">
+          <span class="account-card-step">01</span>
+          <div>
+            <p class="eyebrow">BESTAANDE KLANT</p>
+            <h2>Inloggen</h2>
+          </div>
         </div>
-        <div class="account-preview" aria-hidden="true">
-          <span class="account-preview-icon">L</span>
-          <strong>Wishlist, bestellingen en adresgegevens</strong>
-          <small>worden later veilig aan je account gekoppeld</small>
+        <p>Bekijk later je bestellingen, opgeslagen adressen en verlanglijst op één plek.</p>
+
+        <form class="account-v45-form" data-account-demo-form="login">
+          <label>E-mailadres
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <label>Wachtwoord
+            <input type="password" name="password" autocomplete="current-password" required />
+          </label>
+          <label class="account-check">
+            <input type="checkbox" name="remember" />
+            <span>Ingelogd blijven op dit apparaat</span>
+          </label>
+          <button class="button primary button-raised" type="submit">Inloggen</button>
+          <button class="account-text-button" type="button" data-account-not-ready="Wachtwoord herstellen">Wachtwoord vergeten?</button>
+          <p class="account-form-status" hidden></p>
+        </form>
+      </article>
+
+      <article class="account-choice-card account-choice-card-register" id="register">
+        <div class="account-card-heading">
+          <span class="account-card-step">02</span>
+          <div>
+            <p class="eyebrow">NIEUW BIJ 2ND LIFE TOYS</p>
+            <h2>Maak account</h2>
+          </div>
         </div>
-      </section>
-    </main>
-    <div id="footerRoot"></div>
-    <script type="module" src="Assets/Js/account.js"></script>
-  </body>
+
+        <div class="account-benefits">
+          <span>✓ Bestellingen terugzien</span>
+          <span>✓ Adresgegevens bewaren</span>
+          <span>✓ Verlanglijst later koppelen</span>
+        </div>
+
+        <form class="account-v45-form" data-account-demo-form="register">
+          <div class="account-form-two">
+            <label>Voornaam
+              <input type="text" name="firstName" autocomplete="given-name" required />
+            </label>
+            <label>Achternaam
+              <input type="text" name="lastName" autocomplete="family-name" required />
+            </label>
+          </div>
+          <label>E-mailadres
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <div class="account-form-two">
+            <label>Wachtwoord
+              <input type="password" name="password" autocomplete="new-password" minlength="8" required />
+            </label>
+            <label>Herhaal wachtwoord
+              <input type="password" name="passwordRepeat" autocomplete="new-password" minlength="8" required />
+            </label>
+          </div>
+          <label class="account-check">
+            <input type="checkbox" name="termsAccepted" required />
+            <span>Ik ga akkoord met de <a href="terms.html" target="_blank" rel="noopener noreferrer">voorwaarden</a>.</span>
+          </label>
+          <button class="button primary button-raised" type="submit">Maak account</button>
+          <p class="account-form-status" hidden></p>
+        </form>
+      </article>
+    </section>
+
+    <aside class="account-v45-security-note">
+      <strong>Veilig opgezet</strong>
+      <span>Deze V45-versie maakt de accountomgeving visueel klaar. Inloggen en registreren slaan nog geen gegevens op totdat de beveiligde backend-koppeling is toegevoegd.</span>
+    </aside>
+  </main>
+
+  <div id="footerRoot"></div>
+  <script type="module" src="Assets/Js/account.js?v=45"></script>
+</body>
 </html>

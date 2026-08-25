@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,9 +7,11 @@
     <title>2nd Life Toys | Private collection</title>
     <meta
       name="description"
-      content="Discover new and pre-owned collectibles from the private 2nd Life Toys collection. Once it is gone, it is gone."
+      content="Discover new and pre-owned collectibles from the private 2nd Life Toys collection. "
     />
     <link rel="stylesheet" href="Assets/Css/main.css" />
+    <link rel="stylesheet" href="Assets/Css/components/v45-layout.css?v=45" />
+    <link rel="stylesheet" href="Assets/Css/components/v41-home-cleanup.css?v=41" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,7 +24,7 @@
     <div id="headerRoot"></div>
 
     <main id="home" class="home-main">
-      <section class="hero hero-premium hero-v3 reveal" aria-labelledby="heroTitle">
+      <section class="hero hero-premium hero-v3 reveal v45-hero-clean" aria-labelledby="heroTitle">
         <div class="hero-copy">
           <p class="eyebrow" data-i18n="hero.eyebrow">Private collection • new and pre-owned</p>
           <h1 id="heroTitle" data-i18n="hero.title">Every collection tells a story.</h1>
@@ -37,7 +39,7 @@
               <span data-i18n="hero.shop">Explore the collection</span>
               <span class="hero-action-arrow" aria-hidden="true">→</span>
             </a>
-            <a class="button secondary button-inset hero-action hero-action-secondary" href="collections.html">
+            <a class="button secondary button-inset hero-action hero-action-secondary" href="shop.html#categories">
               <span data-i18n="hero.categories">Browse categories</span>
               <span class="hero-action-arrow" aria-hidden="true">↓</span>
             </a>
@@ -48,12 +50,15 @@
             <span data-i18n="hero.note">From my collection to yours</span>
           </div>
         </div>
+      </section>
 
-        <div
-          class="hero-stage hero-stage-clean depth-card"
-          id="heroStage"
-          aria-label="Geanimeerde Lootifer display"
-        >
+      <section class="section v40-showcase-section reveal" aria-labelledby="v40ShowcaseTitle">
+        <div class="v40-showcase-heading">
+          <p class="eyebrow">Extra uit de vitrine</p>
+          <h2 id="v40ShowcaseTitle">Nog drie plekken voor bijzondere vondsten.</h2>
+          <p>Een tweede vitrine voor extra bijzondere vondsten uit de collectie. Regelmatig wisselend en altijd rechtstreeks uit mijn eigen verzameling.</p>
+        </div>
+        <div class="hero-stage hero-stage-clean depth-card v40-secondary-display" id="heroStageExtra" aria-label="Extra 2nd Life Toys display">
           <div class="stage-ambient" aria-hidden="true"></div>
           <div class="display-light display-light-one" aria-hidden="true"></div>
           <div class="display-light display-light-two" aria-hidden="true"></div>
@@ -61,91 +66,26 @@
           <div class="display-cases" aria-hidden="true">
             <div class="display-case display-case-small">
               <div class="display-glass"></div>
-              <div class="display-placeholder"><img class="display-slot-image" data-home-display-slot="1" alt="Featured collectible 1" hidden><span>01</span></div>
+              <div class="display-placeholder"><img class="display-slot-image" data-home-extra-slot="4" alt="Featured collectible 4" hidden><span>04</span></div>
               <div class="display-base"></div>
             </div>
             <div class="display-case display-case-featured">
               <div class="display-glass"></div>
-              <div class="display-placeholder display-placeholder-featured"><img class="display-slot-image" data-home-display-slot="2" alt="Featured collectible 2" hidden><span>L</span></div>
+              <div class="display-placeholder display-placeholder-featured"><img class="display-slot-image" data-home-extra-slot="5" alt="Featured collectible 5" hidden><span>05</span></div>
               <div class="display-base"></div>
             </div>
             <div class="display-case display-case-small">
               <div class="display-glass"></div>
-              <div class="display-placeholder"><img class="display-slot-image" data-home-display-slot="3" alt="Featured collectible 3" hidden><span>03</span></div>
+              <div class="display-placeholder"><img class="display-slot-image" data-home-extra-slot="6" alt="Featured collectible 6" hidden><span>06</span></div>
               <div class="display-base"></div>
             </div>
           </div>
           <div class="display-shelf display-shelf-bottom" aria-hidden="true"></div>
-          <div class="display-plaque" aria-hidden="true">
-           <span>2nd Life</span>
-<small>Toys</small>
-          </div>
+          <div class="display-plaque" aria-hidden="true"><span>2nd Life</span><small>Toys</small></div>
         </div>
       </section>
 
-      <section id="categories" class="section category-hub-section reveal" aria-labelledby="categoryTitle">
-        <div class="section-heading premium-heading category-heading">
-          <div>
-            <p class="eyebrow" data-i18n="categories.eyebrow">Choose your world</p>
-            <h2 id="categoryTitle" data-i18n="categories.title">Six collections. One place.</h2>
-          </div>
-          <a class="section-link" href="collections.html"><span data-i18n="categories.all">View all</span> <span aria-hidden="true">→</span></a>
-        </div>
-
-        <div class="category-hub-grid category-hub-grid-six" id="categoryHubGrid">
-          <button class="category-hub-card category-funko depth-card" id="funkoCategoryToggle" type="button" aria-expanded="false" aria-controls="funkoCategoryPanel" data-category-card="funko">
-            <span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span>
-            <span class="category-card-copy"><span class="category-card-kicker" data-i18n="card.funko.kicker">Main category</span><strong>FUNKO</strong><span class="category-card-count"><b data-category-count="funko">0</b> collectibles</span><span class="category-card-link"><span data-i18n="card.explore">Explore</span> <i aria-hidden="true">→</i></span></span>
-          </button>
-          <a class="category-hub-card category-lego depth-card" href="lego.html" data-category-card="lego"><span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span><span class="category-card-copy"><span class="category-card-kicker" data-i18n="card.lego.kicker">Build &amp; collect</span><strong>LEGO</strong><span class="category-card-count"><b data-category-count="lego">0</b> collectibles</span><span class="category-card-link"><span data-i18n="card.explore">Explore</span> <i aria-hidden="true">→</i></span></span></a>
-          <a class="category-hub-card category-pokemon depth-card" href="pokemon.html" data-category-card="pokemon"><span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span><span class="category-card-copy"><span class="category-card-kicker" data-i18n="card.pokemon.kicker">Creature collecting</span><strong>POKÉMON</strong><span class="category-card-count"><b data-category-count="pokemon">0</b> collectibles</span><span class="category-card-link"><span data-i18n="card.explore">Explore</span> <i aria-hidden="true">→</i></span></span></a>
-          <a class="category-hub-card category-star-wars depth-card" href="star-wars.html" data-category-card="star-wars"><span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span><span class="category-card-copy"><span class="category-card-kicker" data-i18n="card.starwars.kicker">A galaxy far away</span><strong>STAR WARS</strong><span class="category-card-count"><b data-category-count="star-wars">0</b> collectibles</span><span class="category-card-link"><span data-i18n="card.explore">Explore</span> <i aria-hidden="true">→</i></span></span></a>
-          ><a class="category-hub-card category-hotwheels depth-card" href="hotwheels.html" data-category-card="hotwheels">
-          <a class="category-hub-card category-sale depth-card" href="sale.html" data-category-card="sale"><span class="category-card-photo" aria-hidden="true"></span><span class="category-card-glow" aria-hidden="true"></span><span class="category-card-copy"><span class="category-card-kicker" data-i18n="card.sale.kicker">Limited-time savings</span><strong>SALE</strong><span class="category-card-count"><b data-category-count="sale">0</b> offers</span><span class="category-card-link"><span data-i18n="card.sale.explore">Explore sale</span> <i aria-hidden="true">→</i></span></span></a>
-        </div>
-
-      </section>
-
-        <button class="funko-focus-overlay" id="funkoFocusOverlay" type="button" aria-label="Funko overzicht sluiten"></button>
-
-        <div class="funko-category-panel" id="funkoCategoryPanel" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="funkoPanelTitle">
-          <div class="funko-category-panel-inner depth-panel">
-            <button class="funko-panel-close" id="funkoPanelClose" type="button" aria-label="Funko overzicht sluiten">×</button>
-            <div class="funko-category-showcase">
-              <div class="funko-showcase-photo" aria-hidden="true"></div>
-              <div class="funko-showcase-overlay">
-                <p class="eyebrow" data-i18n="funko.eyebrow">Funko collection</p>
-                <h3 id="funkoPanelTitle" data-i18n="funko.title">Choose your Funko line.</h3>
-                <p data-i18n="funko.text">From movies and television to games, pins and Bitty Pop.</p>
-              </div>
-            </div>
-
-            <div class="funko-subcategory-grid" aria-label="Funko subcategorieën">
-             <a href="funko.html?category=Funko%20Movies" class="funko-subcategory-card"><span>01</span><strong>Movies</strong><small><b data-funko-count="Funko Movies">0</b> items</small><i>→</i></a>
-             <a href="funko.html?category=Funko%20Television" class="funko-subcategory-card"><span>02</span><strong>Television</strong><small><b data-funko-count="Funko Television">0</b> items</small><i>→</i></a>
-             <a href="funko.html?category=Funko%20Animation" class="funko-subcategory-card"><span>03</span><strong>Animation</strong><small><b data-funko-count="Funko Animation">0</b> items</small><i>→</i></a>
-             <a href="funko.html?category=Funko%20Games" class="funko-subcategory-card"><span>04</span><strong>Games</strong><small><b data-funko-count="Funko Games">0</b> items</small><i>→</i></a>
-             <a href="funko.html?category=Funko%20Heroes" class="funko-subcategory-card"><span>05</span><strong>Heroes</strong><small><b data-funko-count="Funko Heroes">0</b> items</small><i>→</i></a>
-             <a href="funko.html?category=Funko%20Pin" class="funko-subcategory-card"><span>06</span><strong>Pin</strong><small><b data-funko-count="Funko Pin">0</b> items</small><i>→</i></a>
-             <a href="funko.html?category=Funko%20Bitty%20Pop" class="funko-subcategory-card"><span>07</span><strong>Bitty Pop</strong><small><b data-funko-count="Funko Bitty Pop">0</b> items</small><i>→</i></a>
-             <a href="funko.html?category=Funko%20Tee" class="funko-subcategory-card"><span>08</span><strong>Tee</strong><small><b data-funko-count="Funko Tee">0</b> items</small><i>→</i></a>
-            </div>
-          </div>
-        </div>
-
-      <section class="section highlights-section reveal" id="highlights" aria-labelledby="highlightsTitle">
-        <div class="section-heading premium-heading">
-          <div>
-            <p class="eyebrow" data-i18n="highlights.eyebrow">Featured</p>
-            <h2 id="highlightsTitle" data-i18n="highlights.title">Highlights from the collection.</h2>
-          </div>
-          <a class="section-link" href="collections.html"><span data-i18n="highlights.all">View all</span> <span aria-hidden="true">→</span></a>
-        </div>
-        <p class="highlight-intro" data-i18n="highlights.intro">Six standout finds, presented clearly. New products can appear here automatically.</p>
-        <div class="highlight-grid highlight-grid-six" id="highlightGrid" aria-live="polite" aria-label="Zes uitgelichte collectibles"></div>
-      </section>
-
-      <section class="benefit-strip depth-panel reveal" aria-label="Waarom Lootifer">
+      <section class="benefit-strip depth-panel reveal" aria-label="Waarom 2nd Life Toys">
         <article><span class="benefit-icon" aria-hidden="true">⌂</span><div><strong data-i18n="benefit.private.title">Private collection</strong><p data-i18n="benefit.private.text">From my collection to yours.</p></div></article>
         <article><span class="benefit-icon" aria-hidden="true">✦</span><div><strong data-i18n="benefit.checked.title">Carefully checked</strong><p data-i18n="benefit.checked.text">Photos and condition are shown as clearly as possible.</p></div></article>
         <article><span class="benefit-icon" aria-hidden="true">➤</span><div><strong data-i18n="benefit.packed.title">Carefully packed</strong><p data-i18n="benefit.packed.text">Protected shipping with Track &amp; Trace.</p></div></article>
@@ -153,19 +93,22 @@
       </section>
 
       <section class="section collector-club-section reveal">
-        <div class="club-card premium-club-card depth-card">
+        <div class="club-card premium-club-card depth-card v40-club-card">
           <div class="club-copy">
-            <p class="eyebrow" data-i18n="club.eyebrow">Lootifer alerts</p>
-            <h2 data-i18n="club.title">Never miss a new addition.</h2>
-            <p data-i18n="club.text">Save your email address locally in your browser for future alerts about new collectibles and limited availability.</p>
+            <p class="eyebrow">2nd Life Toys Updates</p>
+            <h2>Als eerste weten wat er nieuw binnenkomt.</h2>
+            <p>Schrijf je e-mailadres in voor toekomstige updates over nieuwe vondsten, bijzondere items en beperkte beschikbaarheid.</p>
             <form class="club-form" id="clubForm">
-              <input id="clubEmail" type="email" placeholder="Your email address" data-i18n-placeholder="club.placeholder" required />
-              <button class="button primary button-raised" type="submit" data-i18n="club.button">Sign up</button>
+              <input id="clubEmail" type="email" placeholder="Jouw e-mailadres" required />
+              <button class="button primary button-raised" type="submit">Inschrijven</button>
             </form>
-            <p class="club-message" id="clubMessage" data-i18n="club.note">No spam — only collector updates.</p>
+            <p class="club-message" id="clubMessage">Geen spam. Alleen updates van 2nd Life Toys.</p>
           </div>
-          <div class="club-orbit" aria-hidden="true">
-            <div class="orbit-ring orbit-ring-one"></div><div class="orbit-ring orbit-ring-two"></div><div class="orbit-core">L</div>
+          <div class="club-orbit v40-club-orbit v45-brand-spinner" aria-hidden="true">
+            <div class="v45-logo-halo"></div>
+            <div class="v45-logo-turntable">
+              <img src="Assets/Images/Brand/2nd-life-toys-logo.png" alt="" />
+            </div>
           </div>
         </div>
       </section>
@@ -173,5 +116,6 @@
 
     <div id="footerRoot"></div>
     <script type="module" src="Assets/Js/script.js"></script>
+    <script type="module" src="Assets/Js/home-v40.js?v=41"></script>
   </body>
 </html>
