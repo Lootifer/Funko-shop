@@ -1,4 +1,0 @@
-Lootifer V20.1
-
-Toegevoegd: een kleine, subtiele Admin-link onderaan de footer van de webshop.
-De link opent admin/login.html.

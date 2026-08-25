@@ -1,6 +1,0 @@
-LOOTIFER FRONTPAGE V9
-
-- Herstelt het onzichtbare Funko-submenu.
-- Het submenu blijft fixed boven de wazige overlay staan.
-- De blur-achtergrond en positionering onder het Funko-vak blijven behouden.
-- Geen wijzigingen aan admin, voorraad, winkelwagen, checkout of WhatsApp.

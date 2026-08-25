@@ -1,8 +1,0 @@
-Lootifer Frontpage V4
-- DC en Marvel verwijderd
-- LEGO toegevoegd met aangeleverde afbeelding
-- Star Wars gebruikt een generieke ruimteachtergrond
-- Harry Potter gebruikt een generieke toverstafachtergrond
-- Funko-overzicht krijgt een beslagen/blur focuslaag
-- Elke hoofdcollectie heeft een eigen winkelpagina
-- Hero-tekst gewijzigd naar nieuw en tweedehands

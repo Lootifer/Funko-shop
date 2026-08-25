@@ -1,5 +1,0 @@
-Verzendkosten-update:
-- €6,95 standaard verzending binnen Nederland
-- Gratis verzending vanaf €75,00 productwaarde
-- Winkelwagen, checkout, WhatsApp-bericht, databaseorder en admin tonen dezelfde bedragen
-- De backend berekent de verzendkosten zelf

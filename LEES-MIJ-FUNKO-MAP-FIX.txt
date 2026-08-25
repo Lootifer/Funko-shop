@@ -1,8 +1,0 @@
-LOOTIFER V15 - FUNKO MAP FIX
-
-Deze update bevat de eerdere V15 Funko-fixes en voegt toe:
-- De gekozen Funko-categorie bepaalt nu de fotomap.
-- Funko Games -> Assets/Images/Products/funko/Games/<slug>
-- Movies, Television, Animation, Heroes, Pin, Bitty Pop en Tee krijgen elk hun eigen map.
-- Funko toont in Admin maximaal 4 verwachte fotopaden: front, back, left, right.
-- Universe/franchise zoals Mega Man kan de gekozen Funko-categorie niet meer terugzetten naar Movies.

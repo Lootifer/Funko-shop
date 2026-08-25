@@ -1,6 +1,0 @@
-Lootifer Frontpage V10
-
-- Bevat de Funko-submenu zichtbaarheid/z-index fix uit V9.
-- Het e-mailveld in de lichte 'Become a Jedi'-modus heeft nu altijd een duidelijke gele rand.
-- Hover en focus geven een iets sterkere goudgele gloed.
-- Geen wijzigingen aan admin, database, winkelwagen, checkout of WhatsApp.
