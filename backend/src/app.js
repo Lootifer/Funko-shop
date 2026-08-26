@@ -1,5 +1,7 @@
 import cors from "cors";
 import express from "express";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import productsRouter from "./routes/products.js";
 import ordersRouter from "./routes/orders.js";
 import stockRouter from "./routes/stock.js";
@@ -7,7 +9,9 @@ import authRouter from "./routes/auth.js";
 import siteRouter from "./routes/site.js";
 import accountRouter from "./routes/account.js";
 import { getDbPath } from "./db/connection.js";
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const websiteRoot = path.resolve(__dirname, "../..");
 const app = express();
 
 const isAllowedOrigin = (origin = "") => {
@@ -47,7 +51,10 @@ app.use("/api/products", productsRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/stock", stockRouter);
 app.use("/api/site", siteRouter);
-
+app.use(express.static(websiteRoot));
+app.get("/", (request, response) => {
+  response.sendFile(path.join(websiteRoot, "index.html"));
+});
 app.use((error, request, response, next) => {
   // eslint-disable-next-line no-console
   console.error(error);
@@ -60,3 +67,4 @@ app.use((error, request, response, next) => {
 });
 
 export default app;
+r
