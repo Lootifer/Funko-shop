@@ -1,7 +1,7 @@
 import { all, exec, run } from "./connection.js";
 
 const accountSchemaSql = `
-const accountSchemaSql = `
+
 CREATE TABLE IF NOT EXISTS customers (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   first_name TEXT NOT NULL,
