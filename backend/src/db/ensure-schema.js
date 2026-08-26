@@ -1,6 +1,7 @@
 import { all, exec, run } from "./connection.js";
 
 const accountSchemaSql = `
+const accountSchemaSql = `
 CREATE TABLE IF NOT EXISTS customers (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   first_name TEXT NOT NULL,
@@ -20,6 +21,15 @@ CREATE TABLE IF NOT EXISTS customers (
 );
 
 CREATE TABLE IF NOT EXISTS customer_sessions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  customer_id INTEGER NOT NULL,
+  token_hash TEXT NOT NULL UNIQUE,
+  created_at TEXT NOT NULL,
+  last_seen_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS customer_password_resets (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   customer_id INTEGER NOT NULL,
@@ -30,23 +40,21 @@ CREATE TABLE IF NOT EXISTS customer_password_resets (
   FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 );
 
+CREATE INDEX IF NOT EXISTS idx_customers_email
+ON customers(email);
+
+CREATE INDEX IF NOT EXISTS idx_customer_sessions_token_hash
+ON customer_sessions(token_hash);
+
+CREATE INDEX IF NOT EXISTS idx_customer_sessions_expires_at
+ON customer_sessions(expires_at);
+
 CREATE INDEX IF NOT EXISTS idx_customer_password_resets_token_hash
 ON customer_password_resets(token_hash);
 
 CREATE INDEX IF NOT EXISTS idx_customer_password_resets_expires_at
 ON customer_password_resets(expires_at);
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  customer_id INTEGER NOT NULL,
-  token_hash TEXT NOT NULL UNIQUE,
-  created_at TEXT NOT NULL,
-  last_seen_at TEXT NOT NULL,
-  expires_at TEXT NOT NULL,
-  FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
-CREATE INDEX IF NOT EXISTS idx_customer_sessions_token_hash ON customer_sessions(token_hash);
-CREATE INDEX IF NOT EXISTS idx_customer_sessions_expires_at ON customer_sessions(expires_at);
+`;
 `;
 
 export const ensureRuntimeSchema = async () => {
