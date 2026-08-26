@@ -106,7 +106,49 @@
         </form>
       </article>
     </section>
+<section class="account-choice-grid" data-account-reset hidden>
+  <article class="account-choice-card" id="reset">
+    <div class="account-card-heading">
+      <span class="account-card-step">✓</span>
+      <div>
+        <p class="eyebrow">WACHTWOORD HERSTELLEN</p>
+        <h2>Kies een nieuw wachtwoord</h2>
+      </div>
+    </div>
 
+    <p>Vul hieronder twee keer je nieuwe wachtwoord in.</p>
+
+    <form class="account-v45-form" data-account-form="reset">
+      <label>Nieuw wachtwoord
+        <input
+          type="password"
+          name="newPassword"
+          autocomplete="new-password"
+          minlength="8"
+          maxlength="128"
+          required
+        />
+      </label>
+
+      <label>Herhaal nieuw wachtwoord
+        <input
+          type="password"
+          name="newPasswordRepeat"
+          autocomplete="new-password"
+          minlength="8"
+          maxlength="128"
+          required
+        />
+      </label>
+
+      <button class="button primary button-raised" type="submit">
+        Nieuw wachtwoord opslaan
+      </button>
+
+      <p class="account-form-status" hidden></p>
+    </form>
+  </article>
+</section>
     <section class="account-dashboard" data-account-dashboard hidden>
       <div class="account-dashboard-head">
         <div><p class="eyebrow">MIJN ACCOUNT</p><h2>Welkom, <span data-account-first-name></span>.</h2><p data-account-email></p></div>

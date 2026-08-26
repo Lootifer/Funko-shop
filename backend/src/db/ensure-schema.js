@@ -20,6 +20,21 @@ CREATE TABLE IF NOT EXISTS customers (
 );
 
 CREATE TABLE IF NOT EXISTS customer_sessions (
+CREATE TABLE IF NOT EXISTS customer_password_resets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  customer_id INTEGER NOT NULL,
+  token_hash TEXT NOT NULL UNIQUE,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  used_at TEXT,
+  FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_customer_password_resets_token_hash
+ON customer_password_resets(token_hash);
+
+CREATE INDEX IF NOT EXISTS idx_customer_password_resets_expires_at
+ON customer_password_resets(expires_at);
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   customer_id INTEGER NOT NULL,
   token_hash TEXT NOT NULL UNIQUE,
@@ -55,4 +70,5 @@ export const ensureRuntimeSchema = async () => {
 
   // Ruim verlopen klantsessies automatisch op bij iedere serverstart.
   await run("DELETE FROM customer_sessions WHERE expires_at <= ?", [new Date().toISOString()]);
+  await run("DELETE FROM customer_password_resets WHERE expires_at <= ?", [new Date().toISOString()]);
 };

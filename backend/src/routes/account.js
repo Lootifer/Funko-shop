@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { promisify } from "node:util";
 import { Router } from "express";
+import nodemailer from "nodemailer";
 import { all, get, run } from "../db/connection.js";
 
 const router = Router();
@@ -10,6 +11,18 @@ const SESSION_HOURS = 12;
 const REMEMBER_DAYS = 30;
 const ATTEMPT_WINDOW_MS = 15 * 60 * 1000;
 const MAX_LOGIN_ATTEMPTS = 8;
+const RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
+const SITE_URL = process.env.SITE_URL || "https://www.2ndlifetoys.nl";
+
+const mailer = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT) || 465,
+  secure: Number(process.env.SMTP_PORT) === 465,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 const loginAttempts = new Map();
 
 const normalizeEmail = (value = "") => String(value || "").trim().toLowerCase();
@@ -199,7 +212,76 @@ router.post("/register", async (request, response, next) => {
     return next(error);
   }
 });
+router.post("/forgot-password", async (request, response, next) => {
+  try {
+    const email = normalizeEmail(request.body?.email);
 
+    // Altijd dezelfde reactie geven, zodat niemand kan zien
+    // of een e-mailadres wel of niet geregistreerd staat.
+    const genericResponse = {
+      ok: true,
+      message: "Als dit e-mailadres bij ons bekend is, ontvang je een e-mail met een herstel-link.",
+    };
+
+    if (!isEmail(email)) {
+      return response.json(genericResponse);
+    }
+
+    const customer = await get(
+      "SELECT id, first_name, email FROM customers WHERE email = ?",
+      [email]
+    );
+
+    if (!customer) {
+      return response.json(genericResponse);
+    }
+
+    const token = crypto.randomBytes(32).toString("base64url");
+    const hashedToken = tokenHash(token);
+    const createdAt = nowIso();
+    const expiresAt = new Date(Date.now() + RESET_TOKEN_TTL_MS).toISOString();
+
+    await run(
+      "DELETE FROM customer_password_resets WHERE customer_id = ?",
+      [customer.id]
+    );
+
+    await run(
+      `INSERT INTO customer_password_resets
+        (customer_id, token_hash, created_at, expires_at, used_at)
+       VALUES (?, ?, ?, ?, NULL)`,
+      [customer.id, hashedToken, createdAt, expiresAt]
+    );
+
+    const resetUrl =
+      `${SITE_URL}/account.html?resetToken=${encodeURIComponent(token)}#reset`;
+
+    await mailer.sendMail({
+      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+      to: customer.email,
+      subject: "Wachtwoord herstellen | 2nd Life Toys",
+      text:
+        `Hallo ${customer.first_name || ""},\n\n` +
+        `Via onderstaande link kun je een nieuw wachtwoord instellen:\n\n` +
+        `${resetUrl}\n\n` +
+        `Deze link is 1 uur geldig.\n\n` +
+        `Heb je dit niet aangevraagd? Dan kun je deze e-mail negeren.\n\n` +
+        `2nd Life Toys`,
+      html: `
+        <p>Hallo ${customer.first_name || ""},</p>
+        <p>Via onderstaande link kun je een nieuw wachtwoord instellen:</p>
+        <p><a href="${resetUrl}">Nieuw wachtwoord instellen</a></p>
+        <p>Deze link is 1 uur geldig.</p>
+        <p>Heb je dit niet aangevraagd? Dan kun je deze e-mail negeren.</p>
+        <p>2nd Life Toys</p>
+      `,
+    });
+
+    return response.json(genericResponse);
+  } catch (error) {
+    return next(error);
+  }
+});
 router.post("/login", async (request, response, next) => {
   try {
     const email = normalizeEmail(request.body?.email);
@@ -236,7 +318,62 @@ router.post("/login", async (request, response, next) => {
     return next(error);
   }
 });
+router.post("/reset-password", async (request, response, next) => {
+  try {
+    const token = String(request.body?.token || "").trim();
+    const newPassword = String(request.body?.newPassword || "");
 
+    if (!token) {
+      return response.status(400).json({ error: "Ongeldige herstel-link." });
+    }
+
+    if (newPassword.length < 8 || newPassword.length > 128) {
+      return response.status(400).json({
+        error: "Het nieuwe wachtwoord moet tussen 8 en 128 tekens lang zijn.",
+      });
+    }
+
+    const reset = await get(
+      `SELECT *
+       FROM customer_password_resets
+       WHERE token_hash = ?
+         AND used_at IS NULL
+         AND expires_at > ?`,
+      [tokenHash(token), nowIso()]
+    );
+
+    if (!reset) {
+      return response.status(400).json({
+        error: "Deze herstel-link is ongeldig of verlopen.",
+      });
+    }
+
+    const newHash = await hashPassword(newPassword);
+    const updatedAt = nowIso();
+
+    await run(
+      "UPDATE customers SET password_hash = ?, updated_at = ? WHERE id = ?",
+      [newHash, updatedAt, reset.customer_id]
+    );
+
+    await run(
+      "UPDATE customer_password_resets SET used_at = ? WHERE id = ?",
+      [updatedAt, reset.id]
+    );
+
+    await run(
+      "DELETE FROM customer_sessions WHERE customer_id = ?",
+      [reset.customer_id]
+    );
+
+    return response.json({
+      ok: true,
+      message: "Je wachtwoord is gewijzigd. Je kunt nu inloggen.",
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
 router.get("/me", requireCustomer, (request, response) => {
   response.json({ authenticated: true, user: publicCustomer(request.customerSession.customer) });
 });

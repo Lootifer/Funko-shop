@@ -246,11 +246,116 @@ document.querySelector("[data-account-logout]")?.addEventListener("click", async
   window.location.hash = "login";
 });
 
-document.querySelector("[data-password-reset]")?.addEventListener("click", (event) => {
-  const form = event.currentTarget.closest("form");
-  setStatus(form, "Wachtwoord herstellen per e-mail wordt aangesloten zodra de mailserver is ingesteld.", "");
-});
+document.querySelector("[data-password-reset]")?.addEventListener("click", async (event) => {
+  event.preventDefault();
 
+  const button = event.currentTarget;
+  const form = button.closest("form");
+  const emailInput = form?.elements.namedItem("email");
+  const email = String(emailInput?.value || "").trim();
+
+  if (!email) {
+    setStatus(form, "Vul eerst je e-mailadres in.", "error");
+    emailInput?.focus();
+    return;
+  }
+
+  button.disabled = true;
+  setStatus(form, "Herstelmail wordt verstuurd…");
+
+  try {
+    const payload = await api("/account/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+
+    setStatus(
+      form,
+      payload.message || "Controleer je e-mail voor de herstel-link.",
+      "success"
+    );
+  } catch (error) {
+    setStatus(form, error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+});
+});
+const resetArea = document.querySelector("[data-account-reset]");
+const resetForm = document.querySelector('[data-account-form="reset"]');
+
+const getResetToken = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("resetToken") || "";
+};
+
+const showResetFormIfNeeded = () => {
+  const resetToken = getResetToken();
+
+  if (!resetToken) {
+    if (resetArea) resetArea.hidden = true;
+    return;
+  }
+
+  if (guestIntro) guestIntro.hidden = true;
+  if (guestArea) guestArea.hidden = true;
+  if (dashboard) dashboard.hidden = true;
+  if (resetArea) resetArea.hidden = false;
+
+  requestAnimationFrame(() => {
+    resetArea?.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+};
+
+resetForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (!resetForm.checkValidity()) {
+    return resetForm.reportValidity();
+  }
+
+  const values = Object.fromEntries(new FormData(resetForm).entries());
+  const resetToken = getResetToken();
+
+  if (!resetToken) {
+    setStatus(resetForm, "Deze herstel-link is ongeldig.", "error");
+    return;
+  }
+
+  if (values.newPassword !== values.newPasswordRepeat) {
+    setStatus(resetForm, "De twee wachtwoorden zijn niet gelijk.", "error");
+    return;
+  }
+
+  setBusy(resetForm, true);
+  setStatus(resetForm, "");
+
+  try {
+    const payload = await api("/account/reset-password", {
+      method: "POST",
+      body: JSON.stringify({
+        token: resetToken,
+        newPassword: values.newPassword,
+      }),
+    });
+
+    resetForm.reset();
+
+    setStatus(
+      resetForm,
+      payload.message || "Je wachtwoord is gewijzigd.",
+      "success"
+    );
+
+    window.setTimeout(() => {
+      window.location.href = "account.html#login";
+    }, 1800);
+  } catch (error) {
+    setStatus(resetForm, error.message, "error");
+  } finally {
+    setBusy(resetForm, false);
+  }
+});
 const focusHashSection = () => {
   const hash = window.location.hash;
   if (hash === "#logout" && getToken()) {
@@ -268,4 +373,8 @@ const focusHashSection = () => {
 };
 
 window.addEventListener("hashchange", focusHashSection);
-restoreSession().finally(focusHashSection);
+showResetFormIfNeeded();
+restoreSession().finally(() => {
+  showResetFormIfNeeded();
+  focusHashSection();
+});
