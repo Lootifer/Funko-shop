@@ -55,7 +55,7 @@ ON customer_password_resets(token_hash);
 CREATE INDEX IF NOT EXISTS idx_customer_password_resets_expires_at
 ON customer_password_resets(expires_at);
 `;
-`;
+
 
 export const ensureRuntimeSchema = async () => {
   await exec(accountSchemaSql);
