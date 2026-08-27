@@ -15,12 +15,15 @@ const RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
 const SITE_URL = process.env.SITE_URL || "https://www.2ndlifetoys.nl";
 
 const mailer = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 465,
+  host: "45.82.191.137",
+  port: Number(process.env.SMTP_PORT) || 587,
   secure: Number(process.env.SMTP_PORT) === 465,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
+  },
+  tls: {
+    servername: "shared104.cloud86-host.io",
   },
 });
 const loginAttempts = new Map();
