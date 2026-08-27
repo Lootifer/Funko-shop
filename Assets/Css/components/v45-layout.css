@@ -1,0 +1,270 @@
+.account-page-v45 {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 70px 0 90px;
+}
+
+.account-v45-intro {
+  max-width: 760px;
+  margin: 0 auto 34px;
+  text-align: center;
+}
+
+.account-v45-intro h1 {
+  margin: 8px 0 12px;
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1.05;
+}
+
+.account-v45-intro > p {
+  color: #aeb4bc;
+  margin: 0;
+}
+
+.account-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.account-choice-card {
+  padding: 28px 26px;
+  border: 1px solid rgba(232, 189, 60, 0.2);
+  border-radius: 22px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.045),
+      rgba(255, 255, 255, 0.015)
+    );
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.account-choice-card > p {
+  color: #aeb4bc;
+  margin: 0 0 22px;
+}
+
+.account-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.account-card-heading h2 {
+  margin: 2px 0 0;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1;
+}
+
+.account-card-step {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #f0c63c;
+  color: #0d0e10;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.account-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.account-benefits span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid rgba(232, 189, 60, 0.22);
+  border-radius: 999px;
+  color: #e8bd3c;
+  background: rgba(232, 189, 60, 0.04);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.account-v45-form {
+  display: grid;
+  gap: 15px;
+}
+
+.account-v45-form label {
+  display: grid;
+  gap: 7px;
+  color: #c8cdd2;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.account-v45-form input[type="text"],
+.account-v45-form input[type="email"],
+.account-v45-form input[type="password"],
+.account-v45-form input[type="tel"] {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 13px;
+  outline: none;
+  background: #263246;
+  color: #fff;
+  font: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+  box-sizing: border-box;
+}
+
+.account-v45-form input:focus {
+  border-color: rgba(232, 189, 60, 0.7);
+  box-shadow: 0 0 0 3px rgba(232, 189, 60, 0.1);
+  background: #2b374b;
+}
+
+.account-form-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.account-check {
+  display: flex !important;
+  grid-template-columns: none !important;
+  align-items: flex-start;
+  gap: 10px !important;
+  cursor: pointer;
+}
+
+.account-check input {
+  margin-top: 3px;
+}
+
+.account-check span {
+  color: #aeb4bc;
+  font-size: 13px;
+}
+
+.account-check a {
+  color: #e8bd3c;
+  text-decoration: underline;
+}
+
+.account-v45-form .button.primary {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 2px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffd84e, #e8b92e);
+  color: #08090b;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(232, 189, 60, 0.18);
+}
+
+.account-v45-form .button.primary:hover {
+  filter: brightness(1.04);
+}
+
+.account-v45-form .button.primary:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.account-text-button {
+  width: max-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #e8bd3c;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.account-text-button:hover {
+  text-decoration: underline;
+}
+
+.account-form-status {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(232, 189, 60, 0.22);
+  border-radius: 12px;
+  background: rgba(232, 189, 60, 0.04);
+  color: #d4d8dd;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.account-form-status.is-error {
+  border-color: rgba(255, 100, 100, 0.3);
+  background: rgba(255, 100, 100, 0.06);
+}
+
+.account-form-status.is-success {
+  border-color: rgba(90, 220, 120, 0.3);
+  background: rgba(90, 220, 120, 0.06);
+}
+
+[data-account-reset] {
+  max-width: 620px;
+  margin: 30px auto 0;
+}
+
+[data-account-reset] .account-choice-card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 820px) {
+  .account-page-v45 {
+    width: min(100% - 28px, 680px);
+    padding-top: 46px;
+  }
+
+  .account-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-form-two {
+    grid-template-columns: 1fr;
+  }
+
+  .account-choice-card {
+    padding: 22px 18px;
+  }
+
+  .account-v45-intro {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-card-heading {
+    align-items: flex-start;
+  }
+
+  .account-card-step {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+
+  .account-card-heading h2 {
+    font-size: 29px;
+  }
+}
