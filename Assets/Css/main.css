@@ -25,12 +25,22 @@
 @import url('components/collections-hub.css');
 
 @import url('components/v18-home-display.css');
+
+/*
+ * V45 algemene layout.
+ * Nodig voor het nieuwe 2nd Life Toys-logo,
+ * header/footer, account en overige V45-layoutonderdelen.
+ */
+@import url('components/v45-layout.css');
+
 /* MOBIEL: ruimte tussen logo en zoekbalk */
 @media (max-width: 700px) {
   .premium-topbar .header-tools {
     margin-top: 5rem;
   }
-}/* Geen gele decoratie/punt bij Contact in de hoofdnavigatie */
+}
+
+/* Geen gele decoratie/punt bij Contact in de hoofdnavigatie */
 .nav-links a[href="contact.html"]::before,
 .nav-links a[href="contact.html"]::after {
   content: none !important;
