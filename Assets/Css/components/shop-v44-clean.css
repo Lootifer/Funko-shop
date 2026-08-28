@@ -1,0 +1,103 @@
+/* 2nd Life Toys V44.1 — schone winkelpagina, los van oude shop-layouts */
+.shop-v44-body { background: var(--bg); }
+.shop-v44 {
+  width: min(100% - 2rem, 1320px);
+  margin: 0 auto;
+  padding: clamp(2rem,4vw,4.2rem) 0 5rem;
+}
+.shop-v44-head {
+  display:flex; align-items:end; justify-content:space-between; gap:2rem;
+  margin-bottom:1.4rem;
+}
+.shop-v44-head h1 {
+  margin:.2rem 0 .35rem; font-size:clamp(2.5rem,5vw,4.5rem);
+  line-height:.98; letter-spacing:-.055em;
+}
+.shop-v44-head > div > p:last-child { margin:0; color:var(--muted); }
+.shop-v44-all {
+  display:inline-flex; align-items:center; gap:.55rem; padding:.7rem 0;
+  color:var(--accent); font-weight:800; text-decoration:none; white-space:nowrap;
+}
+.shop-v44-grid {
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem;
+}
+.shop-v44-card {
+  position:relative; min-height:240px; overflow:hidden; border:1px solid rgba(255,255,255,.12);
+  border-radius:1.35rem; background:#11161b; color:#fff; text-decoration:none;
+  box-shadow:0 16px 36px rgba(0,0,0,.24), inset 0 1px rgba(255,255,255,.04);
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+button.shop-v44-card { width:100%; padding:0; font:inherit; text-align:left; cursor:pointer; }
+.shop-v44-card:hover {
+  transform:translateY(-5px); border-color:rgba(231,190,62,.45);
+  box-shadow:0 24px 48px rgba(0,0,0,.34),0 0 0 1px rgba(231,190,62,.08);
+}
+.shop-v44-image { position:absolute; inset:0; background-position:center; background-size:cover; transition:transform .35s ease; }
+.shop-v44-card:hover .shop-v44-image { transform:scale(1.045); }
+.shop-v44-shade {
+  position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.08) 15%,rgba(0,0,0,.28) 46%,rgba(4,7,10,.96) 100%);
+}
+.shop-v44-copy { position:absolute; inset:auto 1.15rem 1rem; display:block; z-index:2; }
+.shop-v44-copy small {
+  display:block; margin-bottom:.25rem; color:#f4d04f; font-size:.68rem; line-height:1.25;
+  font-weight:800; letter-spacing:.08em;
+}
+.shop-v44-copy strong {
+  display:block; max-width:90%; font-size:clamp(1.45rem,2.4vw,2.15rem); line-height:1.02; letter-spacing:-.035em;
+}
+.shop-v44-copy em { display:block; margin-top:.5rem; color:#f0c63c; font-style:normal; font-size:.78rem; font-weight:800; }
+.shop-v44-copy i {
+  position:absolute; right:0; bottom:0; display:grid; place-items:center; width:2.35rem; height:2.35rem;
+  border:1px solid rgba(255,255,255,.32); border-radius:50%; font-style:normal;
+}
+.shop-v44-funko .shop-v44-image { background-image:url("../../Images/Home/category-funko.webp"); }
+.shop-v44-lego .shop-v44-image { background-image:url("../../Images/Home/category-lego-v8.webp"); }
+.shop-v44-pokemon .shop-v44-image { background-image:url("../../Images/Home/category-pokemon-custom.png"); background-position:center 42%; }
+.shop-v44-starwars .shop-v44-image { background-image:url("../../Images/Home/category-starwars-custom.png"); background-position:center 35%; }
+.shop-v44-lamps .shop-v44-image { background-image:url("../../Images/Home/category-lamps-custom.png"); background-position:center 48%; }
+.shop-v44-toys .shop-v44-image { background-image:url("../../Images/Home/category-figures-toys-custom.png"); background-size:contain; background-repeat:no-repeat; background-color:#fff; }
+.shop-v44-vintage .shop-v44-image { background-image:url("../../Images/Home/category-vintage-custom.png"); background-position:center 48%; }
+.shop-v44-hotwheels .shop-v44-image { background-image:url("../../Images/Home/category-hotwheels-custom.png"); background-size:contain; background-repeat:no-repeat; background-color:#1588c9; background-position:center 23%; }
+.shop-v44-sale .shop-v44-image { background-image:url("../../Images/Home/category-sale.svg"); background-color:#3c2905; }
+
+.shop-v44-modal {
+  position:fixed; inset:0; z-index:1000; display:none; place-items:center; padding:1rem;
+  background:rgba(0,0,0,.72); backdrop-filter:blur(10px);
+}
+.shop-v44-modal.is-open { display:grid; }
+.shop-v44-modal-panel {
+  position:relative; width:min(920px,96vw); max-height:min(780px,90vh); overflow:auto;
+  padding:clamp(1.25rem,3vw,2rem); border:1px solid rgba(232,190,62,.32); border-radius:1.6rem;
+  background:linear-gradient(145deg,#171a1e,#0b0d10); box-shadow:0 36px 90px rgba(0,0,0,.55);
+}
+.shop-v44-modal-panel h2 { margin:.2rem 0 .35rem; font-size:clamp(2rem,4vw,3.4rem); line-height:1; }
+.shop-v44-modal-intro { color:var(--muted); margin:0 0 1.2rem; }
+.shop-v44-modal-close {
+  position:absolute; right:1rem; top:1rem; width:2.6rem; height:2.6rem; border:1px solid rgba(255,255,255,.16);
+  border-radius:50%; background:rgba(255,255,255,.05); color:#fff; font-size:1.6rem; cursor:pointer;
+}
+.shop-v44-funko-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; }
+.shop-v44-funko-grid a {
+  display:grid; gap:.15rem; min-height:125px; padding:1rem; border:1px solid rgba(255,255,255,.1);
+  border-radius:1rem; background:rgba(255,255,255,.035); color:#fff; text-decoration:none;
+  transition:.18s ease;
+}
+.shop-v44-funko-grid a:hover { transform:translateY(-3px); border-color:rgba(232,190,62,.45); background:rgba(232,190,62,.06); }
+.shop-v44-funko-grid span { color:#e8be3f; font-size:.72rem; font-weight:800; }
+.shop-v44-funko-grid strong { font-size:1.05rem; }
+.shop-v44-funko-grid small { margin-top:auto; color:var(--muted); }
+.shop-v44-funko-all { margin-top:1rem; display:inline-flex; }
+
+@media(max-width:1050px){ .shop-v44-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+@media(max-width:760px){
+  .shop-v44{width:min(100% - 1rem,1320px);padding-top:1.2rem}
+  .shop-v44-head{align-items:flex-start;flex-direction:column;gap:.35rem}
+  .shop-v44-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+  .shop-v44-card{min-height:205px}
+  .shop-v44-funko-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:480px){
+  .shop-v44-grid{grid-template-columns:1fr}
+  .shop-v44-card{min-height:215px}
+}
