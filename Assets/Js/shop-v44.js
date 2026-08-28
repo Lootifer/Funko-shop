@@ -38,101 +38,78 @@ const normalize = (value = "") =>
     .trim()
     .toLowerCase();
 
-const haystack = (product = {}) =>
-  [
-    product.brand,
-    product.category,
-    product.universe,
-    product.franchise,
-    ...(Array.isArray(product.tags)
-      ? product.tags
-      : []),
-  ]
-    .map(normalize)
-    .join(" ");
+const normalizeCategory = (product = {}) =>
+  normalize(product.category || "");
 
-const matches = (product, key) => {
-  const text = haystack(product);
+const matches = (product = {}, key = "") => {
+  const category = normalizeCategory(product);
 
   /*
    * BELANGRIJK:
-   * Sommige oudere geïmporteerde producten hebben nog "Funko"
-   * in brand/tags staan, terwijl ze inmiddels onder een eigen
-   * 2nd Life Toys-categorie vallen.
+   * De echte productcategorie is leidend.
    *
-   * Daarom krijgen de specifieke categorieën voorrang op Funko.
+   * Daardoor wordt bijvoorbeeld een Funko Star Wars
+   * niet meer als gewone Star Wars geteld.
    */
 
-  const isLego =
-    text.includes("lego");
-
-  const isPokemon =
-    text.includes("pokemon") ||
-    text.includes("pokémon");
-
-  const isStarWars =
-    text.includes("star wars");
-
-  const isCollectibleLamps =
-    text.includes("collectible lamps") ||
-    text.includes("collectible lamp");
-
-  const isFiguresToys =
-    text.includes("figures & toys") ||
-    text.includes("figures and toys");
-
-  const isVintageFigures =
-    text.includes("vintage figures") ||
-    text.includes("vintage figure");
-
-  const isHotWheels =
-    text.includes("hot wheels") ||
-    text.includes("hotwheels");
-
-  const isSpecialCategory =
-    isLego ||
-    isPokemon ||
-    isStarWars ||
-    isCollectibleLamps ||
-    isFiguresToys ||
-    isVintageFigures ||
-    isHotWheels;
-
-  const isFunko =
-    text.includes("funko") &&
-    !isSpecialCategory;
-
   if (key === "funko") {
-    return isFunko;
+    return category.startsWith("funko");
   }
 
   if (key === "lego") {
-    return isLego;
+    return (
+      category === "lego" ||
+      category.startsWith("lego ")
+    );
   }
 
   if (key === "pokemon") {
-    return isPokemon &&
-      !isCollectibleLamps;
+    return (
+      category.includes("pokemon") ||
+      category.includes("pokémon")
+    );
   }
 
   if (key === "star-wars") {
-    return isStarWars;
+    return (
+      category === "star wars" ||
+      category === "star-wars" ||
+      category.startsWith("star wars ")
+    );
   }
 
   if (key === "collectible-lamps") {
-    return isCollectibleLamps;
+    return (
+      category === "collectible lamps" ||
+      category === "collectible-lamps" ||
+      category.includes("collectible lamp")
+    );
   }
 
   if (key === "figures-toys") {
-    return isFiguresToys;
+    return (
+      category === "figures & toys" ||
+      category === "figures and toys" ||
+      category === "figures-toys" ||
+      category.includes("figures & toys") ||
+      category.includes("figures and toys")
+    );
   }
 
   if (key === "vintage-figures") {
-    return isVintageFigures;
+    return (
+      category === "vintage figures" ||
+      category === "vintage-figures" ||
+      category.includes("vintage figures")
+    );
   }
 
   if (key === "hot-wheels") {
-    return isHotWheels;
+    return (
+      category === "hot wheels" ||
+      category === "hot-wheels" ||
+      category.includes("hot wheels")
+    );
   }
 
   if (key === "sale") {
@@ -169,6 +146,10 @@ const setCounts = (products = []) => {
       });
   });
 
+  /*
+   * Aantallen binnen het Funko-popupmenu.
+   * Hier moet de exacte Funko-subcategorie overeenkomen.
+   */
   document
     .querySelectorAll("[data-funko-count]")
     .forEach((element) => {
