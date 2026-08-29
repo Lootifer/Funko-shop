@@ -68,7 +68,7 @@ export const createFooter = () => {
         >
           <img
             class="footer-brand-logo"
-            src="Assets/Images/Brand/2nd-life-toys-logo.png"
+            src="Assets/Images/Brand/2nd-life-toys-logo-v2.png"
             alt="2nd Life Toys"
           />
         </a>

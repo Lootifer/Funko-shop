@@ -496,7 +496,7 @@ export const createHeader = (active = "home") => {
       <a class="brand" href="index.html" aria-label="2nd Life Toys home">
         <img
           class="brand-logo-image"
-          src="Assets/Images/Brand/2nd-life-toys-logo.png"
+          src="Assets/Images/Brand/2nd-life-toys-logo-v2.png"
           alt="2nd Life Toys"
         />
       </a>
