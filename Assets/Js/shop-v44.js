@@ -4,7 +4,7 @@ import {
   createShoppingUi,
   syncHeaderCounters,
 } from "../../Components/Experience/shopping-ui.js";
-import { loadRuntimeCatalog } from "../../Products/runtime-catalog.js?v=20260829-1";
+import { loadRuntimeCatalog } from "../../Products/runtime-catalog.js?v=20260829-2";
 import { getValidDiscountPrice } from "../../Products/product-pricing.js";
 
 const headerRoot = document.getElementById("headerRoot");
