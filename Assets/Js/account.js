@@ -2,11 +2,13 @@ import { createHeader } from "../../Components/Header.js";
 import { createFooter } from "../../Components/Footer.js";
 import { createShoppingUi } from "../../Components/Experience/shopping-ui.js";
 
-const RAILWAY_API = "https://funko-shop-production-9308.up.railway.app/api";
+const RAILWAY_API =
+  "https://funko-shop-production-9308.up.railway.app/api";
 
-const isLocal = ["localhost", "127.0.0.1"].includes(
-  window.location.hostname
-);
+const isLocal = [
+  "localhost",
+  "127.0.0.1",
+].includes(window.location.hostname);
 
 const API_BASE = window.LOOTIFER_API_BASE
   ? String(window.LOOTIFER_API_BASE).replace(/\/$/, "")
@@ -36,33 +38,19 @@ createShoppingUi({
   root: shoppingRoot,
 });
 
-const guestIntro = document.querySelector("[data-account-guest-intro]");
-const guestArea = document.querySelector("[data-account-guest]");
-const dashboard = document.querySelector("[data-account-dashboard]");
-const profileForm = document.querySelector('[data-account-form="profile"]');
-const passwordForm = document.querySelector('[data-account-form="password"]');
-const ordersRoot = document.querySelector("[data-account-orders]");
-const resetArea = document.querySelector("[data-account-reset]");
-const resetForm = document.querySelector('[data-account-form="reset"]');
-const logoutButton = document.querySelector("[data-account-logout]");
-const forgotPasswordButton = document.querySelector("[data-password-reset]");
-
-const getToken = () => {
-  return (
-    window.sessionStorage.getItem(TOKEN_KEY) ||
-    window.localStorage.getItem(TOKEN_KEY) ||
-    ""
-  );
-};
+const getToken = () =>
+  window.sessionStorage.getItem(TOKEN_KEY) ||
+  window.localStorage.getItem(TOKEN_KEY) ||
+  "";
 
 const getStoredUser = () => {
-  const raw =
+  const source =
     window.sessionStorage.getItem(USER_KEY) ||
     window.localStorage.getItem(USER_KEY) ||
     "";
 
   try {
-    return raw ? JSON.parse(raw) : null;
+    return source ? JSON.parse(source) : null;
   } catch {
     return null;
   }
@@ -197,28 +185,54 @@ const setBusy = (form, busy) => {
   }
 
   button.disabled = busy;
+
   button.textContent = busy
     ? "Even geduld…"
     : button.dataset.originalText;
 };
 
-const formatMoney = (value) => {
-  return new Intl.NumberFormat("nl-NL", {
+const guestIntro = document.querySelector(
+  "[data-account-guest-intro]"
+);
+
+const guestArea = document.querySelector(
+  "[data-account-guest]"
+);
+
+const dashboard = document.querySelector(
+  "[data-account-dashboard]"
+);
+
+const profileForm = document.querySelector(
+  '[data-account-form="profile"]'
+);
+
+const ordersRoot = document.querySelector(
+  "[data-account-orders]"
+);
+
+const resetArea = document.querySelector(
+  "[data-account-reset]"
+);
+
+const resetForm = document.querySelector(
+  '[data-account-form="reset"]'
+);
+
+const formatMoney = (value) =>
+  new Intl.NumberFormat("nl-NL", {
     style: "currency",
     currency: "EUR",
   }).format(Number(value) || 0);
-};
 
 const formatDate = (value) => {
   const date = new Date(value);
 
-  if (Number.isNaN(date.getTime())) {
-    return "";
-  }
-
-  return new Intl.DateTimeFormat("nl-NL", {
-    dateStyle: "medium",
-  }).format(date);
+  return Number.isNaN(date.getTime())
+    ? ""
+    : new Intl.DateTimeFormat("nl-NL", {
+        dateStyle: "medium",
+      }).format(date);
 };
 
 const renderOrders = (orders = []) => {
@@ -232,6 +246,7 @@ const renderOrders = (orders = []) => {
         Er zijn nog geen bestellingen gevonden voor dit e-mailadres.
       </div>
     `;
+
     return;
   }
 
@@ -246,7 +261,8 @@ const renderOrders = (orders = []) => {
               </div>
 
               <div class="account-order-meta">
-                ${formatDate(order.createdAt)} ·
+                ${formatDate(order.createdAt)}
+                ·
                 ${String(order.status || "Nieuw")}
               </div>
             </div>
@@ -274,7 +290,11 @@ const renderOrders = (orders = []) => {
     .join("");
 };
 
-const hideAllAccountAreas = () => {
+const fillDashboard = async (user) => {
+  if (!user) {
+    return;
+  }
+
   if (guestIntro) {
     guestIntro.hidden = true;
   }
@@ -283,33 +303,9 @@ const hideAllAccountAreas = () => {
     guestArea.hidden = true;
   }
 
-  if (dashboard) {
-    dashboard.hidden = true;
-  }
-
   if (resetArea) {
     resetArea.hidden = true;
   }
-};
-
-const showGuest = () => {
-  hideAllAccountAreas();
-
-  if (guestIntro) {
-    guestIntro.hidden = false;
-  }
-
-  if (guestArea) {
-    guestArea.hidden = false;
-  }
-};
-
-const fillDashboard = async (user) => {
-  if (!user) {
-    return;
-  }
-
-  hideAllAccountAreas();
 
   if (dashboard) {
     dashboard.hidden = false;
@@ -328,7 +324,7 @@ const fillDashboard = async (user) => {
     });
 
   if (profileForm) {
-    const fields = [
+    [
       "firstName",
       "lastName",
       "email",
@@ -338,18 +334,14 @@ const fillDashboard = async (user) => {
       "postalCode",
       "city",
       "country",
-    ];
-
-    fields.forEach((name) => {
+    ].forEach((name) => {
       const input = profileForm.elements.namedItem(name);
 
-      if (!input) {
-        return;
+      if (input) {
+        input.value =
+          user[name] ||
+          (name === "country" ? "Nederland" : "");
       }
-
-      input.value =
-        user[name] ||
-        (name === "country" ? "Nederland" : "");
     });
   }
 
@@ -370,16 +362,34 @@ const fillDashboard = async (user) => {
   }
 };
 
+const showGuest = () => {
+  if (guestIntro) {
+    guestIntro.hidden = false;
+  }
+
+  if (guestArea) {
+    guestArea.hidden = false;
+  }
+
+  if (dashboard) {
+    dashboard.hidden = true;
+  }
+
+  if (resetArea) {
+    resetArea.hidden = true;
+  }
+};
+
 const restoreSession = async () => {
   if (!getToken()) {
     showGuest();
     return;
   }
 
-  const cachedUser = getStoredUser();
+  const cached = getStoredUser();
 
-  if (cachedUser) {
-    fillDashboard(cachedUser);
+  if (cached) {
+    fillDashboard(cached);
   }
 
   try {
@@ -388,6 +398,7 @@ const restoreSession = async () => {
     });
 
     updateStoredUser(payload.user);
+
     await fillDashboard(payload.user);
   } catch {
     clearSession();
@@ -395,7 +406,9 @@ const restoreSession = async () => {
   }
 };
 
-/* LOGIN + REGISTER */
+/* --------------------------------------------------
+   INLOGGEN EN REGISTREREN
+-------------------------------------------------- */
 
 document
   .querySelectorAll(
@@ -406,8 +419,7 @@ document
       event.preventDefault();
 
       if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
+        return form.reportValidity();
       }
 
       const mode = form.dataset.accountForm;
@@ -427,6 +439,7 @@ document
             "De twee wachtwoorden zijn niet gelijk.",
             "error"
           );
+
           return;
         }
 
@@ -448,6 +461,7 @@ document
         });
 
         storeSession(payload, remember);
+
         form.reset();
 
         await fillDashboard(payload.user);
@@ -463,185 +477,230 @@ document
           behavior: "smooth",
         });
       } catch (error) {
-        setStatus(form, error.message, "error");
+        setStatus(
+          form,
+          error.message,
+          "error"
+        );
       } finally {
         setBusy(form, false);
       }
     });
   });
 
-/* PROFIEL */
+/* --------------------------------------------------
+   PROFIEL OPSLAAN
+-------------------------------------------------- */
 
-profileForm?.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  if (!profileForm.checkValidity()) {
-    profileForm.reportValidity();
-    return;
-  }
-
-  setBusy(profileForm, true);
-  setStatus(profileForm, "");
-
-  try {
-    const values = Object.fromEntries(
-      new FormData(profileForm).entries()
-    );
-
-    const payload = await api("/account/profile", {
-      method: "PATCH",
-      body: JSON.stringify(values),
-    });
-
-    updateStoredUser(payload.user);
-
-    setStatus(
-      profileForm,
-      "Je gegevens zijn opgeslagen.",
-      "success"
-    );
-
-    await fillDashboard(payload.user);
-  } catch (error) {
-    setStatus(profileForm, error.message, "error");
-  } finally {
-    setBusy(profileForm, false);
-  }
-});
-
-/* WACHTWOORD WIJZIGEN */
-
-passwordForm?.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  if (!passwordForm.checkValidity()) {
-    passwordForm.reportValidity();
-    return;
-  }
-
-  const values = Object.fromEntries(
-    new FormData(passwordForm).entries()
-  );
-
-  if (values.newPassword !== values.newPasswordRepeat) {
-    setStatus(
-      passwordForm,
-      "De twee nieuwe wachtwoorden zijn niet gelijk.",
-      "error"
-    );
-    return;
-  }
-
-  setBusy(passwordForm, true);
-  setStatus(passwordForm, "");
-
-  try {
-    await api("/account/change-password", {
-      method: "POST",
-      body: JSON.stringify(values),
-    });
-
-    passwordForm.reset();
-
-    setStatus(
-      passwordForm,
-      "Je wachtwoord is gewijzigd.",
-      "success"
-    );
-  } catch (error) {
-    setStatus(passwordForm, error.message, "error");
-  } finally {
-    setBusy(passwordForm, false);
-  }
-});
-
-/* UITLOGGEN */
-
-logoutButton?.addEventListener("click", async () => {
-  try {
-    await api("/account/logout", {
-      method: "POST",
-      body: "{}",
-    });
-  } catch {
-    // Lokale sessie wordt altijd gewist.
-  }
-
-  clearSession();
-  showGuest();
-  window.location.hash = "login";
-});
-
-/* WACHTWOORD VERGETEN */
-
-forgotPasswordButton?.addEventListener(
-  "click",
+profileForm?.addEventListener(
+  "submit",
   async (event) => {
     event.preventDefault();
 
-    const button = event.currentTarget;
-    const form = button.closest("form");
-
-    const emailInput =
-      form?.elements.namedItem("email");
-
-    const email = String(
-      emailInput?.value || ""
-    ).trim();
-
-    if (!email) {
-      setStatus(
-        form,
-        "Vul eerst je e-mailadres in.",
-        "error"
-      );
-
-      emailInput?.focus();
-      return;
+    if (!profileForm.checkValidity()) {
+      return profileForm.reportValidity();
     }
 
-    if (!emailInput.checkValidity()) {
-      emailInput.reportValidity();
-      return;
-    }
-
-    button.disabled = true;
-
-    setStatus(
-      form,
-      "Herstelmail wordt verstuurd…"
-    );
+    setBusy(profileForm, true);
+    setStatus(profileForm, "");
 
     try {
+      const values = Object.fromEntries(
+        new FormData(profileForm).entries()
+      );
+
       const payload = await api(
-        "/account/forgot-password",
+        "/account/profile",
         {
-          method: "POST",
-          body: JSON.stringify({
-            email,
-          }),
+          method: "PATCH",
+          body: JSON.stringify(values),
         }
       );
 
+      updateStoredUser(payload.user);
+
       setStatus(
-        form,
-        payload.message ||
-          "Als dit e-mailadres bij ons bekend is, ontvang je een e-mail met een herstel-link.",
+        profileForm,
+        "Je gegevens zijn opgeslagen.",
         "success"
       );
+
+      await fillDashboard(payload.user);
     } catch (error) {
       setStatus(
-        form,
+        profileForm,
         error.message,
         "error"
       );
     } finally {
-      button.disabled = false;
+      setBusy(profileForm, false);
     }
   }
 );
 
-/* RESETTOKEN */
+/* --------------------------------------------------
+   WACHTWOORD WIJZIGEN BINNEN ACCOUNT
+-------------------------------------------------- */
+
+const passwordForm = document.querySelector(
+  '[data-account-form="password"]'
+);
+
+passwordForm?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
+
+    if (!passwordForm.checkValidity()) {
+      return passwordForm.reportValidity();
+    }
+
+    const values = Object.fromEntries(
+      new FormData(passwordForm).entries()
+    );
+
+    if (
+      values.newPassword !==
+      values.newPasswordRepeat
+    ) {
+      setStatus(
+        passwordForm,
+        "De twee nieuwe wachtwoorden zijn niet gelijk.",
+        "error"
+      );
+
+      return;
+    }
+
+    setBusy(passwordForm, true);
+    setStatus(passwordForm, "");
+
+    try {
+      await api("/account/change-password", {
+        method: "POST",
+        body: JSON.stringify(values),
+      });
+
+      passwordForm.reset();
+
+      setStatus(
+        passwordForm,
+        "Je wachtwoord is gewijzigd.",
+        "success"
+      );
+    } catch (error) {
+      setStatus(
+        passwordForm,
+        error.message,
+        "error"
+      );
+    } finally {
+      setBusy(passwordForm, false);
+    }
+  }
+);
+
+/* --------------------------------------------------
+   UITLOGGEN
+-------------------------------------------------- */
+
+document
+  .querySelector("[data-account-logout]")
+  ?.addEventListener(
+    "click",
+    async () => {
+      try {
+        await api("/account/logout", {
+          method: "POST",
+          body: "{}",
+        });
+      } catch {
+        // Lokale sessie wordt alsnog verwijderd.
+      }
+
+      clearSession();
+      showGuest();
+
+      window.location.hash = "login";
+    }
+  );
+
+/* --------------------------------------------------
+   WACHTWOORD VERGETEN
+-------------------------------------------------- */
+
+document
+  .querySelector("[data-password-reset]")
+  ?.addEventListener(
+    "click",
+    async (event) => {
+      event.preventDefault();
+
+      const button = event.currentTarget;
+      const form = button.closest("form");
+
+      const emailInput =
+        form?.elements.namedItem("email");
+
+      const email = String(
+        emailInput?.value || ""
+      ).trim();
+
+      if (!email) {
+        setStatus(
+          form,
+          "Vul eerst je e-mailadres in.",
+          "error"
+        );
+
+        emailInput?.focus();
+        return;
+      }
+
+      if (!emailInput.checkValidity()) {
+        emailInput.reportValidity();
+        return;
+      }
+
+      button.disabled = true;
+
+      setStatus(
+        form,
+        "Herstelmail wordt verstuurd…"
+      );
+
+      try {
+        const payload = await api(
+          "/account/forgot-password",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              email,
+            }),
+          }
+        );
+
+        setStatus(
+          form,
+          payload.message ||
+            "Als dit e-mailadres bij ons bekend is, ontvang je een herstel-link.",
+          "success"
+        );
+      } catch (error) {
+        setStatus(
+          form,
+          error.message,
+          "error"
+        );
+      } finally {
+        button.disabled = false;
+      }
+    }
+  );
+
+/* --------------------------------------------------
+   RESETLINK UIT E-MAIL
+-------------------------------------------------- */
 
 const getResetToken = () => {
   const params = new URLSearchParams(
@@ -655,10 +714,24 @@ const showResetFormIfNeeded = () => {
   const resetToken = getResetToken();
 
   if (!resetToken) {
+    if (resetArea) {
+      resetArea.hidden = true;
+    }
+
     return false;
   }
 
-  hideAllAccountAreas();
+  if (guestIntro) {
+    guestIntro.hidden = true;
+  }
+
+  if (guestArea) {
+    guestArea.hidden = true;
+  }
+
+  if (dashboard) {
+    dashboard.hidden = true;
+  }
 
   if (resetArea) {
     resetArea.hidden = false;
@@ -674,86 +747,104 @@ const showResetFormIfNeeded = () => {
   return true;
 };
 
-/* RESET WACHTWOORD */
+/* --------------------------------------------------
+   NIEUW WACHTWOORD OPSLAAN
+-------------------------------------------------- */
 
-resetForm?.addEventListener("submit", async (event) => {
-  event.preventDefault();
+resetForm?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
 
-  if (!resetForm.checkValidity()) {
-    resetForm.reportValidity();
-    return;
+    if (!resetForm.checkValidity()) {
+      return resetForm.reportValidity();
+    }
+
+    const values = Object.fromEntries(
+      new FormData(resetForm).entries()
+    );
+
+    const resetToken = getResetToken();
+
+    if (!resetToken) {
+      setStatus(
+        resetForm,
+        "Deze herstel-link is ongeldig.",
+        "error"
+      );
+
+      return;
+    }
+
+    if (
+      values.newPassword !==
+      values.newPasswordRepeat
+    ) {
+      setStatus(
+        resetForm,
+        "De twee wachtwoorden zijn niet gelijk.",
+        "error"
+      );
+
+      return;
+    }
+
+    setBusy(resetForm, true);
+    setStatus(resetForm, "");
+
+    try {
+      const payload = await api(
+        "/account/reset-password",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            token: resetToken,
+            newPassword:
+              values.newPassword,
+          }),
+        }
+      );
+
+      resetForm.reset();
+
+      setStatus(
+        resetForm,
+        payload.message ||
+          "Je wachtwoord is gewijzigd. Je kunt nu inloggen.",
+        "success"
+      );
+
+      window.setTimeout(() => {
+        window.location.href =
+          "account.html#login";
+      }, 1800);
+    } catch (error) {
+      setStatus(
+        resetForm,
+        error.message,
+        "error"
+      );
+    } finally {
+      setBusy(resetForm, false);
+    }
   }
+);
 
-  const values = Object.fromEntries(
-    new FormData(resetForm).entries()
-  );
-
-  const resetToken = getResetToken();
-
-  if (!resetToken) {
-    setStatus(
-      resetForm,
-      "Deze herstel-link is ongeldig.",
-      "error"
-    );
-    return;
-  }
-
-  if (values.newPassword !== values.newPasswordRepeat) {
-    setStatus(
-      resetForm,
-      "De twee wachtwoorden zijn niet gelijk.",
-      "error"
-    );
-    return;
-  }
-
-  setBusy(resetForm, true);
-  setStatus(resetForm, "");
-
-  try {
-    const payload = await api(
-      "/account/reset-password",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          token: resetToken,
-          newPassword: values.newPassword,
-        }),
-      }
-    );
-
-    resetForm.reset();
-
-    setStatus(
-      resetForm,
-      payload.message ||
-        "Je wachtwoord is gewijzigd. Je kunt nu inloggen.",
-      "success"
-    );
-
-    window.setTimeout(() => {
-      window.location.href =
-        "account.html#login";
-    }, 1800);
-  } catch (error) {
-    setStatus(
-      resetForm,
-      error.message,
-      "error"
-    );
-  } finally {
-    setBusy(resetForm, false);
-  }
-});
-
-/* HASH NAVIGATIE */
+/* --------------------------------------------------
+   HASH NAVIGATIE
+-------------------------------------------------- */
 
 const focusHashSection = () => {
   const hash = window.location.hash;
 
-  if (hash === "#logout" && getToken()) {
-    logoutButton?.click();
+  if (
+    hash === "#logout" &&
+    getToken()
+  ) {
+    document
+      .querySelector("[data-account-logout]")
+      ?.click();
+
     return;
   }
 
@@ -764,7 +855,8 @@ const focusHashSection = () => {
     return;
   }
 
-  const section = document.querySelector(hash);
+  const section =
+    document.querySelector(hash);
 
   if (!section) {
     return;
@@ -776,10 +868,14 @@ const focusHashSection = () => {
       block: "center",
     });
 
-    section.classList.add("is-targeted");
+    section.classList.add(
+      "is-targeted"
+    );
 
     window.setTimeout(() => {
-      section.classList.remove("is-targeted");
+      section.classList.remove(
+        "is-targeted"
+      );
     }, 1600);
   });
 };
@@ -797,3 +893,229 @@ if (!hasResetToken) {
     focusHashSection();
   });
 }
+/* --------------------------------------------------
+   ACCOUNT TAAL NL / EN
+-------------------------------------------------- */
+
+const ACCOUNT_COPY = {
+  nl: {
+    introEyebrow: "2ND LIFE TOYS ACCOUNT",
+    introTitle: "Welkom bij je account.",
+    introText: "Log in als je al een account hebt, of maak gratis een nieuw account aan.",
+    safeText: "Accountgegevens worden veilig via de 2nd Life Toys server verwerkt.",
+
+    existingCustomer: "BESTAANDE KLANT",
+    loginTitle: "Inloggen",
+    loginText: "Bekijk je bestellingen en bewaar je gegevens op één plek.",
+    email: "E-mailadres",
+    password: "Wachtwoord",
+    remember: "Ingelogd blijven op dit apparaat",
+    loginButton: "Inloggen",
+    forgotPassword: "Wachtwoord vergeten?",
+
+    newCustomer: "NIEUW BIJ 2ND LIFE TOYS",
+    createTitle: "Maak account",
+    firstName: "Voornaam",
+    lastName: "Achternaam",
+    repeatPassword: "Herhaal wachtwoord",
+    benefit1: "✓ Bestellingen terugzien",
+    benefit2: "✓ Adresgegevens bewaren",
+    benefit3: "✓ Sneller je gegevens invullen",
+    terms: 'Ik ga akkoord met de <a href="terms.html" target="_blank" rel="noopener noreferrer">voorwaarden</a>.',
+    createButton: "Maak account"
+  },
+
+  en: {
+    introEyebrow: "2ND LIFE TOYS ACCOUNT",
+    introTitle: "Welcome to your account.",
+    introText: "Sign in if you already have an account, or create a new account for free.",
+    safeText: "Account details are securely processed through the 2nd Life Toys server.",
+
+    existingCustomer: "EXISTING CUSTOMER",
+    loginTitle: "Sign in",
+    loginText: "View your orders and keep your details in one place.",
+    email: "Email address",
+    password: "Password",
+    remember: "Stay signed in on this device",
+    loginButton: "Sign in",
+    forgotPassword: "Forgot password?",
+
+    newCustomer: "NEW TO 2ND LIFE TOYS",
+    createTitle: "Create account",
+    firstName: "First name",
+    lastName: "Last name",
+    repeatPassword: "Repeat password",
+    benefit1: "✓ View previous orders",
+    benefit2: "✓ Save your address details",
+    benefit3: "✓ Fill in your details faster",
+    terms: 'I agree to the <a href="terms.html" target="_blank" rel="noopener noreferrer">terms and conditions</a>.',
+    createButton: "Create account"
+  }
+};
+
+const setAccountText = (selector, value) => {
+  const element = document.querySelector(selector);
+  if (element) element.textContent = value;
+};
+
+const setAccountLabel = (formName, inputName, value) => {
+  const input = document.querySelector(
+    `[data-account-form="${formName}"] [name="${inputName}"]`
+  );
+
+  const label = input?.closest("label");
+  if (!label) return;
+
+  const textNode = Array.from(label.childNodes).find(
+    (node) =>
+      node.nodeType === Node.TEXT_NODE &&
+      node.textContent.trim()
+  );
+
+  if (textNode) {
+    textNode.nodeValue = `${value}\n`;
+  }
+};
+
+const applyAccountLanguage = (language) => {
+  const lang = language === "en" ? "en" : "nl";
+  const c = ACCOUNT_COPY[lang];
+
+  document.documentElement.lang = lang;
+
+  setAccountText(
+    "[data-account-guest-intro] > .eyebrow",
+    c.introEyebrow
+  );
+
+  setAccountText(
+    "[data-account-guest-intro] > h1",
+    c.introTitle
+  );
+
+  setAccountText(
+    "[data-account-guest-intro] > p:not(.eyebrow)",
+    c.introText
+  );
+
+  setAccountText(
+    ".account-live-note span:last-child",
+    c.safeText
+  );
+
+  setAccountText(
+    "#login .account-card-heading .eyebrow",
+    c.existingCustomer
+  );
+
+  setAccountText(
+    "#login .account-card-heading h2",
+    c.loginTitle
+  );
+
+  setAccountText(
+    "#login > p",
+    c.loginText
+  );
+
+  setAccountLabel(
+    "login",
+    "email",
+    c.email
+  );
+
+  setAccountLabel(
+    "login",
+    "password",
+    c.password
+  );
+
+  setAccountText(
+    '#login [name="remember"] + span',
+    c.remember
+  );
+
+  setAccountText(
+    '#login button[type="submit"]',
+    c.loginButton
+  );
+
+  setAccountText(
+    "#login [data-password-reset]",
+    c.forgotPassword
+  );
+
+  setAccountText(
+    "#register .account-card-heading .eyebrow",
+    c.newCustomer
+  );
+
+  setAccountText(
+    "#register .account-card-heading h2",
+    c.createTitle
+  );
+
+  const benefits = document.querySelectorAll(
+    "#register .account-benefits span"
+  );
+
+  if (benefits[0]) benefits[0].textContent = c.benefit1;
+  if (benefits[1]) benefits[1].textContent = c.benefit2;
+  if (benefits[2]) benefits[2].textContent = c.benefit3;
+
+  setAccountLabel(
+    "register",
+    "firstName",
+    c.firstName
+  );
+
+  setAccountLabel(
+    "register",
+    "lastName",
+    c.lastName
+  );
+
+  setAccountLabel(
+    "register",
+    "email",
+    c.email
+  );
+
+  setAccountLabel(
+    "register",
+    "password",
+    c.password
+  );
+
+  setAccountLabel(
+    "register",
+    "passwordRepeat",
+    c.repeatPassword
+  );
+
+  const terms = document.querySelector(
+    '#register [name="termsAccepted"] + span'
+  );
+
+  if (terms) {
+    terms.innerHTML = c.terms;
+  }
+
+  setAccountText(
+    '#register button[type="submit"]',
+    c.createButton
+  );
+};
+
+applyAccountLanguage(
+  window.localStorage.getItem("lootifer-language") || "nl"
+);
+
+window.addEventListener(
+  "lootifer:language-change",
+  (event) => {
+    applyAccountLanguage(
+      event.detail?.language || "nl"
+    );
+  }
+);
