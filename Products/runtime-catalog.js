@@ -1,5 +1,5 @@
 import { normalizeProductCatalog } from "./product-schema.js";
-import { adjustStockInApi, fetchProductsFromApi } from "../Assets/Js/api-client.js";
+import { adjustStockInApi, fetchProductsFromApi } from "../Assets/Js/api-client.js?v=20260829-1";
 
 const DATA_URL = new URL("../Data/products.json", import.meta.url).href;
 
