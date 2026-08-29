@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="Assets/Js/bootstrap-preferences.js"></script>
+
+    <title>Verzending & verpakking | 2nd Life Toys</title>
+
+    <meta
+      name="description"
+      content="Informatie over verzending, verpakking en hergebruik van verzenddozen bij 2nd Life Toys."
+    />
+
+    <link rel="stylesheet" href="Assets/Css/main.css" />
+  </head>
+
+  <body>
+    <div id="headerRoot"></div>
+
+    <main class="info-page reveal visible">
+
+      <section class="info-hero">
+        <p class="eyebrow">Verzending</p>
+
+        <h1>Verzending & verpakking</h1>
+
+        <p class="hero-text">
+          Wij zorgen ervoor dat jouw bestelling zorgvuldig en veilig wordt
+          verpakt voordat deze wordt verzonden.
+        </p>
+      </section>
+
+      <section class="info-card">
+        <h2>Zorgvuldig verpakt</h2>
+
+        <p>
+          Alle artikelen worden zo zorgvuldig mogelijk verpakt om beschadiging
+          tijdens het vervoer te voorkomen.
+        </p>
+
+        <p>
+          Waar nodig gebruiken we extra beschermend verpakkingsmateriaal,
+          zodat jouw bestelling veilig bij je aankomt.
+        </p>
+      </section>
+
+      <section class="info-card">
+        <h2>Hergebruik van verzenddozen</h2>
+
+        <p>
+          Waar mogelijk gebruiken we stevige en schone verzenddozen opnieuw.
+          Hierdoor kan de verzenddoos soms afwijken van wat je misschien
+          verwacht.
+        </p>
+
+        <p>
+          Door goede verpakkingsmaterialen een tweede leven te geven,
+          verminderen we onnodig afval en dragen we bij aan een duurzamere
+          verzending.
+        </p>
+      </section>
+
+      <section class="info-card">
+        <h2>Verzendkosten</h2>
+
+        <p>
+          De verzendkosten worden tijdens het afrekenen weergegeven voordat je
+          de bestelling definitief plaatst.
+        </p>
+      </section>
+
+      <section class="info-card">
+        <h2>Verzendtijd</h2>
+
+        <p>
+          Bestellingen worden na ontvangst van de betaling zo snel mogelijk
+          klaargemaakt voor verzending.
+        </p>
+
+        <p>
+          Zodra je bestelling is verzonden, ontvang je indien beschikbaar
+          informatie waarmee je de zending kunt volgen.
+        </p>
+      </section>
+
+    </main>
+
+    <div id="footerRoot"></div>
+
+    <script type="module">
+      import { createHeader } from "./Components/Header.js";
+      import { createFooter } from "./Components/Footer.js";
+
+      document.getElementById("headerRoot").innerHTML = createHeader();
+      document.getElementById("footerRoot").innerHTML = createFooter();
+
+      document
+        .querySelectorAll(".reveal")
+        .forEach((element) => element.classList.add("visible"));
+    </script>
+  </body>
+</html>
