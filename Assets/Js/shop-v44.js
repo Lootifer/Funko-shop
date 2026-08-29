@@ -22,10 +22,7 @@ const shoppingRoot = document.createElement("div");
 shoppingRoot.id = "shoppingRoot";
 document.body.appendChild(shoppingRoot);
 
-createShoppingUi({
-  root: shoppingRoot,
-});
-
+createShoppingUi({ root: shoppingRoot });
 syncHeaderCounters();
 
 window.addEventListener(
@@ -34,82 +31,55 @@ window.addEventListener(
 );
 
 const normalize = (value = "") =>
-  String(value)
-    .trim()
-    .toLowerCase();
+  String(value).trim().toLowerCase();
 
-const normalizeCategory = (product = {}) =>
-  normalize(product.category || "");
+const FUNKO_CATEGORIES = new Set([
+  "funko heroes",
+  "funko movies",
+  "funko animation",
+  "funko games",
+  "funko television",
+  "funko bitty pop",
+  "funko pin",
+  "funko tee",
+]);
 
 const matches = (product = {}, key = "") => {
-  const category = normalizeCategory(product);
-
-  /*
-   * BELANGRIJK:
-   * De echte productcategorie is leidend.
-   *
-   * Daardoor wordt bijvoorbeeld een Funko Star Wars
-   * niet meer als gewone Star Wars geteld.
-   */
+  const category = normalize(product.category);
 
   if (key === "funko") {
-    return category.startsWith("funko");
+    return FUNKO_CATEGORIES.has(category);
   }
 
   if (key === "lego") {
-    return (
-      category === "lego" ||
-      category.startsWith("lego ")
-    );
+    return category === "lego";
   }
 
   if (key === "pokemon") {
     return (
-      category.includes("pokemon") ||
-      category.includes("pokémon")
+      category === "pokémon" ||
+      category === "pokemon"
     );
   }
 
   if (key === "star-wars") {
-    return (
-      category === "star wars" ||
-      category === "star-wars" ||
-      category.startsWith("star wars ")
-    );
+    return category === "star wars";
   }
 
   if (key === "collectible-lamps") {
-    return (
-      category === "collectible lamps" ||
-      category === "collectible-lamps" ||
-      category.includes("collectible lamp")
-    );
+    return category === "collectible lamps";
   }
 
   if (key === "figures-toys") {
-    return (
-      category === "figures & toys" ||
-      category === "figures and toys" ||
-      category === "figures-toys" ||
-      category.includes("figures & toys") ||
-      category.includes("figures and toys")
-    );
+    return category === "figures & toys";
   }
 
   if (key === "vintage-figures") {
-    return (
-      category === "vintage figures" ||
-      category === "vintage-figures" ||
-      category.includes("vintage figures")
-    );
+    return category === "vintage figures";
   }
 
   if (key === "hot-wheels") {
-    return (
-      category === "hot wheels" ||
-      category === "hot-wheels" ||
-      category.includes("hot wheels")
-    );
+    return category === "hot wheels";
   }
 
   if (key === "sale") {
@@ -120,7 +90,7 @@ const matches = (product = {}, key = "") => {
 };
 
 const setCounts = (products = []) => {
-  const categories = [
+  const categoryKeys = [
     "funko",
     "lego",
     "pokemon",
@@ -132,7 +102,7 @@ const setCounts = (products = []) => {
     "sale",
   ];
 
-  categories.forEach((key) => {
+  categoryKeys.forEach((key) => {
     const count = products.filter((product) =>
       matches(product, key)
     ).length;
@@ -146,20 +116,16 @@ const setCounts = (products = []) => {
       });
   });
 
-  /*
-   * Aantallen binnen het Funko-popupmenu.
-   * Hier moet de exacte Funko-subcategorie overeenkomen.
-   */
   document
     .querySelectorAll("[data-funko-count]")
     .forEach((element) => {
-      const category = normalize(
+      const requestedCategory = normalize(
         element.dataset.funkoCount || ""
       );
 
       const count = products.filter(
         (product) =>
-          normalize(product.category) === category
+          normalize(product.category) === requestedCategory
       ).length;
 
       element.textContent = String(count);
@@ -179,23 +145,18 @@ loadRuntimeCatalog()
     setCounts([]);
   });
 
-const modal =
-  document.getElementById("shopFunkoModal");
+const modal = document.getElementById("shopFunkoModal");
 
-const trigger =
-  document.querySelector(
-    '[data-category-card="funko"]'
-  );
+const trigger = document.querySelector(
+  '[data-category-card="funko"]'
+);
 
-const close =
-  modal?.querySelector(
-    ".shop-v44-modal-close"
-  );
+const close = modal?.querySelector(
+  ".shop-v44-modal-close"
+);
 
 const setModal = (open) => {
-  if (!modal) {
-    return;
-  }
+  if (!modal) return;
 
   modal.classList.toggle(
     "is-open",
