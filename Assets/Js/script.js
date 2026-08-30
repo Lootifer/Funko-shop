@@ -105,10 +105,28 @@ const updateCategoryCounts = (products = []) => {
 };
 
 const highlightGrid = document.getElementById("highlightGrid");
+
+const normalizeHomepageCrop = (value = {}) => {
+  const clamp = (number, min, max) => Math.min(max, Math.max(min, number));
+  const x = Number(value?.x);
+  const y = Number(value?.y);
+  const zoom = Number(value?.zoom);
+
+  return {
+    x: Number.isFinite(x) ? clamp(x, 0, 100) : 50,
+    y: Number.isFinite(y) ? clamp(y, 0, 100) : 50,
+    zoom: Number.isFinite(zoom) ? clamp(zoom, 1, 3) : 1,
+  };
+};
+
 let runtimeProducts = [];
 let homepageSettings = {
   display: Array.from({ length: 3 }, () => ({ image: "" })),
-  highlights: Array.from({ length: 6 }, () => ({ productId: null, image: "" })),
+  highlights: Array.from({ length: 6 }, () => ({
+    productId: null,
+    image: "",
+    crop: normalizeHomepageCrop(),
+  })),
 };
 
 const HOMEPAGE_SETTINGS_URL = "https://funko-shop-production-9308.up.railway.app/api/site/homepage";
@@ -123,6 +141,7 @@ const loadHomepageSettings = async () => {
       highlights: Array.from({ length: 6 }, (_, index) => ({
         productId: Number(data?.highlights?.[index]?.productId) || null,
         image: String(data?.highlights?.[index]?.image || ""),
+        crop: normalizeHomepageCrop(data?.highlights?.[index]?.crop),
       })),
     };
   } catch {
@@ -147,16 +166,27 @@ const applyHomepageDisplay = () => {
     ).trim();
     const wrapper = image.closest(".display-placeholder");
     const fallback = wrapper?.querySelector("span");
+    const crop = normalizeHomepageCrop(entry.crop);
 
     if (source) {
       image.src = source;
       image.alt = product?.name || `Featured collectible ${slotNumber}`;
       image.hidden = false;
+
+      image.style.objectFit = "cover";
+      image.style.objectPosition = `${crop.x}% ${crop.y}%`;
+      image.style.transformOrigin = "center center";
+      image.style.transform = `scale(${crop.zoom})`;
+
       wrapper?.classList.add("has-image");
       if (fallback) fallback.hidden = true;
     } else {
       image.removeAttribute("src");
       image.hidden = true;
+      image.style.removeProperty("object-fit");
+      image.style.removeProperty("object-position");
+      image.style.removeProperty("transform-origin");
+      image.style.removeProperty("transform");
       wrapper?.classList.remove("has-image");
       if (fallback) fallback.hidden = false;
     }
