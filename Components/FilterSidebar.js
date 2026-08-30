@@ -18,7 +18,6 @@ const getFilterCopy = () => {
         edition: "Editie",
         exclusive: "Exclusief",
         chase: "Chase",
-        vaulted: "Gewaardeerd",
         availability: "Beschikbaarheid",
         inStock: "Op voorraad",
         reset: "Filters wissen",
@@ -38,7 +37,6 @@ const getFilterCopy = () => {
         edition: "Edition",
         exclusive: "Exclusive",
         chase: "Chase",
-        vaulted: "Vaulted",
         availability: "Availability",
         inStock: "In stock",
         reset: "Clear filters",
@@ -93,7 +91,6 @@ export const createFilterSidebar = ({ categories, universes, brands, priceValue 
         <h3>${copy.edition}</h3>
         <label class="filter-option"><input type="checkbox" id="shopExclusive" /> ${copy.exclusive}</label>
         <label class="filter-option"><input type="checkbox" id="shopChase" /> ${copy.chase}</label>
-        <label class="filter-option"><input type="checkbox" id="shopVaulted" /> ${copy.vaulted}</label>
       </div>
 
       <div class="filter-group">
