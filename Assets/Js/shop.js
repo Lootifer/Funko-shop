@@ -353,6 +353,354 @@ const FIXED_PAGE_COPY = {
   },
 };
 
+
+const CATEGORY_NAV_COPY = {
+  en: {
+    label: "Browse categories",
+    back: "← Back to categories",
+    allProducts: "All products",
+    funko: "Funko",
+    funkoAll: "All Funko",
+    lego: "LEGO",
+    pokemon: "Pokémon",
+    starWars: "Star Wars",
+    harryPotter: "Harry Potter",
+    lamps: "Collectible Lamps",
+    figuresToys: "Figures & Toys",
+    vintageFigures: "Vintage Figures",
+    hotWheels: "Hot Wheels",
+    sale: "Sale",
+  },
+  nl: {
+    label: "Wissel van categorie",
+    back: "← Terug naar categorieën",
+    allProducts: "Alle producten",
+    funko: "Funko",
+    funkoAll: "Alle Funko",
+    lego: "LEGO",
+    pokemon: "Pokémon",
+    starWars: "Star Wars",
+    harryPotter: "Harry Potter",
+    lamps: "Collectible Lamps",
+    figuresToys: "Figures & Toys",
+    vintageFigures: "Vintage Figures",
+    hotWheels: "Hot Wheels",
+    sale: "Sale",
+  },
+};
+
+const FUNKO_NAV_ITEMS = [
+  ["Funko Movies", "Movies", "funko-movies.html"],
+  ["Funko Television", "Television", "funko-television.html"],
+  ["Funko Animation", "Animation", "funko-animation.html"],
+  ["Funko Games", "Games", "funko-games.html"],
+  ["Funko Heroes", "Heroes", "funko-heroes.html"],
+  ["Funko Pin", "Pin", "funko-pin.html"],
+  ["Funko Bitty Pop", "Bitty Pop", "funko-bitty-pop.html"],
+  ["Funko Tee", "Tee", "funko-tee.html"],
+];
+
+const CATEGORY_NAV_ITEMS = [
+  ["lego", "lego", "lego.html"],
+  ["pokemon", "pokemon", "pokemon.html"],
+  ["star-wars", "starWars", "star-wars.html"],
+  ["harry-potter", "harryPotter", "harry-potter.html"],
+  ["Collectible Lamps", "lamps", "all-products.html?category=Collectible%20Lamps"],
+  ["Figures & Toys", "figuresToys", "all-products.html?category=Figures%20%26%20Toys"],
+  ["Vintage Figures", "vintageFigures", "all-products.html?category=Vintage%20Figures"],
+  ["Hot Wheels", "hotWheels", "all-products.html?category=Hot%20Wheels"],
+  ["sale", "sale", "sale.html"],
+];
+
+const ensureCategoryNavigationStyles = () => {
+  if (document.getElementById("lootiferCategoryNavigationStyles")) {
+    return;
+  }
+
+  const style = document.createElement("style");
+  style.id = "lootiferCategoryNavigationStyles";
+  style.textContent = `
+    #categorySwitchNav {
+      position: relative;
+      z-index: 30;
+      width: min(1320px, calc(100% - 32px));
+      margin: 18px auto 30px;
+    }
+
+    #categorySwitchNav .category-switch-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px;
+      border: 1px solid rgba(214, 174, 54, 0.24);
+      border-radius: 18px;
+      background: rgba(127, 127, 127, 0.06);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    #categorySwitchNav .category-switch-back,
+    #categorySwitchNav .category-switch-link,
+    #categorySwitchNav .category-switch-summary {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border: 1px solid rgba(214, 174, 54, 0.28);
+      border-radius: 999px;
+      background: rgba(127, 127, 127, 0.08);
+      color: inherit;
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease;
+    }
+
+    #categorySwitchNav .category-switch-back {
+      border-color: rgba(214, 174, 54, 0.48);
+    }
+
+    #categorySwitchNav .category-switch-back:hover,
+    #categorySwitchNav .category-switch-link:hover,
+    #categorySwitchNav .category-switch-summary:hover {
+      transform: translateY(-2px);
+      border-color: #e6bb36;
+      box-shadow: 0 8px 24px rgba(214, 174, 54, 0.15);
+    }
+
+    #categorySwitchNav .category-switch-link.is-active,
+    #categorySwitchNav .category-switch-funko.is-active > .category-switch-summary {
+      border-color: #e6bb36;
+      background: linear-gradient(135deg, #f2ca4b, #d4a51c);
+      color: #111;
+      box-shadow: 0 8px 24px rgba(214, 174, 54, 0.2);
+    }
+
+    #categorySwitchNav .category-switch-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 640px;
+      flex-wrap: wrap;
+    }
+
+    #categorySwitchNav .category-switch-funko {
+      position: relative;
+    }
+
+    #categorySwitchNav .category-switch-summary {
+      list-style: none;
+    }
+
+    #categorySwitchNav .category-switch-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    #categorySwitchNav .category-switch-chevron {
+      font-size: 0.78em;
+      transition: transform 160ms ease;
+    }
+
+    #categorySwitchNav .category-switch-funko[open] .category-switch-chevron {
+      transform: rotate(180deg);
+    }
+
+    #categorySwitchNav .category-switch-menu {
+      position: absolute;
+      top: calc(100% + 9px);
+      left: 0;
+      z-index: 100;
+      min-width: 230px;
+      display: grid;
+      gap: 4px;
+      padding: 8px;
+      border: 1px solid rgba(230, 187, 54, 0.36);
+      border-radius: 16px;
+      background: #111315;
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.42);
+    }
+
+    #categorySwitchNav .category-switch-menu a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: #f5f1e8;
+      font-weight: 650;
+      text-decoration: none;
+      transition: background 140ms ease, color 140ms ease;
+    }
+
+    #categorySwitchNav .category-switch-menu a:hover,
+    #categorySwitchNav .category-switch-menu a.is-active {
+      background: rgba(230, 187, 54, 0.16);
+      color: #f2ca4b;
+    }
+
+    @media (max-width: 760px) {
+      #categorySwitchNav {
+        width: min(100% - 20px, 1320px);
+        margin-top: 12px;
+      }
+
+      #categorySwitchNav .category-switch-inner {
+        align-items: stretch;
+      }
+
+      #categorySwitchNav .category-switch-back {
+        width: 100%;
+      }
+
+      #categorySwitchNav .category-switch-links {
+        flex-basis: 100%;
+      }
+
+      #categorySwitchNav .category-switch-funko {
+        position: static;
+      }
+
+      #categorySwitchNav .category-switch-menu {
+        left: 12px;
+        right: 12px;
+        min-width: 0;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+};
+
+const getRequestedCategory = () =>
+  new URLSearchParams(window.location.search).get("category") || "";
+
+const getCategoryNavigationState = () => {
+  const requestedCategory = getRequestedCategory();
+  const isFunko =
+    COLLECTION_KEY === "funko" ||
+    FIXED_CATEGORY.startsWith("Funko");
+
+  const activeKey =
+    FIXED_CATEGORY ||
+    requestedCategory ||
+    COLLECTION_KEY ||
+    "";
+
+  return {
+    activeKey,
+    isFunko,
+  };
+};
+
+const renderCategoryNavigation = (language = getShopLanguage()) => {
+  const locale = language === "nl" ? "nl" : "en";
+  const copy = CATEGORY_NAV_COPY[locale];
+  const heading = document.querySelector(".section-heading");
+
+  const shouldShow =
+    Boolean(COLLECTION_KEY) ||
+    Boolean(FIXED_CATEGORY) ||
+    Boolean(getRequestedCategory());
+
+  if (!heading || !shouldShow) {
+    document.getElementById("categorySwitchNav")?.remove();
+    return;
+  }
+
+  ensureCategoryNavigationStyles();
+
+  let nav = document.getElementById("categorySwitchNav");
+
+  if (!nav) {
+    nav = document.createElement("nav");
+    nav.id = "categorySwitchNav";
+    heading.insertAdjacentElement("afterend", nav);
+  }
+
+  nav.setAttribute("aria-label", copy.label);
+
+  const { activeKey, isFunko } =
+    getCategoryNavigationState();
+
+  const allProductsActive =
+    !FIXED_CATEGORY &&
+    !COLLECTION_KEY &&
+    !getRequestedCategory();
+
+  const funkoLinks = [
+    `
+      <a
+        class="${COLLECTION_KEY === "funko" && !FIXED_CATEGORY ? "is-active" : ""}"
+        href="funko.html"
+        ${COLLECTION_KEY === "funko" && !FIXED_CATEGORY ? 'aria-current="page"' : ""}
+      >${copy.funkoAll}</a>
+    `,
+    ...FUNKO_NAV_ITEMS.map(([category, label, href]) => `
+      <a
+        class="${FIXED_CATEGORY === category ? "is-active" : ""}"
+        href="${href}"
+        ${FIXED_CATEGORY === category ? 'aria-current="page"' : ""}
+      >${label}</a>
+    `),
+  ].join("");
+
+  const categoryLinks = CATEGORY_NAV_ITEMS.map(
+    ([key, labelKey, href]) => {
+      const active =
+        activeKey === key ||
+        (key === "lego" && COLLECTION_KEY === "lego") ||
+        (key === "pokemon" && COLLECTION_KEY === "pokemon") ||
+        (key === "star-wars" && COLLECTION_KEY === "star-wars") ||
+        (key === "harry-potter" && COLLECTION_KEY === "harry-potter") ||
+        (key === "sale" && COLLECTION_KEY === "sale");
+
+      return `
+        <a
+          class="category-switch-link${active ? " is-active" : ""}"
+          href="${href}"
+          ${active ? 'aria-current="page"' : ""}
+        >${copy[labelKey]}</a>
+      `;
+    }
+  ).join("");
+
+  nav.innerHTML = `
+    <div class="category-switch-inner">
+      <a class="category-switch-back" href="shop.html">${copy.back}</a>
+
+      <div class="category-switch-links">
+        <a
+          class="category-switch-link${allProductsActive ? " is-active" : ""}"
+          href="all-products.html"
+          ${allProductsActive ? 'aria-current="page"' : ""}
+        >${copy.allProducts}</a>
+
+        <details class="category-switch-funko${isFunko ? " is-active" : ""}">
+          <summary class="category-switch-summary">
+            ${copy.funko}
+            <span class="category-switch-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="category-switch-menu">
+            ${funkoLinks}
+          </div>
+        </details>
+
+        ${categoryLinks}
+      </div>
+    </div>
+  `;
+};
+
+
 const applyShopPageLanguage = (language = getShopLanguage()) => {
   const locale = language === "nl" ? "nl" : "en";
   const dictionary = SHOP_PAGE_COPY[locale];
@@ -453,6 +801,8 @@ const applyShopPageLanguage = (language = getShopLanguage()) => {
       }
     }
   }
+
+  renderCategoryNavigation(locale);
 };
 
 const COLLECTION_KEY =
