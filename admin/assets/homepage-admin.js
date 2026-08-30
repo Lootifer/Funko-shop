@@ -1,7 +1,7 @@
 import { createAdminSidebar, createAdminTopbar } from "../components/layout.js";
 import { requireAdminSession, wireAdminTopbar } from "./admin-auth.js";
 
-const API_BASE = "http://localhost:3001/api";
+const API_BASE = "https://api.2ndlifetoys.nl/api";
 const displayManager = document.getElementById("displayManager");
 const highlightManager = document.getElementById("highlightManager");
 const displayStatus = document.getElementById("displayStatus");
