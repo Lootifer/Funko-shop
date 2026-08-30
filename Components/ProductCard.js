@@ -30,7 +30,6 @@ export const createProductCard = (product) => {
           <img ${createImageAttributes({ src: image, alt: safeName })} />
         </a>
         <button class="wishlist-heart ${inWishlist ? "active" : ""}" data-action="toggle-wishlist" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button" aria-label="${inWishlist ? "Verwijder uit verlanglijst" : "Toevoegen aan verlanglijst"}">${inWishlist ? "♥" : "♡"}</button>
-        <button class="quick-view-pill" data-action="quick-view" data-product-id="${product.id}" data-product-name="${safeName}" data-product-price="${safePrice}" data-product-image="${product.image || ""}" data-product-universe="${product.universe || ""}" data-product-franchise="${product.franchise || ""}" data-product-edition="${product.edition || ""}" data-product-stock="${product.stock || 0}" data-product-slug="${slug}" type="button">Snel bekijken</button>
       </div>
       <div class="card-body">
         <div class="collector-badges">${badges}</div>
