@@ -132,12 +132,25 @@ const loadHomepageSettings = async () => {
 };
 
 const applyHomepageDisplay = () => {
-  document.querySelectorAll("[data-home-display-slot]").forEach((image, index) => {
-    const entry = homepageSettings.display?.[index] || {};
+  document.querySelectorAll("[data-home-extra-slot]").forEach((image) => {
+    const slotNumber = Number(image.dataset.homeExtraSlot || 0);
+    const index = Math.max(0, slotNumber - 1);
+    const entry = homepageSettings.highlights?.[index] || {};
+    const product = runtimeProducts.find(
+      (item) => Number(item.id) === Number(entry.productId)
+    ) || null;
+    const source = String(
+      entry.image ||
+      product?.image ||
+      product?.thumbnail ||
+      ""
+    ).trim();
     const wrapper = image.closest(".display-placeholder");
     const fallback = wrapper?.querySelector("span");
-    if (entry.image) {
-      image.src = entry.image;
+
+    if (source) {
+      image.src = source;
+      image.alt = product?.name || `Featured collectible ${slotNumber}`;
       image.hidden = false;
       wrapper?.classList.add("has-image");
       if (fallback) fallback.hidden = true;
