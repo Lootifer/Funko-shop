@@ -10,7 +10,7 @@ const router = Router();
 const PROJECT_ROOT = path.resolve(process.cwd());
 const HOMEPAGE_FILE = path.resolve(PROJECT_ROOT, "Data", "homepage.json");
 const IMAGE_ROOT = path.resolve(PROJECT_ROOT, "Assets", "Images");
-const HOMEPAGE_HIGHLIGHT_SLOTS = 3;
+const HOMEPAGE_HIGHLIGHT_SLOTS = 6;
 
 const cleanText = (value = "") => String(value || "").trim();
 const slugify = (value = "") => cleanText(value)
