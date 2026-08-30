@@ -342,7 +342,7 @@ export const createShoppingUi = ({ root } = {}) => {
 export const attachProductCardInteractions = (container = document) => {
   if (!container) return;
   container.querySelectorAll(".collectible-card").forEach((card) => {
-    card.setAttribute("data-quick-view-enabled", "false");
+    card.setAttribute("data-quick-view-enabled", "true");
   });
 };
 
