@@ -13,6 +13,16 @@ const IMAGE_ROOT = path.resolve(PROJECT_ROOT, "Assets", "Images");
 const HOMEPAGE_HIGHLIGHT_SLOTS = 6;
 
 const cleanText = (value = "") => String(value || "").trim();
+const clampNumber = (value, min, max, fallback) => {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return Math.min(max, Math.max(min, number));
+};
+const normalizeCrop = (value = {}) => ({
+  x: clampNumber(value?.x, 0, 100, 50),
+  y: clampNumber(value?.y, 0, 100, 50),
+  zoom: clampNumber(value?.zoom, 1, 3, 1),
+});
 const slugify = (value = "") => cleanText(value)
   .toLowerCase()
   .normalize("NFKD")
@@ -22,7 +32,11 @@ const slugify = (value = "") => cleanText(value)
 
 const defaultHomepage = () => ({
   display: Array.from({ length: 3 }, () => ({ productId: null, image: "" })),
-  highlights: Array.from({ length: HOMEPAGE_HIGHLIGHT_SLOTS }, () => ({ productId: null, image: "" })),
+  highlights: Array.from({ length: HOMEPAGE_HIGHLIGHT_SLOTS }, () => ({
+    productId: null,
+    image: "",
+    crop: normalizeCrop(),
+  })),
 });
 
 const readHomepage = async () => {
@@ -36,6 +50,7 @@ const readHomepage = async () => {
       highlights: Array.from({ length: HOMEPAGE_HIGHLIGHT_SLOTS }, (_, index) => ({
         productId: Number(parsed?.highlights?.[index]?.productId) || null,
         image: cleanText(parsed?.highlights?.[index]?.image),
+        crop: normalizeCrop(parsed?.highlights?.[index]?.crop),
       })),
     };
   } catch {
@@ -332,6 +347,7 @@ router.put("/homepage", requireAdmin, async (request, response, next) => {
     const highlights = Array.from({ length: HOMEPAGE_HIGHLIGHT_SLOTS }, (_, index) => ({
       productId: Number(request.body?.highlights?.[index]?.productId) || null,
       image: cleanText(request.body?.highlights?.[index]?.image ?? current.highlights[index]?.image),
+      crop: normalizeCrop(request.body?.highlights?.[index]?.crop ?? current.highlights[index]?.crop),
     }));
     const homepage = { display, highlights };
     await writeHomepage(homepage);
