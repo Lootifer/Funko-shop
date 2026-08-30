@@ -150,16 +150,18 @@ const bindRenderedControls = () => {
 };
 
 const render = () => {
-  displayManager.innerHTML = Array.from({ length: 3 }, (_, index) => {
-    const current = settings.display[index]?.image || "";
-    return `
-      <article class="admin-home-slot">
-        <span class="admin-home-slot-number">0${index + 1}</span>
-        <div class="admin-home-preview">${current ? `<img src="${toPreviewSrc(current)}" alt="Display ${index + 1}">` : '<span>Geen foto</span>'}</div>
-        <label class="button primary admin-file-button">Kies JPG/PNG/WebP<input type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" data-display-file="${index}" hidden></label>
-        <button class="button secondary" type="button" data-clear-display="${index}">Leegmaken</button>
-      </article>`;
-  }).join("");
+  if (displayManager) {
+    displayManager.innerHTML = Array.from({ length: 3 }, (_, index) => {
+      const current = settings.display[index]?.image || "";
+      return `
+        <article class="admin-home-slot">
+          <span class="admin-home-slot-number">0${index + 1}</span>
+          <div class="admin-home-preview">${current ? `<img src="${toPreviewSrc(current)}" alt="Display ${index + 1}">` : '<span>Geen foto</span>'}</div>
+          <label class="button primary admin-file-button">Kies JPG/PNG/WebP<input type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" data-display-file="${index}" hidden></label>
+          <button class="button secondary" type="button" data-clear-display="${index}">Leegmaken</button>
+        </article>`;
+    }).join("");
+  }
 
   highlightManager.innerHTML = Array.from({ length: 6 }, (_, index) => {
     const current = settings.highlights[index] || {};
@@ -209,14 +211,14 @@ displayButton?.addEventListener("click", async () => {
 
 highlightsButton?.addEventListener("click", async () => {
   highlightsButton.disabled = true;
-  if (highlightStatus) highlightStatus.textContent = "Highlights worden opgeslagen…";
+  if (highlightStatus) highlightStatus.textContent = "Vitrines worden opgeslagen…";
   try {
     document.querySelectorAll("[data-highlight-product]").forEach((select) => {
       const index = Number(select.dataset.highlightProduct);
       settings.highlights[index] = { ...settings.highlights[index], productId: Number(select.value) || null };
     });
     await saveSettings();
-    if (highlightStatus) highlightStatus.textContent = "Highlights opgeslagen.";
+    if (highlightStatus) highlightStatus.textContent = "Vitrines opgeslagen.";
     render();
   } catch (error) {
     if (highlightStatus) highlightStatus.textContent = error.message;
@@ -226,5 +228,5 @@ highlightsButton?.addEventListener("click", async () => {
 });
 
 load().catch((error) => {
-  if (displayStatus) displayStatus.textContent = error.message || "Homepagebeheer kon niet worden geladen.";
+  if (highlightStatus) highlightStatus.textContent = error.message || "Homepagebeheer kon niet worden geladen.";
 });
