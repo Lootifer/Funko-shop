@@ -796,3 +796,46 @@
     grid-template-columns: 50px minmax(0, 1fr) minmax(0, 1fr);
   }
 }
+
+/* POINT 6 - PRODUCT CARDS NETJES UITLIJNEN */
+#shopGrid {
+  align-items: stretch;
+}
+
+#shopGrid > .collectible-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#shopGrid > .collectible-card .card-media {
+  flex: 0 0 auto;
+}
+
+#shopGrid > .collectible-card .card-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  height: 100%;
+}
+
+#shopGrid > .collectible-card .card-footer {
+  margin-top: auto;
+}
+
+#shopGrid > .collectible-card .card-actions .text-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  box-sizing: border-box;
+}
+
+#shopGrid > .collectible-card .stock-pill {
+  display: flex;
+  align-items: center;
+  min-height: 2.2rem;
+  margin-top: 0.45rem;
+  box-sizing: border-box;
+}
