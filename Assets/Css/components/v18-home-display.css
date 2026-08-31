@@ -159,3 +159,7 @@
 .home-page .hero-stage-clean:hover .display-case:nth-child(3) {
   transform: translateY(-4px) scale(1.01);
 }
+
+.home-page .hero-stage-clean .display-base { z-index: 20; }
+.home-page .hero-stage-clean .display-placeholder,
+.home-page .hero-stage-clean .display-placeholder-featured { z-index: 10; }
