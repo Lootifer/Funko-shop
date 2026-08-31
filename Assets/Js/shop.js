@@ -1522,12 +1522,22 @@ const sortProducts = (items) => {
   }
 };
 
+const normalizeSearchText = (value = "") =>
+  String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
 const getFilteredProducts = () => {
   const query =
-    shopSearch?.value
-      .trim()
-      .toLowerCase() ||
-    "";
+    normalizeSearchText(
+      shopSearch?.value || ""
+    );
+
+  const queryTerms =
+    query.split(/\s+/).filter(Boolean);
 
   const category =
     FIXED_CATEGORY ||
@@ -1582,17 +1592,42 @@ const getFilteredProducts = () => {
             ? product.tags
             : [];
 
+        const searchHaystack =
+          normalizeSearchText(
+            [
+              product?.name,
+              product?.title,
+              product?.brand,
+              product?.category,
+              product?.universe,
+              product?.franchise,
+              product?.series,
+              product?.character,
+              product?.edition,
+              product?.variant,
+              product?.model,
+              product?.description,
+              ...productTags,
+              product?.number,
+              product?.id,
+              product?.sku,
+              product?.slug,
+            ]
+              .filter(
+                (value) =>
+                  value !== null &&
+                  value !== undefined &&
+                  value !== ""
+              )
+              .join(" ")
+          );
+
         const matchesQuery =
-          `${product?.name || ""} ` +
-          `${product?.universe || ""} ` +
-          `${product?.franchise || ""} ` +
-          `${product?.description || ""} ` +
-          `${productTags.join(" ")} ` +
-          `${product?.number || ""} ` +
-          `${product?.id || ""} ` +
-          `${product?.sku || ""}`
-            .toLowerCase()
-            .includes(query);
+          !queryTerms.length ||
+          queryTerms.every(
+            (term) =>
+              searchHaystack.includes(term)
+          );
 
         const matchesCategory =
           !category ||
