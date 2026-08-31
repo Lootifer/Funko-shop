@@ -167,6 +167,44 @@ const applyHomepageDisplay = () => {
     const wrapper = image.closest(".display-placeholder");
     const fallback = wrapper?.querySelector("span");
     const crop = normalizeHomepageCrop(entry.crop);
+    const productUrl = product?.slug
+      ? `product.html?slug=${encodeURIComponent(product.slug)}`
+      : "";
+
+    if (wrapper) {
+      wrapper.style.height = "82%";
+      wrapper.style.width = "auto";
+      wrapper.style.aspectRatio = "3 / 4";
+      wrapper.style.margin = "0";
+      wrapper.style.overflow = "hidden";
+      wrapper.style.cursor = productUrl ? "pointer" : "default";
+
+      if (productUrl) {
+        wrapper.setAttribute("role", "link");
+        wrapper.setAttribute("tabindex", "0");
+        wrapper.setAttribute(
+          "aria-label",
+          `Bekijk ${product?.name || "dit product"}`
+        );
+
+        wrapper.onclick = () => {
+          window.location.href = productUrl;
+        };
+
+        wrapper.onkeydown = (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            window.location.href = productUrl;
+          }
+        };
+      } else {
+        wrapper.removeAttribute("role");
+        wrapper.removeAttribute("tabindex");
+        wrapper.removeAttribute("aria-label");
+        wrapper.onclick = null;
+        wrapper.onkeydown = null;
+      }
+    }
 
     if (source) {
       image.src = source;
@@ -177,6 +215,7 @@ const applyHomepageDisplay = () => {
       image.style.objectPosition = `${crop.x}% ${crop.y}%`;
       image.style.transformOrigin = "center center";
       image.style.transform = `scale(${crop.zoom})`;
+      image.style.pointerEvents = "none";
 
       wrapper?.classList.add("has-image");
       if (fallback) fallback.hidden = true;
@@ -187,7 +226,19 @@ const applyHomepageDisplay = () => {
       image.style.removeProperty("object-position");
       image.style.removeProperty("transform-origin");
       image.style.removeProperty("transform");
+      image.style.removeProperty("pointer-events");
+
       wrapper?.classList.remove("has-image");
+
+      if (wrapper) {
+        wrapper.style.cursor = "default";
+        wrapper.removeAttribute("role");
+        wrapper.removeAttribute("tabindex");
+        wrapper.removeAttribute("aria-label");
+        wrapper.onclick = null;
+        wrapper.onkeydown = null;
+      }
+
       if (fallback) fallback.hidden = false;
     }
   });
