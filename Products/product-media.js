@@ -2,11 +2,14 @@ export const PREMIUM_PLACEHOLDER_IMAGE =
   "Assets/Images/Products/premium-placeholder.svg";
 
 /*
- * De webshop draait op Railway, maar de grote productfotobibliotheek
- * blijft op Cloud86 staan. Lokale productpaden worden daarom automatisch
- * omgezet naar het bestaande TEST-domein.
+ * Productfoto's staan per omgeving op hetzelfde domein als de webshop.
+ * Live gebruikt daardoor automatisch https://2ndlifetoys.nl,
+ * test gebruikt https://test.2ndlifetoys.nl.
  */
-const PRODUCT_MEDIA_ORIGIN = "https://test.2ndlifetoys.nl";
+const PRODUCT_MEDIA_ORIGIN =
+  typeof window !== "undefined" && window.location?.origin
+    ? window.location.origin
+    : "https://2ndlifetoys.nl";
 
 const ROOT_PRODUCTS_PATH = "Assets/Images/Products";
 
@@ -129,13 +132,14 @@ const isRemoteUrl = (
   );
 
 /*
- * Zet alleen productfoto-paden om naar Cloud86.
+ * Zet alleen lokale productfoto-paden om naar het domein
+ * waarop de webshop op dat moment draait.
  *
- * Bijvoorbeeld:
+ * Bijvoorbeeld op live:
  * Assets/Images/Products/funko/Movies/test/front.webp
  *
  * wordt:
- * https://test.2ndlifetoys.nl/Assets/Images/Products/funko/Movies/test/front.webp
+ * https://2ndlifetoys.nl/Assets/Images/Products/funko/Movies/test/front.webp
  */
 const toProductMediaUrl = (
   value = ""
