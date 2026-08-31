@@ -665,3 +665,8 @@ tr.is-archived td {
 .admin-collector-condition-grid label {
   margin: 0;
 }
+
+.admin-home-preview[data-crop-frame] {
+  height: auto;
+  aspect-ratio: 3 / 4;
+}
