@@ -29,7 +29,7 @@ const copy = {
     logoutHint: "Afmelden op dit apparaat",
     wishlist: "Verlanglijst",
     cart: "Winkelwagen",
-    searchPlaceholder: "Zoek product...",
+    searchPlaceholder: "Zoek in de collectie...",
     searchLabel: "Zoeken in alle producten",
   },
   en: {
@@ -49,7 +49,7 @@ const copy = {
     logoutHint: "Sign out on this device",
     wishlist: "Wishlist",
     cart: "Cart",
-    searchPlaceholder: "Search product...",
+    searchPlaceholder: "Search the collection...",
     searchLabel: "Search all products",
   },
 };
@@ -304,7 +304,107 @@ const ensureHeaderStyles = () => {
       line-height: 1.35 !important;
     }
 
+    /* --- Header product search: larger 2nd Life Toys black/gold style --- */
+    .header-product-search {
+      position: relative !important;
+      display: flex !important;
+      align-items: center !important;
+      width: clamp(290px, 25vw, 420px) !important;
+      min-width: 290px !important;
+      height: 48px !important;
+      padding: 3px 4px 3px 16px !important;
+      border: 1px solid rgba(238,194,54,.52) !important;
+      border-radius: 999px !important;
+      background:
+        radial-gradient(circle at 92% 50%, rgba(238,194,54,.10), transparent 30%),
+        linear-gradient(145deg, rgba(24,27,31,.98), rgba(7,9,11,.98)) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 8px 24px rgba(0,0,0,.24),
+        0 0 0 1px rgba(238,194,54,.04) !important;
+      overflow: hidden !important;
+      transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        transform .18s ease !important;
+    }
+
+    .header-product-search:focus-within {
+      border-color: rgba(246,205,67,.92) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05),
+        0 10px 28px rgba(0,0,0,.30),
+        0 0 0 3px rgba(238,194,54,.10),
+        0 0 24px rgba(238,194,54,.10) !important;
+    }
+
+    .header-product-search input[data-header-search-input] {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      height: 100% !important;
+      padding: 0 10px 0 0 !important;
+      border: 0 !important;
+      outline: 0 !important;
+      background: transparent !important;
+      color: #f7f3e8 !important;
+      font: inherit !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      letter-spacing: .01em !important;
+      box-shadow: none !important;
+    }
+
+    .header-product-search input[data-header-search-input]::placeholder {
+      color: rgba(238,231,210,.56) !important;
+      opacity: 1 !important;
+    }
+
+    .header-product-search button[data-header-search-submit] {
+      display: grid !important;
+      place-items: center !important;
+      flex: 0 0 40px !important;
+      width: 40px !important;
+      height: 40px !important;
+      padding: 0 !important;
+      border: 1px solid rgba(255,223,105,.78) !important;
+      border-radius: 50% !important;
+      background: linear-gradient(135deg,#f7d151,#e5ad25) !important;
+      color: #0b0d0f !important;
+      cursor: pointer !important;
+      box-shadow: 0 5px 16px rgba(222,168,30,.22) !important;
+      transition:
+        transform .16s ease,
+        box-shadow .16s ease,
+        filter .16s ease !important;
+    }
+
+    .header-product-search button[data-header-search-submit]:hover {
+      transform: translateX(1px) scale(1.04) !important;
+      box-shadow: 0 7px 20px rgba(222,168,30,.32) !important;
+      filter: brightness(1.04) !important;
+    }
+
+    .header-product-search button[data-header-search-submit] svg {
+      width: 18px !important;
+      height: 18px !important;
+      fill: none !important;
+      stroke: currentColor !important;
+      stroke-width: 2 !important;
+    }
+
+    @media (max-width: 1080px) {
+      .header-product-search {
+        width: clamp(240px, 28vw, 320px) !important;
+        min-width: 240px !important;
+      }
+    }
+
     @media (max-width: 700px) {
+      .header-product-search {
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
       .second-life-account-panel {
         position: fixed !important;
         top: 112px !important;
@@ -527,7 +627,7 @@ export const createHeader = (active = "home") => {
             type="search"
             data-header-search-input
             autocomplete="off"
-            placeholder="Zoek product..."
+            placeholder="Zoek in de collectie..."
             aria-label="Zoeken in alle producten"
           />
 
