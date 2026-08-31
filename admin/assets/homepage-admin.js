@@ -435,7 +435,7 @@ const render = () => {
           style="
             position:relative;
             overflow:hidden;
-            aspect-ratio:4/3;
+            aspect-ratio:3/4;
             cursor:${previewImage ? "grab" : "default"};
             touch-action:none;
           "
@@ -469,7 +469,7 @@ const render = () => {
           previewImage
             ? `
               <p class="admin-detail">
-                Sleep de foto in het kader en gebruik Zoom.
+                Sleep links/rechts en omhoog/omlaag en gebruik Zoom.
               </p>
 
               <label>
