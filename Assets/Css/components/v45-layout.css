@@ -652,6 +652,7 @@ button.account-link.account-menu-toggle {
     margin-inline: auto;
   }
 }
+
 /* --- Animated mist around homepage vault --- */
 .hero-vault-visual {
   overflow: visible;
@@ -662,28 +663,45 @@ button.account-link.account-menu-toggle {
 .hero-vault-visual::after {
   content: "";
   position: absolute;
-  left: 4%;
-  right: 4%;
-  bottom: 2%;
-  height: 32%;
-  z-index: 2;
   pointer-events: none;
-  opacity: .32;
-  filter: blur(26px);
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  will-change: transform, opacity, background-position;
+}
+
+.hero-vault-visual::before {
+  z-index: 3;
+  left: -10%;
+  bottom: -1%;
+  width: 120%;
+  height: 34%;
+  opacity: .58;
+  filter: blur(20px);
   background:
-    radial-gradient(ellipse at 20% 65%, rgba(235, 190, 75, .42), transparent 38%),
-    radial-gradient(ellipse at 55% 75%, rgba(220, 220, 210, .25), transparent 42%),
-    radial-gradient(ellipse at 85% 55%, rgba(235, 190, 75, .28), transparent 36%);
-  animation: heroVaultMist 8s ease-in-out infinite alternate;
+    radial-gradient(ellipse at 8% 62%, rgba(245, 191, 72, .62) 0 11%, transparent 34%),
+    radial-gradient(ellipse at 28% 72%, rgba(215, 211, 195, .52) 0 12%, transparent 36%),
+    radial-gradient(ellipse at 50% 58%, rgba(245, 191, 72, .55) 0 10%, transparent 34%),
+    radial-gradient(ellipse at 72% 70%, rgba(215, 211, 195, .46) 0 12%, transparent 36%),
+    radial-gradient(ellipse at 94% 58%, rgba(245, 191, 72, .50) 0 10%, transparent 34%);
+  background-size: 115% 100%;
+  animation: heroVaultMistFront 4.8s ease-in-out infinite alternate;
 }
 
 .hero-vault-visual::after {
-  bottom: 8%;
-  opacity: .18;
-  filter: blur(38px);
-  transform: scale(1.15);
-  animation-duration: 12s;
-  animation-direction: alternate-reverse;
+  z-index: 0;
+  left: -4%;
+  bottom: 7%;
+  width: 112%;
+  height: 28%;
+  opacity: .42;
+  filter: blur(30px);
+  background:
+    radial-gradient(ellipse at 18% 55%, rgba(210, 210, 205, .48) 0 12%, transparent 35%),
+    radial-gradient(ellipse at 46% 68%, rgba(242, 187, 67, .42) 0 11%, transparent 36%),
+    radial-gradient(ellipse at 76% 54%, rgba(210, 210, 205, .42) 0 12%, transparent 35%),
+    radial-gradient(ellipse at 94% 68%, rgba(242, 187, 67, .36) 0 10%, transparent 34%);
+  background-size: 120% 100%;
+  animation: heroVaultMistBack 7.2s ease-in-out infinite alternate-reverse;
 }
 
 .hero-vault-visual img {
@@ -691,20 +709,49 @@ button.account-link.account-menu-toggle {
   z-index: 1;
 }
 
-@keyframes heroVaultMist {
+@keyframes heroVaultMistFront {
   0% {
-    transform: translate3d(-3%, 8px, 0) scale(.95);
-    opacity: .20;
+    transform: translate3d(-70px, 14px, 0) scale(.94);
+    background-position: 0% 50%;
+    opacity: .36;
   }
 
-  50% {
-    transform: translate3d(3%, -7px, 0) scale(1.05);
-    opacity: .38;
+  35% {
+    transform: translate3d(-10px, -4px, 0) scale(1.03);
+    background-position: 35% 48%;
+    opacity: .62;
+  }
+
+  70% {
+    transform: translate3d(45px, -18px, 0) scale(1.08);
+    background-position: 70% 52%;
+    opacity: .52;
   }
 
   100% {
-    transform: translate3d(-1%, -14px, 0) scale(1);
-    opacity: .25;
+    transform: translate3d(85px, -6px, 0) scale(.98);
+    background-position: 100% 50%;
+    opacity: .40;
+  }
+}
+
+@keyframes heroVaultMistBack {
+  0% {
+    transform: translate3d(65px, -4px, 0) scale(1.08);
+    background-position: 100% 50%;
+    opacity: .28;
+  }
+
+  50% {
+    transform: translate3d(0, -24px, 0) scale(.96);
+    background-position: 50% 46%;
+    opacity: .48;
+  }
+
+  100% {
+    transform: translate3d(-70px, 8px, 0) scale(1.05);
+    background-position: 0% 52%;
+    opacity: .32;
   }
 }
 
