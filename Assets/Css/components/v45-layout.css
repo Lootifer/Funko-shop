@@ -633,7 +633,6 @@ button.account-link.account-menu-toggle {
   width: min(100%, 760px);
   height: auto;
   object-fit: contain;
-  transform: scaleX(-1);
   filter:
     drop-shadow(0 28px 42px rgba(0, 0, 0, .55))
     drop-shadow(0 0 35px rgba(230, 180, 45, .12));
