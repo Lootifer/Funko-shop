@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="Assets/Js/bootstrap-preferences.js"></script>
+    <title>Collectible Lamps | 2nd Life Toys</title>
+    <meta name="description" content="Browse collectible character lamps from the 2nd Life Toys private collection." />
+    <link rel="stylesheet" href="Assets/Css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="category-world" data-fixed-category="Collectible Lamps" data-curated-grid="true">
+    <div id="headerRoot"></div>
+
+    <main class="product-page category-world-page reveal">
+      <section class="section-heading category-hero">
+        <div class="category-hero-copy">
+          <p class="eyebrow">Collectible Lamps</p>
+          <h1>Light up the collection.</h1>
+          <p class="hero-text">Discover decorative collectible lamps and character lights from the private collection.</p>
+          <div class="category-hero-chips" aria-label="Collection information">
+            <span id="categorySpotLabel">16 display spots</span>
+            <span id="categoryAdminLabel">Filled automatically from Admin</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="category-collection-shell" aria-labelledby="categoryShelfTitle">
+        <div class="category-grid-heading">
+          <div>
+            <p class="category-kicker" id="categoryShelfKicker">THE LIGHT ROOM</p>
+            <h2 id="categoryShelfTitle">A brighter kind of collectible.</h2>
+          </div>
+
+          <label class="category-sort-control" for="shopSort">
+            <span id="categorySortLabel">Arrange the shelf</span>
+            <select id="shopSort">
+              <option value="newest">Newest</option>
+              <option value="price-asc">Price low to high</option>
+              <option value="price-desc">Price high to low</option>
+              <option value="alpha">Alphabetical</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="card-grid category-product-grid" id="shopGrid"></div>
+        <div class="pagination category-pagination" id="shopPagination"></div>
+      </section>
+    </main>
+
+    <div id="footerRoot"></div>
+    <script type="module" src="Assets/Js/shop.js"></script>
+  </body>
+</html>

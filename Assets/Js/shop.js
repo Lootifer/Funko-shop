@@ -206,6 +206,26 @@ const CATEGORY_GRID_COPY = {
       title: "Every shelf holds a new story.",
       text: "A magical 4 × 4 display for products assigned to Harry Potter in Admin.",
     },
+    "Collectible Lamps": {
+      kicker: "THE LIGHT ROOM",
+      title: "A brighter kind of collectible.",
+      text: "Collectible lamps and character lights from the private collection.",
+    },
+    "Figures & Toys": {
+      kicker: "THE TOY SHELF",
+      title: "Find something with character.",
+      text: "Figures, toys and character collectibles from the private collection.",
+    },
+    "Vintage Figures": {
+      kicker: "THE VINTAGE SHELF",
+      title: "Old favourites. New homes.",
+      text: "Original vintage figures and nostalgic finds from the private collection.",
+    },
+    "Hot Wheels": {
+      kicker: "THE GARAGE",
+      title: "Choose your next ride.",
+      text: "Used Hot Wheels, special castings and collectible cars from the private collection.",
+    },
     sale: {
       kicker: "THE GOLDEN DROP",
       title: "Limited offers. Lasting stories.",
@@ -238,6 +258,26 @@ const CATEGORY_GRID_COPY = {
       kicker: "DE BETOVERDE KAST",
       title: "Elke plank bewaart een nieuw verhaal.",
       text: "Een magisch 4 × 4-overzicht voor producten die in Admin aan Harry Potter zijn gekoppeld.",
+    },
+    "Collectible Lamps": {
+      kicker: "DE LICHTKAMER",
+      title: "Een verzamelitem dat licht geeft.",
+      text: "Verzamellampen en karakterlampen uit de privécollectie.",
+    },
+    "Figures & Toys": {
+      kicker: "DE SPEELGOEDPLANK",
+      title: "Vind iets met karakter.",
+      text: "Figuren, speelgoed en karakterverzamelitems uit de privécollectie.",
+    },
+    "Vintage Figures": {
+      kicker: "DE VINTAGEPLANK",
+      title: "Oude favorieten. Nieuwe eigenaren.",
+      text: "Originele vintage figuren en nostalgische vondsten uit de privécollectie.",
+    },
+    "Hot Wheels": {
+      kicker: "DE GARAGE",
+      title: "Kies je volgende model.",
+      text: "Gebruikte Hot Wheels, bijzondere castings en verzamelauto's uit de privécollectie.",
     },
     sale: {
       kicker: "DE GOUDEN DROP",
@@ -351,6 +391,58 @@ const FIXED_PAGE_COPY = {
       "Bekijk Funko Tee-producten.",
     ],
   },
+
+  "Collectible Lamps": {
+    en: [
+      "Collectible Lamps",
+      "Light up the collection.",
+      "Discover decorative collectible lamps and character lights from the private collection.",
+    ],
+    nl: [
+      "Collectible Lamps",
+      "Breng licht in de collectie.",
+      "Ontdek decoratieve verzamellampen en karakterlampen uit de privécollectie.",
+    ],
+  },
+
+  "Figures & Toys": {
+    en: [
+      "Figures & Toys",
+      "Play. Display. Collect.",
+      "Browse figures, toys and character collectibles from the private collection.",
+    ],
+    nl: [
+      "Figures & Toys",
+      "Spelen. Uitstallen. Verzamelen.",
+      "Bekijk figuren, speelgoed en karakterverzamelitems uit de privécollectie.",
+    ],
+  },
+
+  "Vintage Figures": {
+    en: [
+      "Vintage Figures",
+      "Characters with a past.",
+      "Discover original vintage figures and nostalgic finds from the private collection.",
+    ],
+    nl: [
+      "Vintage Figures",
+      "Personages met een verleden.",
+      "Ontdek originele vintage figuren en nostalgische vondsten uit de privécollectie.",
+    ],
+  },
+
+  "Hot Wheels": {
+    en: [
+      "Hot Wheels",
+      "Small cars. Big stories.",
+      "Browse used Hot Wheels, special castings and collectible cars from the private collection.",
+    ],
+    nl: [
+      "Hot Wheels",
+      "Kleine auto's. Grote verhalen.",
+      "Bekijk gebruikte Hot Wheels, bijzondere castings en verzamelauto's uit de privécollectie.",
+    ],
+  },
 };
 
 
@@ -405,10 +497,10 @@ const CATEGORY_NAV_ITEMS = [
   ["pokemon", "pokemon", "pokemon.html"],
   ["star-wars", "starWars", "star-wars.html"],
   ["harry-potter", "harryPotter", "harry-potter.html"],
-  ["Collectible Lamps", "lamps", "all-products.html?category=Collectible%20Lamps"],
-  ["Figures & Toys", "figuresToys", "all-products.html?category=Figures%20%26%20Toys"],
-  ["Vintage Figures", "vintageFigures", "all-products.html?category=Vintage%20Figures"],
-  ["Hot Wheels", "hotWheels", "all-products.html?category=Hot%20Wheels"],
+  ["Collectible Lamps", "lamps", "collectible-lamps.html"],
+  ["Figures & Toys", "figuresToys", "figures-toys.html"],
+  ["Vintage Figures", "vintageFigures", "vintage-figures.html"],
+  ["Hot Wheels", "hotWheels", "hot-wheels.html"],
   ["sale", "sale", "sale.html"],
 ];
 
@@ -750,7 +842,7 @@ const applyShopPageLanguage = (language = getShopLanguage()) => {
 
   if (IS_CURATED_COLLECTION) {
     const categoryCopy =
-      CATEGORY_GRID_COPY[locale]?.[COLLECTION_KEY];
+      CATEGORY_GRID_COPY[locale]?.[COLLECTION_KEY || FIXED_CATEGORY];
 
     const commonCopy =
       CATEGORY_GRID_COPY[locale]?.common;
