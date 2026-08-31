@@ -198,6 +198,7 @@ const updateCropPreview = (index) => {
 
   if (image) {
     image.style.objectPosition = `${crop.x}% ${crop.y}%`;
+    image.style.transformOrigin = `${crop.x}% ${crop.y}%`;
     image.style.transform = `scale(${crop.zoom})`;
   }
 
@@ -456,7 +457,7 @@ const render = () => {
                     object-fit:cover;
                     object-position:${crop.x}% ${crop.y}%;
                     transform:scale(${crop.zoom});
-                    transform-origin:center center;
+                    transform-origin:${crop.x}% ${crop.y}%;
                     user-select:none;
                     pointer-events:none;
                   "
