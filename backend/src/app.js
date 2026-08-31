@@ -9,6 +9,8 @@ import authRouter from "./routes/auth.js";
 import siteRouter from "./routes/site.js";
 import accountRouter from "./routes/account.js";
 import { getDbPath } from "./db/connection.js";
+import { getProductMediaRoot } from "./services/product-media-storage.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const websiteRoot = path.resolve(__dirname, "../..");
@@ -39,11 +41,33 @@ app.use(cors({
     return callback(new Error("Origin not allowed by CORS."));
   },
 }));
+
 app.use(express.json({ limit: "120mb" }));
 
 app.get("/api/health", (request, response) => {
-  response.json({ ok: true, service: "lootifer-api", dbPath: getDbPath() });
+  response.json({
+    ok: true,
+    service: "lootifer-api",
+    dbPath: getDbPath(),
+    mediaPath: getProductMediaRoot(),
+  });
 });
+
+/*
+ * Nieuwe productfoto's die via Admin worden geüpload, staan op het
+ * permanente Railway-volume naast de database.
+ *
+ * Publieke URL:
+ * https://api.2ndlifetoys.nl/media/...
+ */
+app.use(
+  "/media",
+  express.static(getProductMediaRoot(), {
+    fallthrough: true,
+    maxAge: "7d",
+    immutable: false,
+  })
+);
 
 app.use("/api/auth", authRouter);
 app.use("/api/account", accountRouter);
@@ -51,10 +75,13 @@ app.use("/api/products", productsRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/stock", stockRouter);
 app.use("/api/site", siteRouter);
+
 app.use(express.static(websiteRoot));
+
 app.get("/", (request, response) => {
   response.sendFile(path.join(websiteRoot, "index.html"));
 });
+
 app.use((error, request, response, next) => {
   // eslint-disable-next-line no-console
   console.error(error);

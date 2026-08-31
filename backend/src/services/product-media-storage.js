@@ -1,12 +1,23 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { all, exec, get, run } from "../db/connection.js";
+import { all, exec, get, getDbPath, run } from "../db/connection.js";
 
 const PROJECT_ROOT = path.resolve(process.cwd());
-const IMAGE_ROOT = path.resolve(PROJECT_ROOT, "Assets", "Images");
-const DATA_ROOT = path.resolve(PROJECT_ROOT, "Data");
+const DEFAULT_DATA_ROOT = path.resolve(PROJECT_ROOT, "Data");
+const ACTIVE_DATA_ROOT = path.dirname(getDbPath());
+const MEDIA_ROOT = path.resolve(ACTIVE_DATA_ROOT, "product-media");
 const IMAGE_SLOTS = ["front", "back", "left", "right"];
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
+
+const usesPersistentServerStorage =
+  path.resolve(ACTIVE_DATA_ROOT) !== path.resolve(DEFAULT_DATA_ROOT);
+
+const MEDIA_PUBLIC_BASE = String(
+  process.env.LOOTIFER_MEDIA_PUBLIC_BASE ||
+    (usesPersistentServerStorage
+      ? "https://api.2ndlifetoys.nl/media"
+      : "http://localhost:3001/media")
+).replace(/\/+$/, "");
 
 const cleanText = (value = "") => String(value || "").trim();
 const slugify = (value = "") => cleanText(value)
@@ -55,13 +66,23 @@ const getProductFolder = (product = {}) => {
 
   const root = categoryRoot(product.category, product.brand);
   const relativeFolder = root === "funko"
-    ? path.posix.join("Assets", "Images", "Products", root, normalizeUniverseFolder(product.universe, product.category), slug)
-    : path.posix.join("Assets", "Images", "Products", root, slug);
-  const absoluteFolder = path.resolve(PROJECT_ROOT, ...relativeFolder.split("/"));
+    ? path.posix.join(root, normalizeUniverseFolder(product.universe, product.category), slug)
+    : path.posix.join(root, slug);
 
-  if (!absoluteFolder.startsWith(IMAGE_ROOT)) throw new Error("Ongeldig afbeeldingspad.");
+  const absoluteFolder = path.resolve(MEDIA_ROOT, ...relativeFolder.split("/"));
+  const mediaRootWithSeparator = `${MEDIA_ROOT}${path.sep}`;
+
+  if (absoluteFolder !== MEDIA_ROOT && !absoluteFolder.startsWith(mediaRootWithSeparator)) {
+    throw new Error("Ongeldig afbeeldingspad.");
+  }
+
   return { slug, relativeFolder, absoluteFolder };
 };
+
+const toPublicMediaUrl = (relativePath = "") =>
+  `${MEDIA_PUBLIC_BASE}/${String(relativePath || "")
+    .replace(/\\/g, "/")
+    .replace(/^\/+/, "")}`;
 
 const isDataImageUrl = (value = "") => /^data:image\/(?:jpeg|jpg|png|webp);base64,/i.test(String(value || ""));
 
@@ -96,7 +117,7 @@ const writeDataImage = async ({ dataUrl, slot, folder }) => {
   await removeOldSlotFiles(folder.absoluteFolder, slot);
   const fileName = `${slot}.${extension}`;
   await fs.writeFile(path.join(folder.absoluteFolder, fileName), buffer);
-  return `${folder.relativeFolder}/${fileName}`;
+  return toPublicMediaUrl(`${folder.relativeFolder}/${fileName}`);
 };
 
 const normalizeStoredImages = async ({ product, images = [] }) => {
@@ -125,6 +146,8 @@ const hasEmbeddedMedia = (product = {}) => {
   return images.some(isDataImageUrl)
     || [product.thumbnail, product.image, product.boxFront, product.boxBack, product.leftSide, product.rightSide].some(isDataImageUrl);
 };
+
+export const getProductMediaRoot = () => MEDIA_ROOT;
 
 export const persistEmbeddedProductMedia = async (payload = {}, fallback = {}) => {
   const product = { ...fallback, ...payload };
@@ -171,7 +194,7 @@ export const persistEmbeddedProductMedia = async (payload = {}, fallback = {}) =
 };
 
 const createRepairBackup = async () => {
-  const backupDir = path.resolve(DATA_ROOT, "backups");
+  const backupDir = path.resolve(path.dirname(getDbPath()), "backups");
   await fs.mkdir(backupDir, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
   const backupPath = path.join(backupDir, `lootifer-pre-media-repair-${stamp}.sqlite`);
