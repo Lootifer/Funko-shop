@@ -652,3 +652,65 @@ button.account-link.account-menu-toggle {
     margin-inline: auto;
   }
 }
+/* --- Animated mist around homepage vault --- */
+.hero-vault-visual {
+  overflow: visible;
+  isolation: isolate;
+}
+
+.hero-vault-visual::before,
+.hero-vault-visual::after {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: 2%;
+  height: 32%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: .32;
+  filter: blur(26px);
+  background:
+    radial-gradient(ellipse at 20% 65%, rgba(235, 190, 75, .42), transparent 38%),
+    radial-gradient(ellipse at 55% 75%, rgba(220, 220, 210, .25), transparent 42%),
+    radial-gradient(ellipse at 85% 55%, rgba(235, 190, 75, .28), transparent 36%);
+  animation: heroVaultMist 8s ease-in-out infinite alternate;
+}
+
+.hero-vault-visual::after {
+  bottom: 8%;
+  opacity: .18;
+  filter: blur(38px);
+  transform: scale(1.15);
+  animation-duration: 12s;
+  animation-direction: alternate-reverse;
+}
+
+.hero-vault-visual img {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes heroVaultMist {
+  0% {
+    transform: translate3d(-3%, 8px, 0) scale(.95);
+    opacity: .20;
+  }
+
+  50% {
+    transform: translate3d(3%, -7px, 0) scale(1.05);
+    opacity: .38;
+  }
+
+  100% {
+    transform: translate3d(-1%, -14px, 0) scale(1);
+    opacity: .25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-vault-visual::before,
+  .hero-vault-visual::after {
+    animation: none;
+  }
+}
