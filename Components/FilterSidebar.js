@@ -43,6 +43,13 @@ const getFilterCopy = () => {
       };
 };
 
+const isFunkoPage = () => {
+  const collectionKey = document.body.dataset.collectionKey || "";
+  const fixedCategory = document.body.dataset.fixedCategory || "";
+
+  return collectionKey === "funko" || fixedCategory.startsWith("Funko");
+};
+
 export const createFilterSidebar = ({ categories, universes, brands, priceValue = 300 }) => {
   const copy = getFilterCopy();
   return `
@@ -70,6 +77,7 @@ export const createFilterSidebar = ({ categories, universes, brands, priceValue 
         </select>
       </div>
 
+      ${isFunkoPage() ? "" : `
       <div class="filter-group">
         <h3>${copy.brand}</h3>
         <select id="shopBrand">
@@ -77,6 +85,7 @@ export const createFilterSidebar = ({ categories, universes, brands, priceValue 
           ${brands.map((brand) => `<option value="${brand}">${brand}</option>`).join("")}
         </select>
       </div>
+      `}
 
       <div class="filter-group">
         <h3>${copy.price}</h3>
