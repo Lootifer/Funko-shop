@@ -3,15 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <script src="Assets/Js/bootstrap-preferences.js"></script>
-    <title>Star Wars shop | 2nd Life Toys</title>
-    <meta name="description" content="Browse Star Wars collectibles from the Lootifer private collection." />
+
+    <title>Star Wars Collectibles & Figures | 2nd Life Toys</title>
+
+    <meta
+      name="description"
+      content="Discover new and pre-owned Star Wars collectibles at 2nd Life Toys, including figures, Funko collectibles and other Star Wars items from the private collection."
+    />
+
+    <link rel="canonical" href="https://www.2ndlifetoys.nl/star-wars.html" />
+
     <link rel="stylesheet" href="Assets/Css/main.css" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body class="category-world category-world--star-wars" data-collection-key="star-wars" data-curated-grid="true">
+
+  <body
+    class="category-world category-world--star-wars"
+    data-collection-key="star-wars"
+    data-curated-grid="true"
+  >
     <div id="headerRoot"></div>
 
     <main class="product-page category-world-page reveal">
@@ -19,27 +38,59 @@
         <div class="category-hero-copy">
           <p class="eyebrow">Star Wars</p>
           <h1>From a galaxy far, far away.</h1>
-          <p class="hero-text">Discover Star Wars collectibles from the private collection.</p>
+          <p class="hero-text">
+            Discover Star Wars collectibles from the private collection.
+          </p>
+
           <div class="category-hero-chips" aria-label="Collection information">
             <span id="categorySpotLabel">16 display spots</span>
             <span id="categoryAdminLabel">Filled automatically from Admin</span>
           </div>
         </div>
+
         <div class="category-hero-visual">
-          <div class="galaxy-stage" aria-hidden="true"><span class="planet planet-a"></span><span class="planet planet-b"></span><span class="orbit orbit-a"></span><span class="orbit orbit-b"></span><span class="ship-trace trace-a"></span><span class="ship-trace trace-b"></span><span class="star star-a"></span><span class="star star-b"></span><span class="star star-c"></span><span class="star star-d"></span><span class="star star-e"></span></div>
+          <div class="galaxy-stage" aria-hidden="true">
+            <span class="planet planet-a"></span>
+            <span class="planet planet-b"></span>
+            <span class="orbit orbit-a"></span>
+            <span class="orbit orbit-b"></span>
+            <span class="ship-trace trace-a"></span>
+            <span class="ship-trace trace-b"></span>
+            <span class="star star-a"></span>
+            <span class="star star-b"></span>
+            <span class="star star-c"></span>
+            <span class="star star-d"></span>
+            <span class="star star-e"></span>
+          </div>
         </div>
       </section>
 
-      <section class="category-collection-shell" aria-labelledby="categoryShelfTitle">
+      <section
+        class="category-collection-shell"
+        aria-labelledby="categoryShelfTitle"
+      >
         <div class="category-grid-heading">
           <div>
-            <p class="category-kicker" id="categoryShelfKicker">THE GALACTIC ARCHIVE</p>
-            <h2 id="categoryShelfTitle">Signals from the collection.</h2>
-            <p class="category-shelf-text" id="categoryShelfText">A cinematic 4 × 4 display for every item assigned to Star Wars in Admin.</p>
-            <p class="shop-count" id="shopCount">Products are loading…</p>
+            <p class="category-kicker" id="categoryShelfKicker">
+              THE GALACTIC ARCHIVE
+            </p>
+
+            <h2 id="categoryShelfTitle">
+              Signals from the collection.
+            </h2>
+
+            <p class="category-shelf-text" id="categoryShelfText">
+              A cinematic 4 × 4 display for every item assigned to Star Wars in Admin.
+            </p>
+
+            <p class="shop-count" id="shopCount">
+              Products are loading…
+            </p>
           </div>
+
           <label class="category-sort-control" for="shopSort">
             <span id="categorySortLabel">Arrange the shelf</span>
+
             <select id="shopSort">
               <option value="newest">Newest</option>
               <option value="price-asc">Price low to high</option>
@@ -49,12 +100,20 @@
           </label>
         </div>
 
-        <div class="card-grid category-product-grid" id="shopGrid"></div>
-        <div class="pagination category-pagination" id="shopPagination"></div>
+        <div
+          class="card-grid category-product-grid"
+          id="shopGrid"
+        ></div>
+
+        <div
+          class="pagination category-pagination"
+          id="shopPagination"
+        ></div>
       </section>
     </main>
 
     <div id="footerRoot"></div>
+
     <script type="module" src="Assets/Js/shop.js"></script>
   </body>
 </html>
