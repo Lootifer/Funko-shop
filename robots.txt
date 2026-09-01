@@ -1,0 +1,11 @@
+﻿User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /backend/
+Disallow: /account.html
+Disallow: /cart.html
+Disallow: /checkout.html
+Disallow: /wishlist.html
+
+Sitemap: https://www.2ndlifetoys.nl/sitemap.xml
