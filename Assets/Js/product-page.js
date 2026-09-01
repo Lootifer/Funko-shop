@@ -103,7 +103,19 @@ const toAbsoluteUrl = (value = "") => {
   }
 
   try {
-    return new URL(source, `${SITE_ORIGIN}/`).href;
+    const url = new URL(source, `${SITE_ORIGIN}/`);
+
+    const internalHosts = new Set([
+      "test.2ndlifetoys.nl",
+      "2ndlifetoys.nl",
+      "www.2ndlifetoys.nl",
+    ]);
+
+    if (internalHosts.has(url.hostname.toLowerCase())) {
+      return `${SITE_ORIGIN}${url.pathname}${url.search}${url.hash}`;
+    }
+
+    return url.href;
   } catch {
     return "";
   }
@@ -244,31 +256,22 @@ const getBarcodeSchema = (barcode = "") => {
     return {};
   }
 
-  const digits =
-    String(barcode).replace(/\D/g, "");
+  const digits = String(barcode).replace(/\D/g, "");
 
   if (digits.length === 8) {
-    return {
-      gtin8: digits,
-    };
+    return { gtin8: digits };
   }
 
   if (digits.length === 12) {
-    return {
-      gtin12: digits,
-    };
+    return { gtin12: digits };
   }
 
   if (digits.length === 13) {
-    return {
-      gtin13: digits,
-    };
+    return { gtin13: digits };
   }
 
   if (digits.length === 14) {
-    return {
-      gtin14: digits,
-    };
+    return { gtin14: digits };
   }
 
   return {};
@@ -286,7 +289,6 @@ const updateProductStructuredData = ({
     script = document.createElement("script");
     script.id = PRODUCT_SCHEMA_ID;
     script.type = "application/ld+json";
-
     document.head.appendChild(script);
   }
 
@@ -351,33 +353,23 @@ const updateProductStructuredData = ({
     };
   }
 
-  script.textContent =
-    JSON.stringify(schema);
+  script.textContent = JSON.stringify(schema);
 };
 
 const updateProductSeo = (product) => {
-  const seoTitle =
-    buildSeoTitle(product);
-
-  const seoDescription =
-    buildSeoDescription(product);
-
-  const canonicalUrl =
-    getCanonicalProductUrl(product);
+  const seoTitle = buildSeoTitle(product);
+  const seoDescription = buildSeoDescription(product);
+  const canonicalUrl = getCanonicalProductUrl(product);
 
   document.title = seoTitle;
 
-  const metaDescription =
-    ensureMetaDescription();
-
+  const metaDescription = ensureMetaDescription();
   metaDescription.setAttribute(
     "content",
     seoDescription
   );
 
-  const canonical =
-    ensureCanonical();
-
+  const canonical = ensureCanonical();
   canonical.setAttribute(
     "href",
     canonicalUrl
@@ -391,9 +383,7 @@ const updateProductSeo = (product) => {
 };
 
 const getProductById = async () => {
-  const result =
-    await loadRuntimeCatalog();
-
+  const result = await loadRuntimeCatalog();
   const normalized =
     normalizeProductCatalog(result.products);
 
@@ -440,8 +430,7 @@ const renderGallery = (product) => {
       ? uniqueGalleryItems.slice(0, 4)
       : uniqueGalleryItems;
 
-  const mainImage =
-    galleryItems[0];
+  const mainImage = galleryItems[0];
 
   productGalleryMain.innerHTML =
     `<img ${createImageAttributes({
@@ -495,9 +484,7 @@ const renderGallery = (product) => {
           );
 
           productGalleryThumbs
-            .querySelectorAll(
-              ".gallery-thumb"
-            )
+            .querySelectorAll(".gallery-thumb")
             .forEach((thumb) => {
               thumb.classList.toggle(
                 "active",
@@ -561,9 +548,7 @@ const renderCollectorDetails = (product) => {
       item.textContent = text;
     }
 
-    collectorDetailsList.appendChild(
-      item
-    );
+    collectorDetailsList.appendChild(item);
   };
 
   if (hasValue(product.boxCondition)) {
