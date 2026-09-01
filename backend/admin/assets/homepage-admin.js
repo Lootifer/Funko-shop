@@ -57,13 +57,96 @@ const saveSettings = async () => {
   return settings;
 };
 
-const productOptions = (selected) => [
-  '<option value="">Geen product / leeg vak</option>',
-  ...products
+const escapeHtml = (value = "") =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+const CATEGORY_ORDER = [
+  "Funko Pop",
+  "Funko Movies",
+  "Funko Television",
+  "Funko Animation",
+  "Funko Games",
+  "Funko Heroes",
+  "Funko Bitty Pop",
+  "Funko Pin",
+  "Funko Tee",
+  "LEGO",
+  "Pokémon",
+  "Star Wars",
+  "Harry Potter",
+  "Collectible Lamps",
+  "Figures & Toys",
+  "Vintage Figures",
+  "Hot Wheels",
+];
+
+const getProductGroup = (product = {}) => {
+  const category = String(product.category || "").trim();
+  if (category) return category;
+
+  const brand = String(product.brand || "").trim();
+  if (brand) return brand;
+
+  return "Overig";
+};
+
+const productOptions = (selected) => {
+  const grouped = new Map();
+
+  products
     .filter((product) => !product.archived)
-    .sort((a, b) => String(a.name).localeCompare(String(b.name)))
-    .map((product) => `<option value="${product.id}" ${Number(selected) === Number(product.id) ? "selected" : ""}>${product.name}${product.number ? ` ${product.number}` : ""}</option>`),
-].join("");
+    .forEach((product) => {
+      const group = getProductGroup(product);
+      if (!grouped.has(group)) grouped.set(group, []);
+      grouped.get(group).push(product);
+    });
+
+  const groups = [...grouped.entries()].sort(([groupA], [groupB]) => {
+    const indexA = CATEGORY_ORDER.indexOf(groupA);
+    const indexB = CATEGORY_ORDER.indexOf(groupB);
+
+    if (indexA !== -1 || indexB !== -1) {
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    }
+
+    return groupA.localeCompare(groupB, "nl", { sensitivity: "base" });
+  });
+
+  const options = ['<option value="">Geen product / leeg vak</option>'];
+
+  groups.forEach(([group, groupProducts]) => {
+    options.push(`<optgroup label="${escapeHtml(group)}">`);
+
+    groupProducts
+      .sort((a, b) =>
+        String(a.name || "").localeCompare(String(b.name || ""), "nl", {
+          sensitivity: "base",
+        })
+      )
+      .forEach((product) => {
+        const label = `${product.name || "Naamloos product"}${
+          product.number ? ` ${product.number}` : ""
+        }`;
+
+        options.push(
+          `<option value="${escapeHtml(product.id)}" ${
+            Number(selected) === Number(product.id) ? "selected" : ""
+          }>${escapeHtml(label)}</option>`
+        );
+      });
+
+    options.push("</optgroup>");
+  });
+
+  return options.join("");
+};
 
 const toPreviewSrc = (value = "") => {
   const clean = String(value || "").trim();
