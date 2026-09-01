@@ -10,7 +10,7 @@
       content="Discover new and pre-owned collectibles from the private 2nd Life Toys collection. "
     />
     <link rel="stylesheet" href="Assets/Css/main.css" />
-    <link rel="stylesheet" href="Assets/Css/components/v45-layout.css?v=45" />
+    <link rel="stylesheet" href="Assets/Css/components/v45-layout.css?v=46" />
     <link rel="stylesheet" href="Assets/Css/components/v41-home-cleanup.css?v=41" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -56,12 +56,18 @@
         </div>
       </section>
 
-      <section class="section v40-showcase-section reveal" aria-labelledby="v40ShowcasePrimaryTitle">
-        <div class="v40-showcase-heading">
-          <p class="eyebrow">Uit de vitrine</p>
-          <h2 id="v40ShowcasePrimaryTitle">Drie bijzondere vondsten uit de collectie.</h2>
-          <p>Een eerste vitrine met drie producten die je rechtstreeks vanuit Homepage beheren kiest.</p>
+      <section class="section home-toy-crew reveal" aria-label="2nd Life Toys collectible crew">
+        <div class="home-toy-crew-frame depth-card" aria-hidden="true">
+          <img
+            class="home-toy-crew-image"
+            src="Assets/Images/Home/2nd-life-toys-collectible-crew.png"
+            alt=""
+          />
+          <div class="home-toy-crew-shine"></div>
         </div>
+      </section>
+
+      <section class="section v40-showcase-section reveal">
         <div class="hero-stage hero-stage-clean depth-card v40-secondary-display" id="heroStage" aria-label="2nd Life Toys display">
           <div class="stage-ambient" aria-hidden="true"></div>
           <div class="display-light display-light-one" aria-hidden="true"></div>
@@ -89,12 +95,7 @@
         </div>
       </section>
 
-      <section class="section v40-showcase-section reveal" aria-labelledby="v40ShowcaseTitle">
-        <div class="v40-showcase-heading">
-          <p class="eyebrow">Extra uit de vitrine</p>
-          <h2 id="v40ShowcaseTitle">Nog drie plekken voor bijzondere vondsten.</h2>
-          <p>Een tweede vitrine voor extra bijzondere vondsten uit de collectie. Regelmatig wisselend en altijd rechtstreeks uit mijn eigen verzameling.</p>
-        </div>
+      <section class="section v40-showcase-section reveal">
         <div class="hero-stage hero-stage-clean depth-card v40-secondary-display" id="heroStageExtra" aria-label="Extra 2nd Life Toys display">
           <div class="stage-ambient" aria-hidden="true"></div>
           <div class="display-light display-light-one" aria-hidden="true"></div>
@@ -130,18 +131,16 @@
       </section>
 
       <section class="section collector-club-section reveal">
-        <div class="club-card premium-club-card depth-card v40-club-card">
-          <div class="club-copy">
-            <p class="eyebrow">2nd Life Toys Updates</p>
-            <h2>Als eerste weten wat er nieuw binnenkomt.</h2>
-            <p>Schrijf je e-mailadres in voor toekomstige updates over nieuwe vondsten, bijzondere items en beperkte beschikbaarheid.</p>
-            <form class="club-form" id="clubForm">
-              <input id="clubEmail" type="email" placeholder="Jouw e-mailadres" required />
+        <div class="club-card premium-club-card depth-card v40-club-card v46-club-card">
+          <div class="club-copy v46-club-copy">
+            <h2>JOIN THE CLUB.</h2>
+            <form class="club-form v46-club-form" id="clubForm">
+              <input id="clubEmail" type="email" placeholder="Jouw e-mailadres" aria-label="Jouw e-mailadres" required />
               <button class="button primary button-raised" type="submit">Inschrijven</button>
             </form>
-            <p class="club-message" id="clubMessage">Geen spam. Alleen updates van 2nd Life Toys.</p>
+            <p class="club-message v46-club-message" id="clubMessage" aria-live="polite"></p>
           </div>
-          <div class="club-orbit v40-club-orbit v45-brand-spinner" aria-hidden="true">
+          <div class="club-orbit v40-club-orbit v45-brand-spinner v46-brand-spinner" aria-hidden="true">
             <div class="v45-logo-halo"></div>
             <div class="v45-logo-turntable">
               <img src="Assets/Images/Brand/2nd-life-toys-logo-v2.png" alt="" />
