@@ -23,6 +23,32 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script id="homepageStructuredData" type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://www.2ndlifetoys.nl/#organization",
+            "name": "2nd Life Toys",
+            "url": "https://www.2ndlifetoys.nl/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.2ndlifetoys.nl/Assets/Images/Brand/2nd-life-toys-logo-v2.png"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.2ndlifetoys.nl/#website",
+            "url": "https://www.2ndlifetoys.nl/",
+            "name": "2nd Life Toys",
+            "publisher": {
+              "@id": "https://www.2ndlifetoys.nl/#organization"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body class="home-page home-page-v3">
     <div class="site-parallax-bg" aria-hidden="true"><div class="site-parallax-grid"></div></div>
