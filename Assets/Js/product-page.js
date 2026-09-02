@@ -24,6 +24,27 @@ import { loadRuntimeCatalog } from "../../Products/runtime-catalog.js";
 
 const SITE_ORIGIN = "https://www.2ndlifetoys.nl";
 const PRODUCT_SCHEMA_ID = "productStructuredData";
+const BREADCRUMB_SCHEMA_ID = "breadcrumbStructuredData";
+
+const CATEGORY_PAGE_MAP = {
+  "collectible lamps": "collectible-lamps.html",
+  "figures & toys": "figures-toys.html",
+  "funko animation": "funko-animation.html",
+  "funko bitty pop": "funko-bitty-pop.html",
+  "funko games": "funko-games.html",
+  "funko heroes": "funko-heroes.html",
+  "funko movies": "funko-movies.html",
+  "funko pin": "funko-pin.html",
+  "funko pop": "funko.html",
+  "funko tee": "funko-tee.html",
+  "funko television": "funko-television.html",
+  "harry potter": "harry-potter.html",
+  "hot wheels": "hot-wheels.html",
+  "lego": "lego.html",
+  "pokémon": "pokemon.html",
+  "star wars": "star-wars.html",
+  "vintage figures": "vintage-figures.html",
+};
 
 const params = new URLSearchParams(window.location.search);
 const productSlug = params.get("slug") || params.get("id");
@@ -356,6 +377,68 @@ const updateProductStructuredData = ({
   script.textContent = JSON.stringify(schema);
 };
 
+const getCategoryPageUrl = (category = "") => {
+  const key = cleanSeoText(category).toLowerCase();
+  const page = CATEGORY_PAGE_MAP[key];
+
+  return page ? `${SITE_ORIGIN}/${page}` : "";
+};
+
+const updateBreadcrumbStructuredData = ({
+  product,
+  canonicalUrl,
+}) => {
+  let script =
+    document.getElementById(BREADCRUMB_SCHEMA_ID);
+
+  if (!script) {
+    script = document.createElement("script");
+    script.id = BREADCRUMB_SCHEMA_ID;
+    script.type = "application/ld+json";
+    document.head.appendChild(script);
+  }
+
+  const itemListElement = [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: `${SITE_ORIGIN}/`,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Shop",
+      item: `${SITE_ORIGIN}/shop.html`,
+    },
+  ];
+
+  const categoryName = cleanSeoText(product.category);
+  const categoryUrl = getCategoryPageUrl(categoryName);
+
+  if (categoryName && categoryUrl) {
+    itemListElement.push({
+      "@type": "ListItem",
+      position: itemListElement.length + 1,
+      name: categoryName,
+      item: categoryUrl,
+    });
+  }
+
+  itemListElement.push({
+    "@type": "ListItem",
+    position: itemListElement.length + 1,
+    name: cleanSeoText(product.name) || "Product",
+    item: canonicalUrl,
+  });
+
+  script.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement,
+  });
+};
+
 const updateProductSeo = (product) => {
   const seoTitle = buildSeoTitle(product);
   const seoDescription = buildSeoDescription(product);
@@ -379,6 +462,11 @@ const updateProductSeo = (product) => {
     product,
     canonicalUrl,
     seoDescription,
+  });
+
+  updateBreadcrumbStructuredData({
+    product,
+    canonicalUrl,
   });
 };
 
