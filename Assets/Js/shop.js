@@ -226,6 +226,21 @@ const CATEGORY_GRID_COPY = {
       title: "Choose your next ride.",
       text: "Used Hot Wheels, special castings and collectible cars from the private collection.",
     },
+    "FIFA 365 Cards": {
+      kicker: "THE TRADING CARD SHELF",
+      title: "Build your ultimate lineup.",
+      text: "FIFA 365 Cards and Panini football trading cards from the private collection.",
+    },
+    "Donald Duck Strips": {
+      kicker: "THE COMIC SHELF",
+      title: "Turn the page on a new find.",
+      text: "Donald Duck comics and collectible strip issues from the private collection.",
+    },
+    "Bordspellen & Games": {
+      kicker: "THE GAME TABLE",
+      title: "Pick your next game night.",
+      text: "Board games and collectible games from the private collection.",
+    },
     sale: {
       kicker: "THE GOLDEN DROP",
       title: "Limited offers. Lasting stories.",
@@ -278,6 +293,21 @@ const CATEGORY_GRID_COPY = {
       kicker: "DE GARAGE",
       title: "Kies je volgende model.",
       text: "Gebruikte Hot Wheels, bijzondere castings en verzamelauto's uit de privécollectie.",
+    },
+    "FIFA 365 Cards": {
+      kicker: "DE KAARTENPLANK",
+      title: "Bouw jouw ultieme opstelling.",
+      text: "FIFA 365 Cards en Panini voetbalkaarten uit de privécollectie.",
+    },
+    "Donald Duck Strips": {
+      kicker: "DE STRIPPLANK",
+      title: "Sla een nieuw avontuur open.",
+      text: "Donald Duck strips en verzamelwaardige stripuitgaven uit de privécollectie.",
+    },
+    "Bordspellen & Games": {
+      kicker: "DE SPELLENTAFEL",
+      title: "Kies je volgende speelavond.",
+      text: "Bordspellen en verzamelwaardige games uit de privécollectie.",
     },
     sale: {
       kicker: "DE GOUDEN DROP",
@@ -443,6 +473,45 @@ const FIXED_PAGE_COPY = {
       "Bekijk gebruikte Hot Wheels, bijzondere castings en verzamelauto's uit de privécollectie.",
     ],
   },
+
+  "FIFA 365 Cards": {
+    en: [
+      "FIFA 365 Cards",
+      "Every card tells a match.",
+      "Browse FIFA 365 Cards and Panini football trading cards from the private collection.",
+    ],
+    nl: [
+      "FIFA 365 Cards",
+      "Elke kaart vertelt een wedstrijd.",
+      "Bekijk FIFA 365 Cards en Panini voetbalkaarten uit de privécollectie.",
+    ],
+  },
+
+  "Donald Duck Strips": {
+    en: [
+      "Donald Duck Strips",
+      "Adventures worth keeping.",
+      "Discover Donald Duck comics and collectible strip issues from the private collection.",
+    ],
+    nl: [
+      "Donald Duck Strips",
+      "Avonturen om te bewaren.",
+      "Ontdek Donald Duck strips en verzamelwaardige stripuitgaven uit de privécollectie.",
+    ],
+  },
+
+  "Bordspellen & Games": {
+    en: [
+      "Bordspellen & Games",
+      "Game night starts here.",
+      "Browse board games and collectible games from the private collection.",
+    ],
+    nl: [
+      "Bordspellen & Games",
+      "De speelavond begint hier.",
+      "Bekijk bordspellen en verzamelwaardige games uit de privécollectie.",
+    ],
+  },
 };
 
 
@@ -461,6 +530,9 @@ const CATEGORY_NAV_COPY = {
     figuresToys: "Figures & Toys",
     vintageFigures: "Vintage Figures",
     hotWheels: "Hot Wheels",
+    fifaCards: "FIFA 365 Cards",
+    donaldDuckStrips: "Donald Duck Strips",
+    boardGames: "Bordspellen & Games",
     sale: "Sale",
   },
   nl: {
@@ -477,6 +549,9 @@ const CATEGORY_NAV_COPY = {
     figuresToys: "Figures & Toys",
     vintageFigures: "Vintage Figures",
     hotWheels: "Hot Wheels",
+    fifaCards: "FIFA 365 Cards",
+    donaldDuckStrips: "Donald Duck Strips",
+    boardGames: "Bordspellen & Games",
     sale: "Sale",
   },
 };
@@ -501,6 +576,9 @@ const CATEGORY_NAV_ITEMS = [
   ["Figures & Toys", "figuresToys", "figures-toys.html"],
   ["Vintage Figures", "vintageFigures", "vintage-figures.html"],
   ["Hot Wheels", "hotWheels", "hot-wheels.html"],
+  ["FIFA 365 Cards", "fifaCards", "fifa-365-cards.html"],
+  ["Donald Duck Strips", "donaldDuckStrips", "donald-duck-strips.html"],
+  ["Bordspellen & Games", "boardGames", "bordspellen-games.html"],
   ["sale", "sale", "sale.html"],
 ];
 
