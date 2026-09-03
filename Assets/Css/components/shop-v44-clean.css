@@ -7,10 +7,10 @@
 }
 .shop-v44-head {
   display:flex; align-items:end; justify-content:space-between; gap:2rem;
-  margin-bottom:1.4rem;
+  margin-bottom:2.4rem;
 }
 .shop-v44-head h1 {
-  margin:.2rem 0 .35rem; font-size:clamp(2.5rem,5vw,4.5rem);
+  margin:.3rem 0 .6rem; font-size:clamp(2.8rem,5.6vw,5rem);
   line-height:.98; letter-spacing:-.055em;
 }
 .shop-v44-head > div > p:last-child { margin:0; color:var(--muted); }
@@ -22,7 +22,7 @@
   display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem;
 }
 .shop-v44-card {
-  position:relative; min-height:240px; overflow:hidden; border:1px solid rgba(255,255,255,.12);
+  position:relative; min-height:264px; overflow:hidden; border:1px solid rgba(255,255,255,.12);
   border-radius:1.35rem; background:#11161b; color:#fff; text-decoration:none;
   box-shadow:0 16px 36px rgba(0,0,0,.24), inset 0 1px rgba(255,255,255,.04);
   transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
@@ -38,15 +38,15 @@ button.shop-v44-card { width:100%; padding:0; font:inherit; text-align:left; cur
   position:absolute; inset:0;
   background:linear-gradient(180deg,rgba(0,0,0,.08) 15%,rgba(0,0,0,.28) 46%,rgba(4,7,10,.96) 100%);
 }
-.shop-v44-copy { position:absolute; inset:auto 1.15rem 1rem; display:block; z-index:2; }
+.shop-v44-copy { position:absolute; inset:auto 1.15rem 1rem; display:block; z-index:2; padding-right:2.9rem; }
 .shop-v44-copy small {
   display:block; margin-bottom:.25rem; color:#f4d04f; font-size:.68rem; line-height:1.25;
   font-weight:800; letter-spacing:.08em;
 }
 .shop-v44-copy strong {
-  display:block; max-width:90%; font-size:clamp(1.45rem,2.4vw,2.15rem); line-height:1.02; letter-spacing:-.035em;
+  display:block; max-width:100%; font-size:clamp(1.3rem,2.2vw,2rem); line-height:1.08; letter-spacing:-.035em;
 }
-.shop-v44-copy em { display:block; margin-top:.5rem; color:#f0c63c; font-style:normal; font-size:.78rem; font-weight:800; }
+.shop-v44-copy em { display:block; margin-top:.6rem; color:#f0c63c; font-style:normal; font-size:.78rem; font-weight:800; }
 .shop-v44-copy i {
   position:absolute; right:0; bottom:0; display:grid; place-items:center; width:2.35rem; height:2.35rem;
   border:1px solid rgba(255,255,255,.32); border-radius:50%; font-style:normal;
@@ -95,12 +95,13 @@ button.shop-v44-card { width:100%; padding:0; font:inherit; text-align:left; cur
 @media(max-width:1050px){ .shop-v44-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
 @media(max-width:760px){
   .shop-v44{width:min(100% - 1rem,1320px);padding-top:1.2rem}
-  .shop-v44-head{align-items:flex-start;flex-direction:column;gap:.35rem}
+  .shop-v44-head{align-items:flex-start;flex-direction:column;gap:.5rem;margin-bottom:1.8rem}
   .shop-v44-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
-  .shop-v44-card{min-height:205px}
+  .shop-v44-card{min-height:225px}
+  .shop-v44-copy{padding-right:2.6rem}
   .shop-v44-funko-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:480px){
   .shop-v44-grid{grid-template-columns:1fr}
-  .shop-v44-card{min-height:215px}
+  .shop-v44-card{min-height:235px}
 }

@@ -81,6 +81,7 @@ const relatedProducts = document.getElementById("relatedProducts");
 const recommendedProducts = document.getElementById("recommendedProducts");
 const recentProducts = document.getElementById("recentProducts");
 const wishlistButton = document.getElementById("wishlistButton");
+const addToCartButton = document.getElementById("addToCartButton");
 
 let currentProduct = null;
 
@@ -976,6 +977,12 @@ const renderProduct = async () => {
 
   currentProduct = product;
 
+  if (addToCartButton) {
+    const outOfStock = stockCount <= 0;
+    addToCartButton.disabled = outOfStock;
+    addToCartButton.classList.toggle("is-disabled", outOfStock);
+  }
+
   if (wishlistButton) {
     const saved =
       shoppingState.isWishlisted(
@@ -1052,6 +1059,44 @@ wishlistButton?.addEventListener(
         : "Toevoegen aan verlanglijst";
 
     syncHeaderCounters();
+  }
+);
+
+addToCartButton?.addEventListener(
+  "click",
+  () => {
+    if (!currentProduct) {
+      return;
+    }
+
+    const result = shoppingState.addToCart(
+      currentProduct
+    );
+
+    const label =
+      addToCartButton.querySelector(
+        ".cart-button-label"
+      ) || addToCartButton;
+
+    if (result.added) {
+      label.textContent = "Toegevoegd ✓";
+
+      syncHeaderCounters();
+
+      setTimeout(() => {
+        label.textContent =
+          addToCartButton.dataset
+            .defaultLabel ||
+          "In winkelwagen";
+      }, 1200);
+    } else if (
+      result.reason === "out-of-stock"
+    ) {
+      addToCartButton.disabled = true;
+      addToCartButton.classList.add(
+        "is-disabled"
+      );
+    }
   }
 );
 
