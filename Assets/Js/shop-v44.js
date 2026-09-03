@@ -30,7 +30,7 @@ window.addEventListener(
   syncHeaderCounters
 );
 
-const normalize = (value = "") =>r
+const normalize = (value = "") =>
   String(value).trim().toLowerCase();
 
 const FUNKO_CATEGORIES = new Set([
