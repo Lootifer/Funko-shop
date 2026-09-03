@@ -23,6 +23,19 @@
   background: linear-gradient(135deg, var(--accent), #f5d56d);
   color: #111;
   box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+  gap: 0.55rem;
+}
+
+.button.primary:disabled,
+.button.primary.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.button .cart-icon {
+  flex-shrink: 0;
 }
 
 .button.secondary {
