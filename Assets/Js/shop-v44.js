@@ -82,6 +82,18 @@ const matches = (product = {}, key = "") => {
     return category === "hot wheels";
   }
 
+  if (key === "fifa-365-cards") {
+    return category === "fifa 365 cards";
+  }
+
+  if (key === "donald-duck-strips") {
+    return category === "donald duck strips";
+  }
+
+  if (key === "bordspellen-games") {
+    return category === "bordspellen & games";
+  }
+
   if (key === "sale") {
     return getValidDiscountPrice(product) !== null;
   }
@@ -99,6 +111,9 @@ const setCounts = (products = []) => {
     "figures-toys",
     "vintage-figures",
     "hot-wheels",
+    "fifa-365-cards",
+    "donald-duck-strips",
+    "bordspellen-games",
     "sale",
   ];
 

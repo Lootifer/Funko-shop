@@ -121,6 +121,9 @@ const CATEGORY_ORDER = [
   "Figures & Toys",
   "Vintage Figures",
   "Hot Wheels",
+  "FIFA 365 Cards",
+  "Donald Duck Strips",
+  "Bordspellen & Games",
 ];
 
 const getProductGroup = (product = {}) => {

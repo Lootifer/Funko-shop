@@ -27,6 +27,9 @@ export const PRODUCT_CATEGORIES = [
   "Figures & Toys",
   "Vintage Figures",
   "Hot Wheels",
+  "FIFA 365 Cards",
+  "Donald Duck Strips",
+  "Bordspellen & Games",
 
   // Bestaande/legacy waarden blijven geldig totdat producten via admin zijn ingedeeld.
   "Funko Pop",

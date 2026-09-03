@@ -60,6 +60,9 @@ button.shop-v44-card { width:100%; padding:0; font:inherit; text-align:left; cur
 .shop-v44-vintage .shop-v44-image { background-image:url("../../Images/Home/category-vintage-custom.png"); background-position:center 48%; }
 .shop-v44-hotwheels .shop-v44-image { background-image:url("../../Images/Home/category-hotwheels-custom.png"); background-size:contain; background-repeat:no-repeat; background-color:#1588c9; background-position:center 23%; }
 .shop-v44-sale .shop-v44-image { background-image:url("../../Images/Home/category-sale.svg"); background-color:#3c2905; }
+.shop-v44-fifa .shop-v44-image { background-image:url("../../Images/Home/fifa-365-cards.png"); background-position:center 40%; }
+.shop-v44-donaldduck .shop-v44-image { background-image:url("../../Images/Home/donald-duck-strips.png"); background-position:center 40%; }
+.shop-v44-boardgames .shop-v44-image { background-image:url("../../Images/Home/bordspellen-games.png"); background-position:center 40%; }
 
 .shop-v44-modal {
   position:fixed; inset:0; z-index:1000; display:none; place-items:center; padding:1rem;
