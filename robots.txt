@@ -4,4 +4,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /backend/
 
-Sitemap: https://www.2ndlifetoys.nl/sitemap.xml
+Sitemap: https://api.2ndlifetoys.nl/sitemap.xml
