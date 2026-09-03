@@ -30,7 +30,7 @@ window.addEventListener(
   syncHeaderCounters
 );
 
-const normalize = (value = "") =>
+const normalize = (value = "") =>r
   String(value).trim().toLowerCase();
 
 const FUNKO_CATEGORIES = new Set([
@@ -213,4 +213,4 @@ document.addEventListener(
       setModal(false);
     }
   }
-);RRR
+);
