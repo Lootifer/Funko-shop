@@ -11,8 +11,9 @@
 
 .brand-logo-image {
   display: block;
-  width: clamp(104px, 9.5vw, 148px);
+  width: clamp(156px, 14.25vw, 222px);
   height: auto;
+  margin-top: .4rem;
   filter: drop-shadow(0 8px 14px rgba(0,0,0,.28));
 }
 
@@ -564,7 +565,8 @@ button.account-link.account-menu-toggle {
 
 @media (max-width: 700px) {
   .brand-logo-image {
-    width: 104px;
+    width: 156px;
+    margin-top: .25rem;
   }
 
   .v45-topbar .header-tools {

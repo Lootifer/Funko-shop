@@ -33,10 +33,10 @@
  */
 @import url('components/v45-layout.css');
 
-/* MOBIEL: ruimte tussen logo en zoekbalk */
+/* MOBIEL: ruimte tussen logo en zoekbalk (afgestemd op het grotere logo) */
 @media (max-width: 700px) {
   .premium-topbar .header-tools {
-    margin-top: 5rem;
+    margin-top: 1.4rem;
   }
 }
 

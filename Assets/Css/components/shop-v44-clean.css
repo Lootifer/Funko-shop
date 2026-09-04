@@ -92,6 +92,59 @@ button.shop-v44-card { width:100%; padding:0; font:inherit; text-align:left; cur
 .shop-v44-funko-grid small { margin-top:auto; color:var(--muted); }
 .shop-v44-funko-all { margin-top:1rem; display:inline-flex; }
 
+/* --- Collector strip: subtiele luxe animatie onder de categoriekaarten --- */
+.collector-strip {
+  position:relative; overflow:hidden; margin-top:2.6rem;
+  min-height:clamp(180px,18vw,240px);
+  display:flex; align-items:center; justify-content:center;
+  border-top:1px solid rgba(212,175,55,.28); border-bottom:1px solid rgba(212,175,55,.28);
+  background:
+    linear-gradient(180deg, rgba(212,175,55,.05), rgba(0,0,0,0) 35%, rgba(0,0,0,0) 65%, rgba(212,175,55,.05)),
+    #08090b;
+}
+.collector-strip-shine {
+  position:absolute; top:-40%; left:-25%; width:40%; height:180%;
+  background:radial-gradient(closest-side, rgba(212,175,55,.16), rgba(212,175,55,0) 70%);
+  filter:blur(6px); transform:translateX(0) rotate(8deg);
+  animation:collectorStripShine 11s ease-in-out infinite; pointer-events:none;
+}
+@keyframes collectorStripShine {
+  0%   { transform:translateX(0) rotate(8deg); }
+  50%  { transform:translateX(340%) rotate(8deg); }
+  100% { transform:translateX(0) rotate(8deg); }
+}
+.collector-strip-icons {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:space-evenly;
+  padding:0 clamp(1.2rem,6vw,5rem); pointer-events:none;
+}
+.collector-strip-icon {
+  width:clamp(28px,3.4vw,44px); height:clamp(28px,3.4vw,44px);
+  fill:none; stroke:var(--accent); stroke-width:1.3; stroke-linecap:round; stroke-linejoin:round;
+  opacity:.16; animation:collectorStripFloat 6s ease-in-out infinite;
+}
+.collector-strip-icon:nth-child(2) { animation-delay:.6s; }
+.collector-strip-icon:nth-child(3) { animation-delay:1.2s; }
+.collector-strip-icon:nth-child(4) { animation-delay:1.8s; }
+.collector-strip-icon:nth-child(5) { animation-delay:2.4s; }
+@keyframes collectorStripFloat {
+  0%,100% { transform:translateY(0); }
+  50%     { transform:translateY(-6px); }
+}
+.collector-strip-caption {
+  position:relative; z-index:2; display:flex; align-items:center;
+  gap:clamp(.7rem,2vw,1.4rem); max-width:min(92%,760px); padding:0 1rem;
+}
+.collector-strip-line {
+  flex:1 1 auto; height:1px; max-width:90px;
+  background:linear-gradient(90deg, transparent, rgba(212,175,55,.6), transparent);
+}
+.collector-strip-text {
+  flex:0 1 auto; margin:0; text-align:center; color:var(--accent);
+  font-size:clamp(.72rem,1.4vw,.88rem); font-weight:700; letter-spacing:.22em;
+  text-transform:uppercase; text-shadow:0 0 22px rgba(212,175,55,.35);
+}
+.collector-strip-dot { display:inline-block; margin:0 .5em; color:rgba(212,175,55,.55); }
+
 @media(max-width:1050px){ .shop-v44-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
 @media(max-width:760px){
   .shop-v44{width:min(100% - 1rem,1320px);padding-top:1.2rem}
@@ -100,8 +153,18 @@ button.shop-v44-card { width:100%; padding:0; font:inherit; text-align:left; cur
   .shop-v44-card{min-height:225px}
   .shop-v44-copy{padding-right:2.6rem}
   .shop-v44-funko-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .collector-strip{min-height:150px;margin-top:1.8rem}
+  .collector-strip-icons{padding:0 1rem}
+  .collector-strip-icon{width:24px;height:24px;opacity:.12}
+  .collector-strip-line{max-width:36px}
+  .collector-strip-text{font-size:.66rem;letter-spacing:.16em}
 }
 @media(max-width:480px){
   .shop-v44-grid{grid-template-columns:1fr}
   .shop-v44-card{min-height:235px}
+  .collector-strip-line{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .collector-strip-shine,
+  .collector-strip-icon{ animation:none !important; }
 }
