@@ -29,6 +29,13 @@ export const buildAutoSlug = ({ name = "", number = "" } = {}) => {
   return slugify(`${name} ${String(number).replace(/#/g, " ")}`);
 };
 
+export const buildAutoSku = ({ name = "", number = "" } = {}) => {
+  const cleanName = slugify(name).toUpperCase();
+  const cleanNumber = String(number || "").replace(/#/g, "").trim().replace(/[^a-z0-9-]+/gi, "-").replace(/(^-|-$)/g, "").toUpperCase();
+  if (!cleanName || !cleanNumber) return "";
+  return `FP-${cleanName}-${cleanNumber}`;
+};
+
 const normalizeUniverseFolder = (universe = "", category = "") => {
   const categoryValue = String(category || "").trim().toLowerCase();
 
@@ -172,7 +179,8 @@ export const getMappedImagesForSlug = async ({ slug, category, brand, universe =
 
 export const buildDraftFromForm = (formData) => {
   const name = String(formData.name || "").trim();
-  const number = String(formData.number || "").trim();
+  const rawNumber = String(formData.number || "").trim();
+  const number = rawNumber === "#" ? "" : rawNumber;
   const slug = String(formData.slug || "").trim();
 
   return {
@@ -186,7 +194,7 @@ export const buildDraftFromForm = (formData) => {
     brand: String(formData.brand || "").trim(),
     universe: String(formData.universe || "").trim(),
     franchise: String(formData.franchise || "").trim(),
-    edition: String(formData.edition || "Standard").trim(),
+    edition: String(formData.edition || "").trim(),
     variant: String(formData.variant || "Standard").trim(),
     releaseYear: Number(formData.releaseYear || new Date().getFullYear()),
     condition: String(formData.condition || "Mint").trim(),
