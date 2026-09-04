@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
+  padding: 0.7rem 2rem;
   backdrop-filter: blur(20px);
   background: rgba(8, 8, 8, 0.78);
   border-bottom: 1px solid var(--border);
@@ -79,7 +79,7 @@
 
 @media (max-width: 700px) {
   .topbar {
-    padding: 1rem;
+    padding: 0.85rem 1rem;
     flex-wrap: wrap;
     gap: 0.8rem;
   }

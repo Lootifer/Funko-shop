@@ -380,6 +380,19 @@ tr.is-archived td {
   opacity: 0.75;
 }
 
+#customersTableBody tr[data-customer-row] {
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+#customersTableBody tr[data-customer-row]:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+#customersTableBody tr.is-selected {
+  background: rgba(255, 210, 90, 0.08);
+}
+
 .admin-canonical-preview {
   margin-top: 0.8rem;
   padding: 0.8rem;

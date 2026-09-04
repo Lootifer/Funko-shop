@@ -278,6 +278,27 @@ export const deleteOrderInApi = async (orderNumber) => {
   return Boolean(payload?.deleted);
 };
 
+export const fetchCustomersFromApi = async () => {
+  const payload = await requestJson("/customers", {
+    method: "GET",
+  });
+
+  return Array.isArray(payload?.customers)
+    ? payload.customers
+    : [];
+};
+
+export const fetchCustomerByIdFromApi = async (customerId) => {
+  const payload = await requestJson(
+    `/customers/${encodeURIComponent(String(customerId))}`,
+    {
+      method: "GET",
+    }
+  );
+
+  return payload?.customer || null;
+};
+
 export const adjustStockInApi = async ({
   items = [],
   mode = "decrease",
