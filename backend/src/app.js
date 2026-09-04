@@ -9,6 +9,7 @@ import stockRouter from "./routes/stock.js";
 import authRouter from "./routes/auth.js";
 import siteRouter from "./routes/site.js";
 import accountRouter from "./routes/account.js";
+import customersRouter from "./routes/customers.js";
 import { all, getDbPath } from "./db/connection.js";
 import { getProductMediaRoot } from "./services/product-media-storage.js";
 
@@ -190,6 +191,7 @@ app.use(
 
 app.use("/api/auth", authRouter);
 app.use("/api/account", accountRouter);
+app.use("/api/customers", customersRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/stock", stockRouter);

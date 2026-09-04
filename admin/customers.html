@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klanten | Lootifer Admin</title>
+    <link rel="stylesheet" href="../Assets/Css/main.css" />
+    <link rel="stylesheet" href="assets/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-shell">
+      <div id="adminSidebar"></div>
+      <main class="admin-main">
+        <div id="adminTopbar"></div>
+
+        <section class="admin-section">
+          <div class="admin-card">
+            <h3>Klanten</h3>
+            <p class="admin-detail" id="customersStatus">Klanten uit de database.</p>
+
+            <div class="admin-overview-stats" id="customerOverviewStats"></div>
+
+            <div class="admin-filters-grid">
+              <label>
+                Zoeken
+                <input id="customerSearch" type="text" placeholder="Naam, e-mail of telefoon" />
+              </label>
+            </div>
+
+            <p class="admin-detail" id="customersResultHint">0 klanten zichtbaar.</p>
+
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Naam</th>
+                    <th>E-mail</th>
+                    <th>Telefoon</th>
+                    <th>Geregistreerd</th>
+                    <th>Laatste login</th>
+                    <th>Bestellingen</th>
+                    <th>Totale waarde</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="customersTableBody">
+                  <tr><td colspan="8">Klanten worden geladen…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-card" id="customerDetailCard">
+            <h3>Klantdetails</h3>
+            <p class="admin-detail">Kies een klant in de lijst om alle details te bekijken.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="assets/customers-admin.js"></script>
+  </body>
+</html>
