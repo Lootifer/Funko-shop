@@ -2,6 +2,7 @@ import { createAdminSidebar, createAdminTopbar } from "../components/layout.js";
 import { requireAdminSession, wireAdminTopbar } from "./admin-auth.js";
 import { createProductCard } from "../../Components/ProductCard.js";
 import { normalizeProductCatalog } from "../../Products/product-schema.js";
+import { downloadDatabaseBackupFromApi } from "../../Assets/Js/api-client.js";
 import {
   archiveProduct,
   changeProductStock,
@@ -13,6 +14,7 @@ import {
 } from "./product-admin-state.js";
 import {
   buildAutoSlug,
+  buildAutoSku,
   buildDraftFromForm,
   buildProductForSave,
   parseImagesInput,
@@ -89,6 +91,9 @@ const root = {
   importInput: document.getElementById("importCatalogInput"),
   importPreview: document.getElementById("importPreview"),
   completenessStats: document.getElementById("productCompletenessStats"),
+  backupDatabaseButton: document.getElementById("backupDatabaseButton"),
+  editionPicker: document.getElementById("editionPicker"),
+  editionPickerSummary: document.getElementById("editionPickerSummary"),
 };
 
 const fields = {
@@ -130,6 +135,34 @@ const state = {
   slugTouched: false,
   autoLinkedImages: [],
   importPreviewProducts: null,
+  importPhotoCount: 0,
+  importWarnings: [],
+  skuTouched: false,
+};
+
+const editionOptions = [...document.querySelectorAll("[data-edition-option]")];
+
+const getSelectedEditions = () => editionOptions
+  .filter((option) => option.checked)
+  .map((option) => option.value);
+
+const syncEditionFieldFromOptions = () => {
+  const selected = getSelectedEditions();
+  if (fields.edition) fields.edition.value = selected.join(" | ");
+  if (root.editionPickerSummary) {
+    root.editionPickerSummary.textContent = selected.length
+      ? `${selected.length} editie${selected.length === 1 ? "" : "s"} geselecteerd`
+      : "Kies editie(s)";
+  }
+};
+
+const syncEditionOptionsFromField = () => {
+  const selected = new Set(String(fields.edition?.value || "")
+    .split("|")
+    .map((item) => item.trim())
+    .filter((item) => item && item.toLowerCase() !== "standard"));
+  editionOptions.forEach((option) => { option.checked = selected.has(option.value); });
+  syncEditionFieldFromOptions();
 };
 
 const PRODUCT_DRAFT_KEY = "lootifer-admin-product-draft-v16";
@@ -161,7 +194,10 @@ const restoreProductDraft = () => {
       else element.value = saved[key] ?? "";
     });
 
+    if (fields.number && !String(fields.number.value || "").trim()) fields.number.value = "#";
+    syncEditionOptionsFromField();
     state.slugTouched = Boolean(String(fields.slug?.value || "").trim());
+    state.skuTouched = Boolean(String(fields.sku?.value || "").trim());
     state.autoLinkedImages = parseImagesInput(fields.images?.value || "");
     updateCanonicalHint();
     renderPreview();
@@ -205,6 +241,73 @@ const withAdminDefaults = (product = {}) => ({
   archived: Boolean(product.archived),
   reserved: Number(product.reserved) || 0,
 });
+
+/*
+ * JSON-imports moeten de waarden uit het bronbestand exact behouden.
+ * Vooral categorie mag niet door een algemene normalizer terugvallen
+ * naar "Funko Heroes".
+ */
+const normalizeImportProducts = (products = []) => {
+  if (!Array.isArray(products)) return [];
+
+  return products.map((rawProduct) => {
+    const raw =
+      rawProduct && typeof rawProduct === "object"
+        ? rawProduct
+        : {};
+
+    const normalized =
+      normalizeProductCatalog([raw])[0] || {};
+
+    const exactCategory = String(
+      raw.category ?? normalized.category ?? ""
+    ).trim();
+
+    return withAdminDefaults({
+      ...normalized,
+      ...raw,
+      category: exactCategory,
+      images: Array.isArray(raw.images)
+        ? raw.images
+        : Array.isArray(normalized.images)
+          ? normalized.images
+          : [],
+      gallery: Array.isArray(raw.gallery)
+        ? raw.gallery
+        : Array.isArray(normalized.gallery)
+          ? normalized.gallery
+          : [],
+      sellingPrice:
+        raw.sellingPrice ??
+        raw.price ??
+        normalized.sellingPrice ??
+        0,
+    });
+  });
+};
+
+const setExactSelectValue = (element, value = "") => {
+  if (!element) return;
+
+  const exactValue = String(value ?? "").trim();
+
+  if (!exactValue) {
+    element.value = "";
+    return;
+  }
+
+  if (
+    element.tagName === "SELECT" &&
+    ![...element.options].some((option) => option.value === exactValue)
+  ) {
+    const option = document.createElement("option");
+    option.value = exactValue;
+    option.textContent = exactValue;
+    element.appendChild(option);
+  }
+
+  element.value = exactValue;
+};
 
 const setProducts = (products = []) => {
   state.products = normalizeProductCatalog(products).map(withAdminDefaults);
@@ -350,6 +453,8 @@ const updateCanonicalHint = () => {
 
 const resetImportPreview = () => {
   state.importPreviewProducts = null;
+  state.importPhotoCount = 0;
+  state.importWarnings = [];
   if (!root.importPreview) return;
   root.importPreview.innerHTML = "";
   root.importPreview.style.display = "none";
@@ -369,14 +474,61 @@ const downloadJson = (data, fileName) => {
 
 const renderImportPreview = (products) => {
   if (!root.importPreview) return;
-  const normalized = normalizeProductCatalog(products).map(withAdminDefaults);
-  const incomplete = normalized.filter((product) => !getProductCompleteness(product).complete).length;
+
+  const normalized = normalizeImportProducts(products);
+  const incomplete = normalized.filter(
+    (product) => !getProductCompleteness(product).complete
+  ).length;
+
+  const photoText = state.importPhotoCount
+    ? ` ${state.importPhotoCount} foto${state.importPhotoCount === 1 ? "" : "'s"} automatisch gekoppeld.`
+    : "";
+
+  const warningText = state.importWarnings.length
+    ? `<p class="admin-detail" style="color:#f0b56c">${state.importWarnings
+        .map(escapeHtml)
+        .join("<br>")}</p>`
+    : "";
+
+  const productRows = normalized
+    .map((product) => {
+      const rawImage =
+        (Array.isArray(product.images) && product.images[0]) ||
+        product.thumbnail ||
+        product.image ||
+        "";
+
+      const previewImage = toAdminAssetPath(
+        String(rawImage || "").split("|")[0]
+      );
+
+      return `
+        <article class="admin-card" style="display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:center;margin-top:10px;padding:12px;">
+          <div>
+            ${
+              previewImage
+                ? `<img class="admin-thumb" src="${escapeHtml(previewImage)}" alt="${escapeHtml(product.name || "Product")}" />`
+                : '<div class="admin-subline">Geen foto</div>'
+            }
+          </div>
+          <div>
+            <strong>${escapeHtml(product.name || "-")}</strong>
+            <div class="admin-subline"><strong>Categorie:</strong> ${escapeHtml(product.category || "-")}</div>
+            <div class="admin-subline"><strong>Prijs:</strong> ${euro.format(Number(product.sellingPrice) || 0)} • <strong>Voorraad:</strong> ${Number(product.stock) || 0}</div>
+            <div class="admin-subline">ID ${Number(product.id) || 0} • ${escapeHtml(product.sku || "geen SKU")}</div>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
 
   root.importPreview.style.display = "block";
   root.importPreview.innerHTML = `
     <h4>Importvoorbeeld</h4>
-    <p class="admin-detail">${normalized.length} producten gevonden. ${incomplete} onvolledig.</p>
-    <div class="admin-form-actions">
+    <p class="admin-detail">${normalized.length} producten gevonden. ${incomplete} onvolledig.${photoText}</p>
+    ${warningText}
+    ${productRows}
+    <div class="admin-form-actions" style="margin-top:14px;">
       <button class="button primary" type="button" id="applyImportButton">Import toepassen</button>
       <button class="button secondary" type="button" id="cancelImportButton">Annuleren</button>
     </div>
@@ -385,30 +537,23 @@ const renderImportPreview = (products) => {
   const applyButton = document.getElementById("applyImportButton");
   const cancelButton = document.getElementById("cancelImportButton");
 
+  /*
+   * Geen extra "weet je het zeker?"-melding meer.
+   * Eén klik op Import toepassen is voldoende.
+   */
   applyButton?.addEventListener("click", async () => {
-    const confirmed = window.confirm("Weet je zeker dat je deze import via de database wilt toepassen?");
-    if (!confirmed) return;
-
-    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-    downloadJson(state.products, `producten-backup-${stamp}.json`);
+    applyButton.disabled = true;
 
     try {
-      const existingIds = new Set(state.products.map((item) => Number(item.id)));
-      for (const product of products) {
-        if (existingIds.has(Number(product.id))) {
-          await saveProduct(Number(product.id), product);
-        } else {
-          await createProduct(product);
-        }
-      }
-
-      await refreshProducts();
+      await applyImportedProducts(normalized, {
+        sourceLabel: "Import",
+      });
       resetImportPreview();
-      setStatus("Import succesvol toegepast via database. Eerst is een back-up gedownload.", "accent");
-      setErrors([]);
     } catch (error) {
       setErrors([error.message]);
       setStatus(error.message, "error");
+    } finally {
+      applyButton.disabled = false;
     }
   });
 
@@ -421,15 +566,16 @@ const renderImportPreview = (products) => {
 const applyFormValues = (product) => {
   fields.id.value = String(product.id || "");
   fields.name.value = product.name || "";
-  fields.number.value = product.number || "";
+  fields.number.value = product.number || "#";
   fields.slug.value = product.slug || "";
   fields.sku.value = product.sku || "";
   fields.barcode.value = product.barcode || "";
-  fields.category.value = product.category || "Funko Heroes";
+  setExactSelectValue(fields.category, product.category || "");
   fields.brand.value = product.brand || "";
   fields.universe.value = product.universe || "";
   fields.franchise.value = product.franchise || "";
-  fields.edition.value = product.edition || "Standard";
+  fields.edition.value = product.edition && String(product.edition).toLowerCase() !== "standard" ? product.edition : "";
+  syncEditionOptionsFromField();
   fields.variant.value = product.variant || "Standard";
   fields.releaseYear.value = product.releaseYear ? String(product.releaseYear) : "";
   fields.condition.value = product.condition || "Mint";
@@ -451,6 +597,118 @@ const applyFormValues = (product) => {
   fields.signed.checked = Boolean(product.signed);
 };
 
+const openImportedProductInForm = (product) => {
+  if (!product) return;
+
+  applyFormValues(product);
+
+  state.editingId = Number(product.id);
+  state.slugTouched = true;
+  state.skuTouched = true;
+  state.autoLinkedImages = parseImagesInput(fields.images?.value || "");
+
+  setFormMode(true);
+  updateCanonicalHint();
+  renderPreview();
+};
+
+const findImportedProductAfterRefresh = (sourceProduct) => {
+  const sourceId = Number(sourceProduct?.id);
+  const sourceSku = String(sourceProduct?.sku || "").trim().toLowerCase();
+  const sourceSlug = String(sourceProduct?.slug || "").trim().toLowerCase();
+
+  return (
+    state.products.find(
+      (product) => sourceId && Number(product.id) === sourceId
+    ) ||
+    state.products.find(
+      (product) =>
+        sourceSku &&
+        String(product.sku || "").trim().toLowerCase() === sourceSku
+    ) ||
+    state.products.find(
+      (product) =>
+        sourceSlug &&
+        String(product.slug || "").trim().toLowerCase() === sourceSlug
+    ) ||
+    null
+  );
+};
+
+const showImportedProductsInAdmin = (importedProducts = []) => {
+  const refreshed = importedProducts
+    .map(findImportedProductAfterRefresh)
+    .filter(Boolean);
+
+  if (!refreshed.length) {
+    renderTable();
+    return;
+  }
+
+  /*
+   * Bij één product tonen we meteen alleen dat product in de lijst.
+   * Bij meerdere producten laten we de volledige lijst staan.
+   */
+  if (root.search) {
+    root.search.value =
+      refreshed.length === 1
+        ? String(refreshed[0].name || refreshed[0].sku || "")
+        : "";
+  }
+
+  if (root.universeFilter) root.universeFilter.value = "";
+  if (root.franchiseFilter) root.franchiseFilter.value = "";
+  if (root.stockFilter) root.stockFilter.value = "";
+  if (root.missingFilter) root.missingFilter.value = "";
+  if (root.archiveFilter) root.archiveFilter.value = "active";
+
+  renderTable();
+
+  /*
+   * Het eerste geïmporteerde product wordt direct in het formulier geopend,
+   * inclusief categorie, prijs, voorraad en opgeslagen foto's.
+   */
+  openImportedProductInForm(refreshed[0]);
+};
+
+const applyImportedProducts = async (
+  products,
+  { sourceLabel = "JSON" } = {}
+) => {
+  const prepared = normalizeImportProducts(products);
+
+  if (!prepared.length) {
+    throw new Error("Er zijn geen producten gevonden om te importeren.");
+  }
+
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  downloadJson(state.products, `producten-backup-${stamp}.json`);
+
+  const existingIds = new Set(
+    state.products.map((item) => Number(item.id))
+  );
+
+  for (const product of prepared) {
+    if (existingIds.has(Number(product.id))) {
+      await saveProduct(Number(product.id), product);
+    } else {
+      await createProduct(product);
+      existingIds.add(Number(product.id));
+    }
+  }
+
+  await refreshProducts();
+  showImportedProductsInAdmin(prepared);
+
+  setErrors([]);
+  setStatus(
+    `${sourceLabel} succesvol geïmporteerd. ${prepared.length} product${prepared.length === 1 ? "" : "en"} direct geladen met categorie en foto's.`,
+    "accent"
+  );
+
+  return prepared;
+};
+
 const resetForm = () => {
   root.form?.reset();
   fields.id.value = String(nextId());
@@ -460,23 +718,29 @@ const resetForm = () => {
   if (fields.purchasePrice) fields.purchasePrice.value = "0";
   if (fields.reserved) fields.reserved.value = "0";
   if (fields.slug) fields.slug.value = "";
+  if (fields.number) fields.number.value = "#";
+  if (fields.sku) fields.sku.value = "";
   if (fields.category) fields.category.value = "Funko Heroes";
   if (fields.brand) fields.brand.value = "Funko";
   if (fields.condition) fields.condition.value = "Mint";
   if (fields.boxCondition) fields.boxCondition.value = "Mint";
-  if (fields.edition) fields.edition.value = "Standard";
+  if (fields.edition) fields.edition.value = "";
+  editionOptions.forEach((option) => { option.checked = false; });
+  syncEditionFieldFromOptions();
   if (fields.variant) fields.variant.value = "Standard";
 
   state.editingId = null;
   state.slugTouched = false;
+  state.skuTouched = false;
   state.autoLinkedImages = [];
 
   setFormMode(false);
   setErrors([]);
   setStatus("Klaar om een product toe te voegen.", "muted");
-  if (root.imageSource) root.imageSource.textContent = "Gebruik ‘Kies fotomap’ of ‘Kies 1-4 foto’s’. De foto’s worden automatisch gekoppeld.";
+  if (root.imageSource) root.imageSource.textContent = "Gebruik â€˜Kies fotomapâ€™ of â€˜Kies 1-4 fotoâ€™sâ€™. De fotoâ€™s worden automatisch gekoppeld.";
 
   updateAutoSlug();
+  updateAutoSku();
   updateCanonicalHint();
   renderPreview();
 };
@@ -493,6 +757,14 @@ const updateAutoSlug = () => {
   fields.slug.value = buildAutoSlug({
     name: fields.name.value,
     number: fields.number.value,
+  });
+};
+
+const updateAutoSku = () => {
+  if (state.skuTouched || !fields.sku) return;
+  fields.sku.value = buildAutoSku({
+    name: fields.name?.value || "",
+    number: fields.number?.value || "",
   });
 };
 
@@ -559,10 +831,11 @@ const renderTable = () => {
           <div class="admin-subline">${escapeHtml(product.number || "-")}</div>
           <div class="admin-subline">ID ${Number(product.id) || 0}</div>
         </td>
+        <td>${escapeHtml(product.category || "-")}</td>
         <td>${euro.format(Number(product.sellingPrice) || 0)}</td>
         <td>
           <div class="admin-stock-controls">
-            <button type="button" class="button secondary" data-stock-minus="${product.id}">−</button>
+            <button type="button" class="button secondary" data-stock-minus="${product.id}">âˆ’</button>
             <strong>${Number(product.stock) || 0}</strong>
             <button type="button" class="button secondary" data-stock-plus="${product.id}">+</button>
           </div>
@@ -591,6 +864,7 @@ const renderTable = () => {
           <tr>
             <th>Afbeelding</th>
             <th>Product</th>
+            <th>Categorie</th>
             <th>Verkoopprijs</th>
             <th>Voorraad</th>
             <th>Status</th>
@@ -598,7 +872,7 @@ const renderTable = () => {
           </tr>
         </thead>
         <tbody>
-          ${rows || '<tr><td colspan="6">Geen producten gevonden voor deze filters.</td></tr>'}
+          ${rows || '<tr><td colspan="7">Geen producten gevonden voor deze filters.</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -613,6 +887,7 @@ const renderTable = () => {
       applyFormValues(product);
       state.editingId = id;
       state.slugTouched = true;
+      state.skuTouched = true;
       state.autoLinkedImages = parseImagesInput(fields.images.value);
       setFormMode(true);
       setStatus(`${product.name} wordt bewerkt.`, "accent");
@@ -655,7 +930,7 @@ const renderTable = () => {
       if (!product) return;
 
       const confirmed = window.confirm(
-        `Weet je zeker dat je “${product.name}” definitief wilt verwijderen?\n\nDit kan niet ongedaan worden gemaakt.`
+        `Weet je zeker dat je â€œ${product.name}â€ definitief wilt verwijderen?\n\nDit kan niet ongedaan worden gemaakt.`
       );
       if (!confirmed) return;
 
@@ -742,8 +1017,77 @@ const handleSaveProduct = async (event) => {
   }
 };
 
+const persistUploadedMediaForEditingProduct = async (event) => {
+  const uploadedImages = Array.isArray(event?.detail?.images)
+    ? event.detail.images.map((value) => String(value || "").trim()).filter(Boolean)
+    : [];
+  if (!uploadedImages.length) return;
+
+  if (fields.images) fields.images.value = uploadedImages.join("\n");
+  state.autoLinkedImages = uploadedImages;
+  updateCanonicalHint();
+  renderPreview();
+
+  // New products are saved through the normal Product opslaan button.
+  // Existing/imported products receive their uploaded media immediately.
+  if (state.editingId === null) return;
+
+  const editingId = Number(state.editingId);
+  const existingProduct = state.products.find((item) => Number(item.id) === editingId) || null;
+  if (!existingProduct) return;
+
+  try {
+    const draft = buildDraftFromForm(readFormData());
+    const savedProduct = buildProductForSave({
+      draft,
+      existingProduct,
+      autoLinkedImages: uploadedImages,
+    });
+    await saveProduct(editingId, savedProduct);
+    await refreshProducts();
+    setErrors([]);
+    setStatus(`Foto's van ${savedProduct.name} zijn direct opgeslagen.`, "accent");
+  } catch (error) {
+    setErrors([error.message]);
+    setStatus(`Foto's zijn geÃ¼pload, maar koppelen aan het product is mislukt: ${error.message}`, "error");
+  }
+};
+
+
+const fileToDataUrl = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onload = () => resolve(String(reader.result || ""));
+  reader.onerror = () => reject(reader.error || new Error("Bestand kon niet worden gelezen."));
+  reader.readAsDataURL(file);
+});
+
+const importZipBatch = async (file) => {
+  const dataUrl = await fileToDataUrl(file);
+  const defaultHost = window.location?.hostname || "localhost";
+  const apiBase = window.LOOTIFER_API_BASE
+    ? String(window.LOOTIFER_API_BASE).replace(/\/$/, "")
+    : `http://${defaultHost}:3001/api`;
+  const response = await fetch(`${apiBase}/site/product-batch-import`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ dataUrl }),
+  });
+  const text = await response.text();
+  let body = {};
+  try { body = text ? JSON.parse(text) : {}; } catch { body = {}; }
+  if (!response.ok) {
+    if (response.status === 401) throw new Error("Je admin-sessie is verlopen. Log opnieuw in en probeer de ZIP opnieuw.");
+    if (response.status === 413) throw new Error("De ZIP is te groot. Maak de foto's kleiner of importeer minder producten tegelijk.");
+    throw new Error(body?.error || body?.details || `ZIP-import mislukt (${response.status}).`);
+  }
+  if (!Array.isArray(body.products)) throw new Error("De server gaf geen geldige productlijst terug.");
+  return body;
+};
+
 const bindFormInteractions = () => {
   root.form?.addEventListener("submit", handleSaveProduct);
+  window.addEventListener("lootifer:product-media-uploaded", persistUploadedMediaForEditingProduct);
   root.form?.addEventListener("input", persistProductDraft);
   root.form?.addEventListener("change", persistProductDraft);
 
@@ -779,9 +1123,13 @@ const bindFormInteractions = () => {
       if (input === fields.slug) {
         state.slugTouched = true;
       }
+      if (input === fields.sku) {
+        state.skuTouched = true;
+      }
 
       if (input === fields.name || input === fields.number) {
         updateAutoSlug();
+        updateAutoSku();
       }
 
       if (input === fields.images) {
@@ -792,6 +1140,47 @@ const bindFormInteractions = () => {
       renderPreview();
       persistProductDraft();
     });
+  });
+
+  fields.number?.addEventListener("blur", () => {
+    const clean = String(fields.number.value || "").trim().replace(/^#+/, "");
+    fields.number.value = clean ? `#${clean}` : "#";
+    updateAutoSlug();
+    updateAutoSku();
+    updateCanonicalHint();
+    renderPreview();
+    persistProductDraft();
+  });
+
+  editionOptions.forEach((option) => {
+    option.addEventListener("change", () => {
+      syncEditionFieldFromOptions();
+      renderPreview();
+      persistProductDraft();
+    });
+  });
+
+  root.backupDatabaseButton?.addEventListener("click", async () => {
+    root.backupDatabaseButton.disabled = true;
+    setStatus("Backup wordt gemaaktâ€¦", "muted");
+    try {
+      const blob = await downloadDatabaseBackupFromApi();
+      const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `lootifer-backup-${stamp}.sqlite`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+      setStatus("Backup gedownload. Bewaar dit .sqlite-bestand op een veilige plek.", "accent");
+    } catch (error) {
+      setErrors([error.message || "Backup maken is mislukt."]);
+      setStatus("Backup maken is mislukt.", "error");
+    } finally {
+      root.backupDatabaseButton.disabled = false;
+    }
   });
 
   fields.slug?.addEventListener("blur", () => {
@@ -850,7 +1239,7 @@ const bindFormInteractions = () => {
   root.exportButton?.addEventListener("click", () => {
     const stamp = new Date().toISOString().slice(0, 10);
     downloadJson(state.products, `products-${stamp}.json`);
-    setStatus("Catalogus geëxporteerd als products.json.", "accent");
+    setStatus("Catalogus geÃ«xporteerd als products.json.", "accent");
   });
 
   root.importButton?.addEventListener("click", () => {
@@ -862,22 +1251,70 @@ const bindFormInteractions = () => {
     if (!file) return;
 
     try {
-      const text = await file.text();
-      const parsed = JSON.parse(text);
-      if (!Array.isArray(parsed)) {
-        throw new Error("Het JSON-bestand moet een array met producten bevatten.");
-      }
+      const isZip =
+        /\.zip$/i.test(file.name) ||
+        /zip/i.test(String(file.type || ""));
 
-      const normalized = normalizeProductCatalog(parsed);
-      state.importPreviewProducts = normalized;
-      renderImportPreview(normalized);
-      setStatus("Importbestand gecontroleerd. Bekijk de preview voordat je toepast.", "muted");
-      setErrors([]);
+      if (isZip) {
+        /*
+         * ZIP blijft eerst een preview tonen, omdat een ZIP meerdere
+         * producten en losse foto's kan bevatten.
+         */
+        setStatus(
+          "ZIP met productgegevens en foto's wordt verwerkt…",
+          "muted"
+        );
+
+        const result = await importZipBatch(file);
+        const prepared = normalizeImportProducts(result.products);
+
+        state.importPhotoCount = Number(result.importedPhotos) || 0;
+        state.importWarnings = Array.isArray(result.warnings)
+          ? result.warnings
+          : [];
+        state.importPreviewProducts = prepared;
+
+        renderImportPreview(prepared);
+        setStatus(
+          `ZIP gecontroleerd. ${state.importPhotoCount} foto${state.importPhotoCount === 1 ? "" : "'s"} gekoppeld. Controleer de gegevens en klik één keer op Import toepassen.`,
+          "muted"
+        );
+        setErrors([]);
+      } else {
+        /*
+         * JSON: direct importeren.
+         * Geen preview-knop en geen extra bevestigingsvraag meer.
+         */
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+
+        if (!Array.isArray(parsed)) {
+          throw new Error(
+            "Het JSON-bestand moet een array met producten bevatten."
+          );
+        }
+
+        state.importPhotoCount = 0;
+        state.importWarnings = [];
+        state.importPreviewProducts = null;
+        resetImportPreview();
+
+        const prepared = normalizeImportProducts(parsed);
+
+        setStatus(
+          `JSON wordt geïmporteerd… ${prepared.length} product${prepared.length === 1 ? "" : "en"} gevonden.`,
+          "muted"
+        );
+
+        await applyImportedProducts(prepared, {
+          sourceLabel: "JSON",
+        });
+      }
     } catch (error) {
       state.importPreviewProducts = null;
       resetImportPreview();
       setErrors([error.message || "Importeren is mislukt."]);
-      setStatus("Importbestand ongeldig.", "error");
+      setStatus("Importeren is mislukt.", "error");
     } finally {
       root.importInput.value = "";
     }
