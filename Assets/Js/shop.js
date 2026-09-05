@@ -38,6 +38,7 @@ let shopInStock = null;
 let shopSort = null;
 
 let pokemonQuickFilter = "all";
+let footballQuickFilter = "single";
 
 const getShopLanguage = () =>
   window.localStorage.getItem("lootifer-language") === "nl" ? "nl" : "en";
@@ -1208,6 +1209,213 @@ const bindPokemonQuickFilters = () => {
     });
 };
 
+
+const isFootballCardsPage = () =>
+  FIXED_CATEGORY === "FIFA 365 Cards" ||
+  COLLECTION_KEY === "fifa-365-cards" ||
+  COLLECTION_KEY === "football-cards";
+
+const footballQuickHaystack = (product = {}) =>
+  [
+    product?.name,
+    product?.title,
+    product?.category,
+    product?.brand,
+    product?.universe,
+    product?.franchise,
+    product?.series,
+    product?.edition,
+    product?.variant,
+    product?.model,
+    product?.description,
+    ...(Array.isArray(product?.tags)
+      ? product.tags
+      : []),
+  ]
+    .map((value) =>
+      String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim()
+    )
+    .filter(Boolean)
+    .join(" ");
+
+const isFootballTeamProduct = (product = {}) => {
+  const text = footballQuickHaystack(product);
+
+  const teamMarkers = [
+    "hele teams",
+    "heel team",
+    "complete team",
+    "complete teams",
+    "full team",
+    "full teams",
+    "team set",
+    "team sets",
+    "team lot",
+    "team lots",
+    "team bundle",
+    "team bundles",
+    "club set",
+    "club sets",
+    "club lot",
+    "club lots",
+    "club bundle",
+    "club bundles",
+  ];
+
+  if (teamMarkers.some((marker) => text.includes(marker))) {
+    return true;
+  }
+
+  const variant = String(product?.variant || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  return (
+    /\b(?:club|team)\s+(?:lot|set|bundle)\b/.test(variant) ||
+    /\blot\s*[-:]\s*\d+\s*cards?\b/.test(variant)
+  );
+};
+
+const matchesFootballQuickFilter = (product) => {
+  if (!isFootballCardsPage()) {
+    return true;
+  }
+
+  const text = footballQuickHaystack(product);
+  const hasAny = (...terms) =>
+    terms.some((term) => text.includes(term));
+
+  switch (footballQuickFilter) {
+    case "single":
+      return !isFootballTeamProduct(product);
+
+    case "teams":
+      return isFootballTeamProduct(product);
+
+    case "game-changer":
+      return hasAny("game changer");
+
+    case "top-keeper":
+      return hasAny("top keeper");
+
+    case "star-signing":
+      return hasAny("star signing");
+
+    case "rising-stars":
+      return hasAny("rising stars", "rising star");
+
+    case "international-star":
+      return hasAny("international star");
+
+    case "heritage":
+      return hasAny("heritage");
+
+    case "man-of-the-match":
+      return hasAny("man of the match");
+
+    case "captain":
+      return hasAny("captain");
+
+    case "vintage-vibes":
+      return hasAny("vintage vibes");
+
+    case "trophy-triumph":
+      return hasAny("trophy triumph");
+
+    case "limited-edition":
+      return hasAny("limited edition") && !hasAny("world class");
+
+    case "world-class":
+      return hasAny("world class");
+
+    case "black-edge-edition":
+      return hasAny("black edge edition", "black edge");
+
+    case "gold-edge-edition":
+      return hasAny("gold edge edition", "gold edge");
+
+    default:
+      return !isFootballTeamProduct(product);
+  }
+};
+
+const bindFootballQuickFilters = () => {
+  if (!isFootballCardsPage()) {
+    return;
+  }
+
+  const bar =
+    document.getElementById("footballQuickFilters");
+
+  if (
+    !bar ||
+    bar.dataset.bound === "true"
+  ) {
+    return;
+  }
+
+  bar.dataset.bound = "true";
+
+  bar
+    .querySelectorAll("[data-football-filter]")
+    .forEach((button) => {
+      const selectedFilter =
+        button.dataset.footballFilter ||
+        "single";
+
+      const active =
+        selectedFilter === footballQuickFilter;
+
+      button.classList.toggle(
+        "is-active",
+        active
+      );
+
+      button.setAttribute(
+        "aria-pressed",
+        active ? "true" : "false"
+      );
+
+      button.addEventListener(
+        "click",
+        () => {
+          footballQuickFilter =
+            button.dataset.footballFilter ||
+            "single";
+
+          bar
+            .querySelectorAll(
+              "[data-football-filter]"
+            )
+            .forEach((item) => {
+              const itemActive =
+                item === button;
+
+              item.classList.toggle(
+                "is-active",
+                itemActive
+              );
+
+              item.setAttribute(
+                "aria-pressed",
+                itemActive
+                  ? "true"
+                  : "false"
+              );
+            });
+
+          applyFilters();
+        }
+      );
+    });
+};
+
 let products = [];
 let filteredProducts = [];
 let currentPage = 1;
@@ -1754,6 +1962,14 @@ const getFilteredProducts = () => {
         return false;
       }
 
+      if (
+        !matchesFootballQuickFilter(
+          product
+        )
+      ) {
+        return false;
+      }
+
       try {
         const productTags =
           Array.isArray(
@@ -2186,6 +2402,7 @@ if (footerRoot) {
 }
 
 bindPokemonQuickFilters();
+bindFootballQuickFilters();
 
 applyShopPageLanguage();
 
