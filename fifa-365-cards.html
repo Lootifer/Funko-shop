@@ -3,40 +3,89 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <script src="Assets/Js/bootstrap-preferences.js"></script>
+
     <title>FIFA 365 Cards | Panini Voetbalkaarten | 2nd Life Toys</title>
-    <meta name="description" content="Bekijk FIFA 365 Cards en Panini voetbalkaarten bij 2nd Life Toys. Ontdek trading cards voor voetbalfans en verzamelaars." />
-    <link rel="canonical" href="https://www.2ndlifetoys.nl/fifa-365-cards.html" />
+
+    <meta
+      name="description"
+      content="Bekijk FIFA 365 Cards en Panini voetbalkaarten bij 2nd Life Toys. Ontdek losse spelers, specials en complete teams voor voetbalfans en verzamelaars."
+    />
+
+    <link
+      rel="canonical"
+      href="https://www.2ndlifetoys.nl/fifa-365-cards.html"
+    />
+
     <link rel="stylesheet" href="Assets/Css/main.css" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body class="category-world" data-fixed-category="FIFA 365 Cards" data-curated-grid="true">
+
+  <body
+    class="category-world"
+    data-fixed-category="FIFA 365 Cards"
+    data-curated-grid="true"
+  >
     <div id="headerRoot"></div>
 
     <main class="product-page category-world-page reveal">
+      <!-- HERO -->
       <section class="section-heading category-hero">
         <div class="category-hero-copy">
           <p class="eyebrow">FIFA 365 Cards</p>
+
           <h1>Every card tells a match.</h1>
-          <p class="hero-text">Browse FIFA 365 Cards and Panini football trading cards from the private collection.</p>
-          <div class="category-hero-chips" aria-label="Collection information">
-            <span id="categorySpotLabel">16 display spots</span>
-            <span id="categoryAdminLabel">Filled automatically from Admin</span>
+
+          <p class="hero-text">
+            Browse FIFA 365 Cards, Match Attax and Panini football trading
+            cards from the private collection.
+          </p>
+
+          <div
+            class="category-hero-chips"
+            aria-label="Collection information"
+          >
+            <span id="categorySpotLabel">Football trading cards</span>
+            <span id="categoryAdminLabel">From the private collection</span>
           </div>
         </div>
       </section>
 
-      <section class="category-collection-shell" aria-labelledby="categoryShelfTitle">
+      <!-- ASSORTIMENT -->
+      <section
+        class="category-collection-shell"
+        aria-labelledby="categoryShelfTitle"
+      >
         <div class="category-grid-heading">
           <div>
-            <p class="category-kicker" id="categoryShelfKicker">THE TRADING CARD SHELF</p>
-            <h2 id="categoryShelfTitle">Build your ultimate lineup.</h2>
+            <p
+              class="category-kicker"
+              id="categoryShelfKicker"
+            >
+              THE TRADING CARD SHELF
+            </p>
+
+            <h2 id="categoryShelfTitle">
+              Build your ultimate lineup.
+            </h2>
           </div>
 
-          <label class="category-sort-control" for="shopSort">
-            <span id="categorySortLabel">Arrange the shelf</span>
+          <label
+            class="category-sort-control"
+            for="shopSort"
+          >
+            <span id="categorySortLabel">
+              Arrange the shelf
+            </span>
+
             <select id="shopSort">
               <option value="newest">Newest</option>
               <option value="price-asc">Price low to high</option>
@@ -46,12 +95,182 @@
           </label>
         </div>
 
-        <div class="card-grid category-product-grid" id="shopGrid"></div>
-        <div class="pagination category-pagination" id="shopPagination"></div>
+        <!-- SNEL NAAR KAARTSOORT -->
+        <!-- Zelfde styling als Pokémon, maar aparte voetbal-logica -->
+        <div
+          class="pokemon-quick-filters"
+          id="footballQuickFilters"
+          aria-label="Football card types"
+        >
+          <span class="pokemon-quick-label">
+            Kies kaartsoort
+          </span>
+
+          <!-- STANDAARD -->
+          <button
+            class="pokemon-quick-filter is-active"
+            type="button"
+            data-football-filter="single"
+            aria-pressed="true"
+          >
+            Enkele spelers
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="game-changer"
+            aria-pressed="false"
+          >
+            Game Changer
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="top-keeper"
+            aria-pressed="false"
+          >
+            Top Keeper
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="star-signing"
+            aria-pressed="false"
+          >
+            Star Signing
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="rising-stars"
+            aria-pressed="false"
+          >
+            Rising Stars
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="international-star"
+            aria-pressed="false"
+          >
+            International Star
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="heritage"
+            aria-pressed="false"
+          >
+            Heritage
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="man-of-the-match"
+            aria-pressed="false"
+          >
+            Man of the Match
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="captain"
+            aria-pressed="false"
+          >
+            Captain
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="vintage-vibes"
+            aria-pressed="false"
+          >
+            Vintage Vibes
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="trophy-triumph"
+            aria-pressed="false"
+          >
+            Trophy Triumph
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="limited-edition"
+            aria-pressed="false"
+          >
+            Limited Edition
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="world-class"
+            aria-pressed="false"
+          >
+            World Class
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="black-edge-edition"
+            aria-pressed="false"
+          >
+            Black Edge Edition
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="gold-edge-edition"
+            aria-pressed="false"
+          >
+            Gold Edge Edition
+          </button>
+
+          <button
+            class="pokemon-quick-filter"
+            type="button"
+            data-football-filter="teams"
+            aria-pressed="false"
+          >
+            Hele Teams
+          </button>
+        </div>
+
+        <!-- PRODUCTEN -->
+        <div
+          class="card-grid category-product-grid"
+          id="shopGrid"
+        ></div>
+
+        <!-- PAGINERING -->
+        <div
+          class="pagination category-pagination"
+          id="shopPagination"
+        ></div>
       </section>
     </main>
 
     <div id="footerRoot"></div>
-    <script type="module" src="Assets/Js/shop.js"></script>
+
+    <script
+      type="module"
+      src="Assets/Js/shop.js?v=20260905-1"
+    ></script>
   </body>
 </html>
